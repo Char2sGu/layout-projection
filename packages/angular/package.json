@@ -1,0 +1,30 @@
+{
+  "name": "@layout-projection/angular",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "author": "Char2s <char2s@outlook.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "ng-packagr"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheNightmareX/layout-projection.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheNightmareX/layout-projection/issues"
+  },
+  "homepage": "https://github.com/TheNightmareX/layout-projection#readme",
+  "peerDependencies": {
+    "@angular/common": "*",
+    "@angular/core": "*",
+    "@layout-projection/core": "*"
+  },
+  "devDependencies": {
+    "@angular/common": "^15.2.3",
+    "@angular/core": "^15.2.3",
+    "@layout-projection/core": "file:packages/core",
+    "ng-packagr": "^15.2.2"
+  }
+}
