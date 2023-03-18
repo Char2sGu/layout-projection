@@ -4,8 +4,8 @@ import {
   LayoutBoundingBox,
   LayoutBoundingBoxAxisTransform,
   LayoutBoundingBoxTransform,
-} from "./core.js";
-import { LayoutMeasurer } from "./layout-measurement.js";
+} from './core.js';
+import { LayoutMeasurer } from './layout-measurement.js';
 
 /**
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
@@ -27,7 +27,7 @@ export class LayoutProjectionNode {
 
   constructor(
     public element: HTMLElement,
-    protected measurer: LayoutMeasurer
+    protected measurer: LayoutMeasurer,
   ) {}
 
   identifyAs(id: string): void {
@@ -46,14 +46,14 @@ export class LayoutProjectionNode {
     parent.children.add(this);
   }
   detach(): void {
-    if (!this.parent) throw new Error("Missing parent");
+    if (!this.parent) throw new Error('Missing parent');
     this.parent.children.delete(this);
     this.parent = undefined;
   }
 
   traverse(
     callback: (node: LayoutProjectionNode) => void,
-    options: LayoutProjectionNodeTraverseOptions = {}
+    options: LayoutProjectionNodeTraverseOptions = {},
   ): void {
     options.includeSelf ??= false;
     options.includeDeactivated ??= false;
@@ -67,8 +67,8 @@ export class LayoutProjectionNode {
   }
 
   reset(): void {
-    this.element.style.transform = "";
-    this.element.style.borderRadius = "";
+    this.element.style.transform = '';
+    this.element.style.borderRadius = '';
   }
 
   measure(): void {
@@ -82,12 +82,12 @@ export class LayoutProjectionNode {
     this.boundingBox = this.measurer.measureBoundingBox(this.element);
     this.borderRadiuses = this.measurer.measureBorderRadiuses(
       this.element,
-      this.boundingBox
+      this.boundingBox,
     );
   }
 
   calculate(destBoundingBox: LayoutBoundingBox): void {
-    if (!this.boundingBox) throw new Error("Missing bounding box");
+    if (!this.boundingBox) throw new Error('Missing bounding box');
 
     const currBoundingBox = this.calibrate(this.boundingBox);
     const currMidpoint = currBoundingBox.midpoint();
@@ -128,8 +128,8 @@ export class LayoutProjectionNode {
   }
 
   project(): void {
-    if (!this.boundingBoxTransform) throw new Error("Missing transform");
-    if (!this.borderRadiuses) throw new Error("Missing border radiuses");
+    if (!this.boundingBoxTransform) throw new Error('Missing transform');
+    if (!this.borderRadiuses) throw new Error('Missing border radiuses');
 
     const ancestorTotalScale = { x: 1, y: 1 };
     const ancestors = this.getAncestors();
@@ -147,7 +147,7 @@ export class LayoutProjectionNode {
     style.transform = [
       `translate3d(${translateX}px, ${translateY}px, 0)`,
       `scale(${transform.x.scale}, ${transform.y.scale})`,
-    ].join(" ");
+    ].join(' ');
 
     const totalScale = {
       x: ancestorTotalScale.x * this.boundingBoxTransform.x.scale,

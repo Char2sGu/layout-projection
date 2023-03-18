@@ -7,15 +7,15 @@ import {
   Easing,
   linear,
   mix,
-} from "popmotion";
+} from 'popmotion';
 
 import {
   LayoutBorderRadius,
   LayoutBorderRadiuses,
   LayoutBoundingBox,
-} from "./core.js";
-import { LayoutMeasurer } from "./layout-measurement.js";
-import { LayoutProjectionNode } from "./layout-projection.js";
+} from './core.js';
+import { LayoutMeasurer } from './layout-measurement.js';
+import { LayoutProjectionNode } from './layout-projection.js';
 
 export class LayoutAnimator {
   protected snapshots = new NodeLayoutSnapshotMap();
@@ -24,7 +24,7 @@ export class LayoutAnimator {
   constructor(
     public root: LayoutProjectionNode,
     protected measurer: LayoutMeasurer,
-    protected easingParser: LayoutAnimationEasingParser
+    protected easingParser: LayoutAnimationEasingParser,
   ) {}
 
   snapshot(): void {
@@ -35,7 +35,7 @@ export class LayoutAnimator {
         const boundingBox = this.measurer.measureBoundingBox(node.element);
         const borderRadiuses = this.measurer.measureBorderRadiuses(
           node.element,
-          boundingBox
+          boundingBox,
         );
 
         if (this.snapshots.has(node.id)) {
@@ -49,7 +49,7 @@ export class LayoutAnimator {
           borderRadiuses,
         });
       },
-      { includeSelf: true }
+      { includeSelf: true },
     );
   }
 
@@ -84,18 +84,18 @@ export class LayoutAnimator {
 
   protected projectFrame(
     contextMap: NodeAnimationContextMap,
-    progress: number
+    progress: number,
   ): void {
     this.root.traverse(
       (node) => {
         const context = contextMap.get(node.id);
-        if (!context) throw new Error("Unknown node");
+        if (!context) throw new Error('Unknown node');
         const boundingBox = this.getFrameBoundingBox(context, progress);
         const borderRadiuses = this.getFrameBorderRadiuses(context, progress);
         node.calculate(boundingBox);
         node.borderRadiuses = borderRadiuses;
       },
-      { includeSelf: true }
+      { includeSelf: true },
     );
 
     this.root.project();
@@ -109,7 +109,7 @@ export class LayoutAnimator {
     this.root.traverse(
       (node) => {
         if (!node.boundingBox || !node.borderRadiuses)
-          throw new Error("Unknown node");
+          throw new Error('Unknown node');
 
         const snapshot = this.snapshots.get(node.id);
         // This is the old node instance in a shared-element layout animation,
@@ -134,7 +134,7 @@ export class LayoutAnimator {
           borderRadiusesTo,
         });
       },
-      { includeSelf: true }
+      { includeSelf: true },
     );
 
     return map;
@@ -142,7 +142,7 @@ export class LayoutAnimator {
 
   protected getFrameBoundingBox(
     context: NodeAnimationContext,
-    progress: number
+    progress: number,
   ): LayoutBoundingBox {
     const from = context.boundingBoxFrom;
     const to = context.boundingBoxTo;
@@ -156,7 +156,7 @@ export class LayoutAnimator {
 
   protected getFrameBorderRadiuses(
     context: NodeAnimationContext,
-    progress: number
+    progress: number,
   ): LayoutBorderRadiuses {
     const from = context.borderRadiusesFrom;
     const to = context.borderRadiusesTo;
@@ -164,7 +164,7 @@ export class LayoutAnimator {
     const mixRadius = (
       from: LayoutBorderRadius,
       to: LayoutBorderRadius,
-      progress: number
+      progress: number,
     ): LayoutBorderRadius => ({
       x: mix(from.x, to.x, progress),
       y: mix(from.y, to.y, progress),
@@ -179,9 +179,9 @@ export class LayoutAnimator {
   }
 
   protected estimateStartingBoundingBox(
-    node: LayoutProjectionNode
+    node: LayoutProjectionNode,
   ): LayoutBoundingBox | undefined {
-    if (!node.boundingBox) throw new Error("Unknown node");
+    if (!node.boundingBox) throw new Error('Unknown node');
 
     let ancestor = node;
     let ancestorSnapshot: NodeLayoutSnapshot | undefined = undefined;
@@ -190,7 +190,7 @@ export class LayoutAnimator {
       ancestor = ancestor.parent;
       if (ancestor === this.root) return;
     }
-    if (!ancestor.boundingBox) throw new Error("Unknown ancestor");
+    if (!ancestor.boundingBox) throw new Error('Unknown ancestor');
 
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     ancestor.calculate(ancestorSnapshot.boundingBox);
@@ -217,25 +217,25 @@ export class LayoutAnimator {
 
 export class LayoutAnimationEasingParser {
   coerceEasing(raw: string | Easing): Easing {
-    return typeof raw === "string" ? this.parseEasing(raw) : raw;
+    return typeof raw === 'string' ? this.parseEasing(raw) : raw;
   }
 
   parseEasing(easing: string): Easing {
-    if (easing === "linear") {
+    if (easing === 'linear') {
       return linear;
-    } else if (easing === "ease") {
+    } else if (easing === 'ease') {
       return easeInOut;
-    } else if (easing === "ease-in") {
+    } else if (easing === 'ease-in') {
       return easeIn;
-    } else if (easing === "ease-out") {
+    } else if (easing === 'ease-out') {
       return easeOut;
-    } else if (easing === "ease-in-out") {
+    } else if (easing === 'ease-in-out') {
       return easeInOut;
-    } else if (easing.startsWith("cubic-bezier")) {
+    } else if (easing.startsWith('cubic-bezier')) {
       const [a, b, c, d] = easing
-        .replace("cubic-bezier(", "")
-        .replace(")", "")
-        .split(",")
+        .replace('cubic-bezier(', '')
+        .replace(')', '')
+        .split(',')
         .map((v) => parseFloat(v));
       return cubicBezier(a, b, c, d);
     }
@@ -244,7 +244,7 @@ export class LayoutAnimationEasingParser {
 }
 
 class NodeLayoutSnapshotMap extends Map<
-  LayoutProjectionNode["id"],
+  LayoutProjectionNode['id'],
   NodeLayoutSnapshot
 > {}
 
@@ -255,7 +255,7 @@ interface NodeLayoutSnapshot {
 }
 
 class NodeAnimationContextMap extends Map<
-  LayoutProjectionNode["id"],
+  LayoutProjectionNode['id'],
   NodeAnimationContext
 > {}
 

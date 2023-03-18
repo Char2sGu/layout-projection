@@ -1,10 +1,10 @@
-import * as styleUnits from "style-value-types";
+import * as styleUnits from 'style-value-types';
 
 import {
   LayoutBorderRadius,
   LayoutBorderRadiuses,
   LayoutBoundingBox,
-} from "./core.js";
+} from './core.js';
 
 export class LayoutMeasurer {
   constructor(protected borderRadiusParser: LayoutBorderRadiusParser) {}
@@ -15,7 +15,7 @@ export class LayoutMeasurer {
 
   measureBorderRadiuses(
     element: HTMLElement,
-    boundingBox: LayoutBoundingBox = this.measureBoundingBox(element)
+    boundingBox: LayoutBoundingBox = this.measureBoundingBox(element),
   ): LayoutBorderRadiuses {
     const style = getComputedStyle(element);
 
@@ -23,7 +23,7 @@ export class LayoutMeasurer {
       this.borderRadiusParser.parseBorderRadius(
         raw,
         boundingBox.width(),
-        boundingBox.height()
+        boundingBox.height(),
       );
 
     return {
@@ -39,10 +39,10 @@ export class LayoutBorderRadiusParser {
   parseBorderRadius(
     raw: string,
     width: number,
-    height: number
+    height: number,
   ): LayoutBorderRadius {
     if (raw.match(/\d+(\.\d+)?px \d+(\.\d+)?px/u)) {
-      const [x, y] = raw.split(" ").map((value) => parseFloat(value));
+      const [x, y] = raw.split(' ').map((value) => parseFloat(value));
       return { x, y };
     }
     if (styleUnits.percent.test(raw)) {
