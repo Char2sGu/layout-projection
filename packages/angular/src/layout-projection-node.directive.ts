@@ -9,7 +9,7 @@ import {
 import { LayoutMeasurer, LayoutProjectionNode } from '@layout-projection/core';
 
 @Directive({
-  selector: '[libLayoutProjectionNode]',
+  selector: '[lpjNode]',
   providers: [
     {
       provide: LayoutProjectionNode,
@@ -21,7 +21,7 @@ export class LayoutProjectionNodeDirective
   extends LayoutProjectionNode
   implements OnDestroy
 {
-  @Input() set libLayoutProjectionNode(v: string | false) {
+  @Input() set lpjNode(v: string | false) {
     if (typeof v === 'string') {
       if (v) this.identifyAs(v);
       this.activate();
