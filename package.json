@@ -1,0 +1,25 @@
+{
+  "name": "layout-projection",
+  "version": "0.0.0",
+  "description": "",
+  "author": "Char2s <char2s@outlook.com>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheNightmareX/layout-projection.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheNightmareX/layout-projection/issues"
+  },
+  "homepage": "https://github.com/TheNightmareX/layout-projection#readme",
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

@@ -1,0 +1,10 @@
+node_modules
+/.eslintcache
+/packages/*/dist
+/packages/*/tsconfig.tsbuildinfo
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
