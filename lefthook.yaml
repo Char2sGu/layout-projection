@@ -1,0 +1,9 @@
+pre-commit:
+  parallel: true
+  commands:
+    lint:eslint:
+      glob: '*.ts'
+      run: 'npx eslint --cache --fix {staged_files}'
+    lint:prettier:
+      glob: '*.{html,css,less,scss,sass,ts,js,json,md}'
+      run: 'npx prettier --write {staged_files}'
