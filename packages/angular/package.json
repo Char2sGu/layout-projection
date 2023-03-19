@@ -16,15 +16,20 @@
     "url": "https://github.com/TheNightmareX/layout-projection/issues"
   },
   "homepage": "https://github.com/TheNightmareX/layout-projection#readme",
+  "dependencies": {
+    "tslib": "^2.5.0"
+  },
   "peerDependencies": {
     "@angular/common": "*",
     "@angular/core": "*",
-    "@layout-projection/core": "*"
+    "@layout-projection/core": "*",
+    "rxjs": "*"
   },
   "devDependencies": {
     "@angular/common": "^15.2.3",
     "@angular/core": "^15.2.3",
     "@layout-projection/core": "file:packages/core",
-    "ng-packagr": "^15.2.2"
+    "ng-packagr": "^15.2.2",
+    "rxjs": "^7.8.0"
   }
 }
