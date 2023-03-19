@@ -1,55 +1,43 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Type } from '@angular/core';
+
+import { SampleBasicComponent } from './sample-basic.component';
+import { SampleSharedElementComponent } from './sample-shared-element.component';
 
 @Component({
   selector: 'app-root',
   template: `
-    <div class="container" lpjNode [animateOn]="flag">
-      <div class="content" [class.flag]="flag" lpjNode></div>
+    <main *ngIf="samples[sampleActiveIndex] as sample">
+      <h1>{{ sample.title }}</h1>
+      <ng-container [ngComponentOutlet]="sample.component"></ng-container>
+    </main>
+
+    <div class="actions" style="position: absolute; right: 0; bottom: 0">
+      <button
+        (click)="sampleActiveIndex = sampleActiveIndex - 1"
+        [disabled]="sampleActiveIndex === 0"
+      >
+        Prev
+      </button>
+      <button
+        (click)="sampleActiveIndex = sampleActiveIndex + 1"
+        [disabled]="sampleActiveIndex === samples.length - 1"
+      >
+        Next
+      </button>
     </div>
   `,
-  styles: [
-    `
-      .container {
-        position: relative;
-        width: 500px;
-        height: 500px;
-        background-color: purple;
-      }
-
-      .content {
-        position: absolute;
-        background-color: white;
-      }
-      .content:not(.flag) {
-        top: 100px;
-        left: 100px;
-        width: 100px;
-        height: 100px;
-      }
-      .content.flag {
-        bottom: 100px;
-        right: 100px;
-        width: 200px;
-        height: 150px;
-      }
-    `,
-  ],
+  styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
-  flag = false;
+export class AppComponent {
+  samples: Sample[] = [
+    { title: 'Basic', component: SampleBasicComponent },
+    { title: 'Shared Element', component: SampleSharedElementComponent },
+  ];
+  sampleActiveIndex = 0;
+}
 
-  constructor(private changeDetector: ChangeDetectorRef) {}
-
-  ngOnInit(): void {
-    setInterval(() => {
-      this.flag = !this.flag;
-      this.changeDetector.markForCheck();
-    }, 1000);
-  }
+interface Sample {
+  title: string;
+  component: Type<unknown>;
 }
