@@ -5,12 +5,14 @@ import { LayoutProjectionModule } from '@layout-projection/angular';
 import { AppComponent } from './app.component';
 import { SampleBasicComponent } from './sample-basic.component';
 import { SampleSharedElementComponent } from './sample-shared-element.component';
+import { SampleStreamComponent } from './sample-stream.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SampleBasicComponent,
     SampleSharedElementComponent,
+    SampleStreamComponent,
   ],
   imports: [BrowserModule, LayoutProjectionModule],
   providers: [],

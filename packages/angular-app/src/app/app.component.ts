@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Type } from '@angular/core';
 
 import { SampleBasicComponent } from './sample-basic.component';
 import { SampleSharedElementComponent } from './sample-shared-element.component';
+import { SampleStreamComponent } from './sample-stream.component';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,7 @@ import { SampleSharedElementComponent } from './sample-shared-element.component'
 export class AppComponent {
   samples: Sample[] = [
     { title: 'Basic', component: SampleBasicComponent },
+    { title: 'Animate On Stream', component: SampleStreamComponent },
     { title: 'Shared Element', component: SampleSharedElementComponent },
   ];
   sampleActiveIndex = 0;
