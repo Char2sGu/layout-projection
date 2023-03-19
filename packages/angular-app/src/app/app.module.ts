@@ -4,6 +4,7 @@ import { LayoutProjectionModule } from '@layout-projection/angular';
 
 import { AppComponent } from './app.component';
 import { SampleBasicComponent } from './sample-basic.component';
+import { SampleBorderRadiusComponent } from './sample-border-radius.component';
 import { SampleSharedElementComponent } from './sample-shared-element.component';
 import { SampleStreamComponent } from './sample-stream.component';
 
@@ -13,6 +14,7 @@ import { SampleStreamComponent } from './sample-stream.component';
     SampleBasicComponent,
     SampleSharedElementComponent,
     SampleStreamComponent,
+    SampleBorderRadiusComponent,
   ],
   imports: [BrowserModule, LayoutProjectionModule],
   providers: [],
