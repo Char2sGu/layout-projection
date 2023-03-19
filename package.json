@@ -2,6 +2,7 @@
   "name": "layout-projection",
   "version": "0.0.0",
   "description": "",
+  "private": true,
   "author": "Char2s <char2s@outlook.com>",
   "license": "Apache-2.0",
   "scripts": {
