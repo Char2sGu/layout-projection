@@ -41,7 +41,7 @@ export class LayoutBorderRadiusParser {
     width: number,
     height: number,
   ): LayoutBorderRadius {
-    if (raw.match(/\d+(\.\d+)?px \d+(\.\d+)?px/u)) {
+    if (raw.match(/\d.*?px \d.*?px/u)) {
       const [x, y] = raw.split(' ').map((value) => parseFloat(value));
       return { x, y };
     }
