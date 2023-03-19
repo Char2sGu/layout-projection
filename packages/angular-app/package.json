@@ -1,0 +1,22 @@
+{
+  "name": "@layout-projection/angular-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "ng serve"
+  },
+  "dependencies": {
+    "@angular/common": "^15.2.0",
+    "@angular/compiler": "^15.2.0",
+    "@angular/core": "^15.2.0",
+    "@angular/platform-browser": "^15.2.0",
+    "@angular/platform-browser-dynamic": "^15.2.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.12.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^15.2.4",
+    "@angular/cli": "^15.2.4"
+  }
+}
