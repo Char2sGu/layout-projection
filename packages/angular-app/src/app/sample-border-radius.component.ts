@@ -26,26 +26,26 @@ import { takeUntil, timer } from 'rxjs';
         position: relative;
         width: 500px;
         height: 500px;
-        background-color: purple;
+        background-color: blueviolet;
       }
 
       .content {
         position: absolute;
         background-color: white;
-        border-radius: 50px;
       }
       .content:not(.flag) {
         top: 100px;
         left: 100px;
         width: 100px;
         height: 100px;
-        border-radius: 50px;
+        border-radius: 50%;
       }
       .content.flag {
         bottom: 100px;
         right: 100px;
         width: 200px;
         height: 150px;
+        border-radius: 0px;
       }
     `,
   ],

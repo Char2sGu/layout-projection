@@ -46,7 +46,7 @@ export class LayoutBorderRadiusParser {
       return { x, y };
     }
     if (styleUnits.percent.test(raw)) {
-      const value = parseFloat(raw);
+      const value = parseFloat(raw) / 100;
       return { x: value * width, y: value * height };
     }
     if (styleUnits.px.test(raw)) {
