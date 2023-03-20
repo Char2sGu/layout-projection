@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, Type } from '@angular/core';
 
 import { SampleBasicComponent } from './sample-basic.component';
 import { SampleBorderRadiusComponent } from './sample-border-radius.component';
+import { SampleNestedComponent } from './sample-nested.component';
 import { SampleSharedElementComponent } from './sample-shared-element.component';
 import { SampleStreamComponent } from './sample-stream.component';
 
@@ -72,6 +73,7 @@ export class AppComponent {
     { title: 'Stream Input', component: SampleStreamComponent },
     { title: 'Border Radius', component: SampleBorderRadiusComponent },
     { title: 'Shared Element', component: SampleSharedElementComponent },
+    { title: 'Nested (Broken)', component: SampleNestedComponent },
   ];
 
   #sampleActiveIndex = 0;
