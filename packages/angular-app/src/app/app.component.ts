@@ -73,7 +73,23 @@ export class AppComponent {
     { title: 'Border Radius', component: SampleBorderRadiusComponent },
     { title: 'Shared Element', component: SampleSharedElementComponent },
   ];
-  sampleActiveIndex = 0;
+
+  #sampleActiveIndex = 0;
+  get sampleActiveIndex(): number {
+    return this.#sampleActiveIndex;
+  }
+  set sampleActiveIndex(v: number) {
+    this.#sampleActiveIndex = v;
+    localStorage.setItem('sampleActiveIndex', JSON.stringify(v));
+  }
+
+  ngOnInit(): void {
+    try {
+      this.#sampleActiveIndex = JSON.parse(
+        localStorage.getItem('sampleActiveIndex') ?? '0',
+      );
+    } catch {}
+  }
 }
 
 interface Sample {
