@@ -11,17 +11,20 @@ import { takeUntil, timer } from 'rxjs';
 @Component({
   selector: 'app-sample-basic',
   template: `
-    <div class="container" lpjNode [animateOn]="flag">
+    <div class="wrapper" lpjNode [animateOn]="flag">
       <div class="content" [class.flag]="flag" lpjNode></div>
     </div>
   `,
   styles: [
     `
-      .container {
-        position: relative;
-        width: 500px;
-        height: 500px;
+      :host {
+        display: block;
+        height: 100%;
         background-color: purple;
+      }
+
+      .wrapper {
+        height: 100%;
       }
 
       .content {

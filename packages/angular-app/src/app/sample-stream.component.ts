@@ -10,17 +10,20 @@ import { BehaviorSubject, takeUntil, timer } from 'rxjs';
 @Component({
   selector: 'app-sample-stream',
   template: `
-    <div class="container" lpjNode [animateOn]="flag$">
+    <div class="wrapper" lpjNode [animateOn]="flag$">
       <div class="content" [class.flag]="flag$ | async" lpjNode></div>
     </div>
   `,
   styles: [
     `
-      .container {
-        position: relative;
-        width: 500px;
-        height: 500px;
-        background-color: blue;
+      :host {
+        display: block;
+        height: 100%;
+        background-color: purple;
+      }
+
+      .wrapper {
+        height: 100%;
       }
 
       .content {

@@ -1,67 +1,88 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import { takeUntil, timer } from 'rxjs';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-sample-shared-element',
   template: `
-    <div class="container" lpjNode [animateOn]="flag">
-      <div class="content" *ngIf="!flag" lpjNode="content"></div>
-      <div class="content flag" *ngIf="flag" lpjNode="content"></div>
+    <div class="container">
+      <div class="tabs" lpjNode [animateOn]="tabActive">
+        <div
+          class="tab"
+          [class.active]="tabActive === tab"
+          *ngFor="let tab of tabs"
+          (click)="tabActive = tab"
+        >
+          <span class="tab-title">{{ tab.title }}</span>
+          <ng-container *ngIf="tabActive === tab">
+            <div class="tab-overlay" lpjNode="overlay"></div>
+            <div class="tab-underline" lpjNode="underline"></div>
+          </ng-container>
+        </div>
+      </div>
     </div>
   `,
   styles: [
     `
-      .container {
-        position: relative;
-        width: 500px;
-        height: 500px;
-        background-color: green;
+      :host {
+        display: flex;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(136, 85, 255);
       }
 
-      .content {
-        position: absolute;
+      .container {
+        width: 400px;
+        height: 300px;
         background-color: white;
+        border-radius: 10px;
       }
-      .content:not(.flag) {
-        top: 100px;
-        left: 100px;
-        width: 100px;
-        height: 100px;
+
+      .tabs {
+        display: flex;
+        padding: 4px;
       }
-      .content.flag {
-        bottom: 100px;
-        right: 100px;
-        width: 200px;
-        height: 150px;
+
+      .tab {
+        position: relative;
+        display: flex;
+        height: 50px;
+        padding: 0 30px;
+        justify-content: center;
+        align-items: center;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        background-color: white;
+        cursor: pointer;
+      }
+
+      .tab-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgb(0 0 0 / 5%);
+        border-radius: inherit;
+        z-index: 1;
+      }
+
+      .tab-underline {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-bottom: 1px solid rgb(136, 85, 255);
+        z-index: 1;
       }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SampleSharedElementComponent implements OnInit, OnDestroy {
-  flag = false;
+export class SampleSharedElementComponent {
+  tabs: Tab[] = [{ title: 'Apple' }, { title: 'Banana' }, { title: 'Orange' }];
+  tabActive = this.tabs[0];
+}
 
-  private destroy$ = new EventEmitter();
-
-  constructor(private changeDetector: ChangeDetectorRef) {}
-
-  ngOnInit(): void {
-    timer(0, 1000)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.flag = !this.flag;
-        this.changeDetector.markForCheck();
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.emit();
-  }
+interface Tab {
+  title: string;
 }

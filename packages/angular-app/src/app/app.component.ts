@@ -8,17 +8,16 @@ import { SampleStreamComponent } from './sample-stream.component';
 @Component({
   selector: 'app-root',
   template: `
-    <main *ngIf="samples[sampleActiveIndex] as sampleCurrent">
+    <div class="container" *ngIf="samples[sampleActiveIndex] as sampleCurrent">
       <h1>{{ sampleCurrent.title }}</h1>
-      <ng-container
-        [ngComponentOutlet]="sampleCurrent.component"
-      ></ng-container>
-    </main>
+      <main class="content">
+        <ng-container
+          [ngComponentOutlet]="sampleCurrent.component"
+        ></ng-container>
+      </main>
+    </div>
 
-    <div
-      class="panel"
-      style="position: absolute; right: 0; top: 0; display: flex; flex-direction: column; align-items: flex-end"
-    >
+    <div class="panel">
       <ul>
         <li *ngFor="let sample of samples; let index = index">
           <button
@@ -46,7 +45,25 @@ import { SampleStreamComponent } from './sample-stream.component';
       </div>
     </div>
   `,
-  styles: [],
+  styles: [
+    `
+      .content {
+        position: relative;
+        width: 800px;
+        height: 500px;
+        border: 1px solid black;
+      }
+
+      .panel {
+        position: absolute;
+        right: 0;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {

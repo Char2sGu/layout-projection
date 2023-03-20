@@ -11,22 +11,20 @@ import { takeUntil, timer } from 'rxjs';
 @Component({
   selector: 'app-sample-border-radius',
   template: `
-    <div
-      class="container"
-      lpjNode
-      [animateOn]="flag"
-      [animationDuration]="1000"
-    >
+    <div class="wrapper" lpjNode [animateOn]="flag" [animationDuration]="1000">
       <div class="content" [class.flag]="flag" lpjNode></div>
     </div>
   `,
   styles: [
     `
-      .container {
-        position: relative;
-        width: 500px;
-        height: 500px;
-        background-color: blueviolet;
+      :host {
+        display: block;
+        height: 100%;
+        background-color: purple;
+      }
+
+      .wrapper {
+        height: 100%;
       }
 
       .content {
