@@ -1,6 +1,6 @@
 import { inject, NgModule } from '@angular/core';
 import {
-  LayoutAnimationEasingParser,
+  LayoutAnimationConfig,
   LayoutBorderRadiusParser,
   LayoutMeasurer,
 } from '@layout-projection/core';
@@ -12,7 +12,7 @@ import { LayoutProjectionNodeDirective } from './layout-projection-node.directiv
   declarations: [LayoutProjectionNodeDirective, LayoutAnimationDirective],
   exports: [LayoutProjectionNodeDirective, LayoutAnimationDirective],
   providers: [
-    LayoutAnimationEasingParser,
+    LayoutAnimationConfig,
     {
       provide: LayoutMeasurer,
       useFactory: () => new LayoutMeasurer(inject(LayoutBorderRadiusParser)),

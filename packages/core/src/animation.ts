@@ -19,30 +19,28 @@ import { Node } from './node.js';
 import { NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
 
 export class LayoutAnimator {
-  protected animationStopper?: () => void;
+  protected animationStoppers = new WeakMap<Node, () => void>();
 
   constructor(
-    public root: Node,
     protected measurer: NodeMeasurer,
     protected easingParser: LayoutAnimationEasingParser,
   ) {}
 
-  async animate(
-    from: NodeSnapshotMap,
-    duration: number,
-    easing: string | Easing,
-  ): Promise<void> {
+  async animate(config: LayoutAnimationConfig): Promise<void> {
     return new Promise((resolve) => {
-      if (this.animationStopper) {
-        this.animationStopper();
-        this.animationStopper = undefined;
-      }
+      const { root, from: snapshots, duration, easing } = config;
 
-      this.measureTree();
-      const animationConfigMap = this.getAnimationConfigMap(from);
+      this.animationStoppers.get(root)?.();
+
+      this.measureTree(root);
+      const animationConfigMap = this.getAnimationConfigMap(root, snapshots);
 
       const projectFrame = (progress: number) =>
-        this.projectFrame(animationConfigMap, progress);
+        root.traverse(
+          (node) =>
+            this.projectNodeForFrame(node, animationConfigMap, progress),
+          { includeSelf: true },
+        );
 
       projectFrame(0);
       const { stop } = animate({
@@ -52,38 +50,31 @@ export class LayoutAnimator {
         ease: this.easingParser.coerceEasing(easing),
         onUpdate: projectFrame,
         onComplete: () => {
-          this.root.traverse((node) => node.reset(), { includeSelf: true });
+          root.traverse((node) => node.reset(), { includeSelf: true });
           resolve();
         },
         onStop: resolve,
       });
-      this.animationStopper = stop;
+
+      this.animationStoppers.set(root, stop);
     });
   }
 
-  protected projectFrame(
-    configMap: NodeAnimationConfigMap,
-    progress: number,
-  ): void {
-    this.root.traverse(
-      (node) => {
-        const config = configMap.get(node.id);
-        if (!config) throw new Error('Unknown node');
-        const boundingBox = this.getFrameBoundingBox(config, progress);
-        const borderRadiuses = this.getFrameBorderRadiuses(config, progress);
-        node.borderRadiuses = borderRadiuses;
-        node.project(boundingBox);
-      },
-      { includeSelf: true },
-    );
+  protected measureTree(root: Node): void {
+    // We have to perform the dom-write actions and dom-read actions separately
+    // to avoid layout thrashing.
+    // https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing
+    root.traverse((node) => node.reset(), { includeSelf: true });
+    root.traverse((node) => node.measure(), { includeSelf: true });
   }
 
   protected getAnimationConfigMap(
+    root: Node,
     snapshots: NodeSnapshotMap,
   ): NodeAnimationConfigMap {
     const map = new NodeAnimationConfigMap();
 
-    this.root.traverse(
+    root.traverse(
       (node) => {
         if (!node.measured()) throw new Error('Unknown node');
 
@@ -94,7 +85,7 @@ export class LayoutAnimator {
 
         const boundingBoxFrom =
           snapshot?.boundingBox ??
-          this.estimateStartingBoundingBox(snapshots, node) ??
+          this.estimateStartingBoundingBox(root, node, snapshots) ??
           node.boundingBox;
         const boundingBoxTo = node.boundingBox;
 
@@ -116,15 +107,55 @@ export class LayoutAnimator {
     return map;
   }
 
-  protected measureTree(): void {
-    // We have to perform the dom-write actions and dom-read actions separately
-    // to avoid layout thrashing.
-    // https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing
-    this.root.traverse((node) => node.reset(), { includeSelf: true });
-    this.root.traverse((node) => node.measure(), { includeSelf: true });
+  protected estimateStartingBoundingBox(
+    root: Node,
+    node: Node,
+    snapshots: NodeSnapshotMap,
+  ): BoundingBox | undefined {
+    if (!node.measured()) throw new Error('Unknown node');
+
+    let ancestor: Node = node;
+    let ancestorSnapshot: NodeSnapshot | undefined = undefined;
+    while ((ancestorSnapshot = snapshots.get(ancestor.id)) === undefined) {
+      if (!ancestor.parent) return;
+      ancestor = ancestor.parent;
+      if (ancestor === root) return;
+    }
+    if (!ancestor.measured()) throw new Error('Unknown ancestor');
+
+    const transform = ancestor.calculateTransform(ancestorSnapshot.boundingBox);
+    const scale = transform.x.scale;
+
+    return new BoundingBox({
+      top:
+        ancestorSnapshot.boundingBox.top -
+        (ancestor.boundingBox.top - node.boundingBox.top) * scale,
+      left:
+        ancestorSnapshot.boundingBox.left -
+        (ancestor.boundingBox.left - node.boundingBox.left) * scale,
+      right:
+        ancestorSnapshot.boundingBox.right -
+        (ancestor.boundingBox.right - node.boundingBox.right) * scale,
+      bottom:
+        ancestorSnapshot.boundingBox.top -
+        (ancestor.boundingBox.top - node.boundingBox.bottom) * scale,
+    });
   }
 
-  protected getFrameBoundingBox(
+  protected projectNodeForFrame(
+    node: Node,
+    configMap: NodeAnimationConfigMap,
+    progress: number,
+  ): void {
+    const config = configMap.get(node.id);
+    if (!config) throw new Error('Unknown node');
+    const boundingBox = this.getNodeBoundingBoxForFrame(config, progress);
+    const borderRadiuses = this.getNodeBorderRadiusesForFrame(config, progress);
+    node.borderRadiuses = borderRadiuses;
+    node.project(boundingBox);
+  }
+
+  protected getNodeBoundingBoxForFrame(
     config: NodeAnimationConfig,
     progress: number,
   ): BoundingBox {
@@ -138,7 +169,7 @@ export class LayoutAnimator {
     });
   }
 
-  protected getFrameBorderRadiuses(
+  protected getNodeBorderRadiusesForFrame(
     config: NodeAnimationConfig,
     progress: number,
   ): BorderRadiusConfig {
@@ -161,40 +192,13 @@ export class LayoutAnimator {
       bottomRight: mixRadius(from.bottomRight, to.bottomRight, progress),
     };
   }
+}
 
-  protected estimateStartingBoundingBox(
-    snapshots: NodeSnapshotMap,
-    node: Node,
-  ): BoundingBox | undefined {
-    if (!node.measured()) throw new Error('Unknown node');
-
-    let ancestor: Node = node;
-    let ancestorSnapshot: NodeSnapshot | undefined = undefined;
-    while ((ancestorSnapshot = snapshots.get(ancestor.id)) === undefined) {
-      if (!ancestor.parent) return;
-      ancestor = ancestor.parent;
-      if (ancestor === this.root) return;
-    }
-    if (!ancestor.measured()) throw new Error('Unknown ancestor');
-
-    const transform = ancestor.calculateTransform(ancestorSnapshot.boundingBox);
-    const scale = transform.x.scale;
-
-    return new BoundingBox({
-      top:
-        ancestorSnapshot.boundingBox.top -
-        (ancestor.boundingBox.top - node.boundingBox.top) * scale,
-      left:
-        ancestorSnapshot.boundingBox.left -
-        (ancestor.boundingBox.left - node.boundingBox.left) * scale,
-      right:
-        ancestorSnapshot.boundingBox.right -
-        (ancestor.boundingBox.right - node.boundingBox.right) * scale,
-      bottom:
-        ancestorSnapshot.boundingBox.top -
-        (ancestor.boundingBox.top - node.boundingBox.bottom) * scale,
-    });
-  }
+export interface LayoutAnimationConfig {
+  root: Node;
+  from: NodeSnapshotMap;
+  duration: number;
+  easing: string | Easing;
 }
 
 export class LayoutAnimationEasingParser {

@@ -1,6 +1,6 @@
 import { Directive, Input, OnInit, Self } from '@angular/core';
 import {
-  LayoutAnimationEasingParser,
+  LayoutAnimationConfig,
   LayoutAnimator,
   LayoutMeasurer,
   LayoutProjectionNode,
@@ -48,7 +48,7 @@ export class LayoutAnimationDirective extends LayoutAnimator implements OnInit {
   constructor(
     @Self() node: LayoutProjectionNode,
     measurer: LayoutMeasurer,
-    easingParser: LayoutAnimationEasingParser,
+    easingParser: LayoutAnimationConfig,
   ) {
     super(node, measurer, easingParser);
   }
