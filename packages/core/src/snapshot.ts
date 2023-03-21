@@ -1,6 +1,6 @@
 import { LayoutBorderRadiuses, LayoutBoundingBox } from './core.js';
-import { LayoutMeasurer } from './layout-measurement.js';
-import { LayoutProjectionNode } from './layout-projection.js';
+import { LayoutMeasurer } from './measurement.js';
+import { LayoutProjectionNode } from './projection.js';
 
 export class LayoutSnapper {
   constructor(protected measurer: LayoutMeasurer) {}

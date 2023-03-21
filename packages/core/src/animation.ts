@@ -14,9 +14,9 @@ import {
   LayoutBorderRadiuses,
   LayoutBoundingBox,
 } from './core.js';
-import { LayoutMeasurer } from './layout-measurement.js';
-import { LayoutProjectionNode } from './layout-projection.js';
-import { LayoutNodeSnapshot, LayoutSnapshot } from './layout-snapshot.js';
+import { LayoutMeasurer } from './measurement.js';
+import { LayoutProjectionNode } from './projection.js';
+import { LayoutNodeSnapshot, LayoutSnapshot } from './snapshot.js';
 
 export class LayoutAnimator {
   protected animationStopper?: () => void;

@@ -5,7 +5,7 @@ import {
   LayoutBoundingBoxAxisTransform,
   LayoutBoundingBoxTransform,
 } from './core.js';
-import { LayoutMeasurer } from './layout-measurement.js';
+import { LayoutMeasurer } from './measurement.js';
 
 /**
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
