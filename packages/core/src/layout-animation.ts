@@ -16,9 +16,9 @@ import {
 } from './core.js';
 import { LayoutMeasurer } from './layout-measurement.js';
 import { LayoutProjectionNode } from './layout-projection.js';
+import { LayoutNodeSnapshot, LayoutSnapshot } from './layout-snapshot.js';
 
 export class LayoutAnimator {
-  protected snapshots = new NodeLayoutSnapshotMap();
   protected animationStopper?: () => void;
 
   constructor(
@@ -27,43 +27,21 @@ export class LayoutAnimator {
     protected easingParser: LayoutAnimationEasingParser,
   ) {}
 
-  snapshot(): void {
-    this.snapshots.clear();
-
-    this.root.traverse(
-      (node) => {
-        const boundingBox = this.measurer.measureBoundingBox(node.element);
-        const borderRadiuses = this.measurer.measureBorderRadiuses(
-          node.element,
-          boundingBox,
-        );
-
-        if (this.snapshots.has(node.id)) {
-          const msg = `Multiple nodes with same id "${node.id}" belonging to a single layout animator`;
-          throw new Error(msg);
-        }
-
-        this.snapshots.set(node.id, {
-          element: node.element,
-          boundingBox,
-          borderRadiuses,
-        });
-      },
-      { includeSelf: true },
-    );
-  }
-
-  async animate(duration: number, easing: string | Easing): Promise<void> {
+  async animate(
+    from: LayoutSnapshot,
+    duration: number,
+    easing: string | Easing,
+  ): Promise<void> {
     return new Promise((resolve) => {
       if (this.animationStopper) {
         this.animationStopper();
         this.animationStopper = undefined;
       }
 
-      const animationContextMap = this.getAnimationContextMap();
+      const animationConfigMap = this.getAnimationConfigMap(from);
 
       const projectFrame = (progress: number) =>
-        this.projectFrame(animationContextMap, progress);
+        this.projectFrame(animationConfigMap, progress);
 
       projectFrame(0);
       const { stop } = animate({
@@ -83,15 +61,15 @@ export class LayoutAnimator {
   }
 
   protected projectFrame(
-    contextMap: NodeAnimationContextMap,
+    configMap: NodeAnimationConfigMap,
     progress: number,
   ): void {
     this.root.traverse(
       (node) => {
-        const context = contextMap.get(node.id);
-        if (!context) throw new Error('Unknown node');
-        const boundingBox = this.getFrameBoundingBox(context, progress);
-        const borderRadiuses = this.getFrameBorderRadiuses(context, progress);
+        const config = configMap.get(node.id);
+        if (!config) throw new Error('Unknown node');
+        const boundingBox = this.getFrameBoundingBox(config, progress);
+        const borderRadiuses = this.getFrameBorderRadiuses(config, progress);
         node.calculate(boundingBox);
         node.borderRadiuses = borderRadiuses;
       },
@@ -101,29 +79,31 @@ export class LayoutAnimator {
     this.root.project();
   }
 
-  protected getAnimationContextMap(): NodeAnimationContextMap {
+  protected getAnimationConfigMap(
+    layoutSnapshot: LayoutSnapshot,
+  ): NodeAnimationConfigMap {
     this.root.measure();
 
-    const map = new NodeAnimationContextMap();
+    const map = new NodeAnimationConfigMap();
 
     this.root.traverse(
       (node) => {
         if (!node.boundingBox || !node.borderRadiuses)
           throw new Error('Unknown node');
 
-        const snapshot = this.snapshots.get(node.id);
+        const nodeSnapshot = layoutSnapshot.get(node.id);
         // This is the old node instance in a shared-element layout animation,
-        // it should share the same animation context with the new instance.
-        if (map.has(node.id) && node.element === snapshot?.element) return;
+        // it should share the same animation config with the new instance.
+        if (map.has(node.id) && node.element === nodeSnapshot?.element) return;
 
         const boundingBoxFrom =
-          snapshot?.boundingBox ??
-          this.estimateStartingBoundingBox(node) ??
+          nodeSnapshot?.boundingBox ??
+          this.estimateStartingBoundingBox(layoutSnapshot, node) ??
           node.boundingBox;
         const boundingBoxTo = node.boundingBox;
 
         const borderRadiusesFrom =
-          snapshot?.borderRadiuses ??
+          nodeSnapshot?.borderRadiuses ??
           this.measurer.measureBorderRadiuses(node.element, node.boundingBox);
         const borderRadiusesTo = node.borderRadiuses;
 
@@ -141,11 +121,11 @@ export class LayoutAnimator {
   }
 
   protected getFrameBoundingBox(
-    context: NodeAnimationContext,
+    config: NodeAnimationConfig,
     progress: number,
   ): LayoutBoundingBox {
-    const from = context.boundingBoxFrom;
-    const to = context.boundingBoxTo;
+    const from = config.boundingBoxFrom;
+    const to = config.boundingBoxTo;
     return new LayoutBoundingBox({
       top: mix(from.top, to.top, progress),
       left: mix(from.left, to.left, progress),
@@ -155,11 +135,11 @@ export class LayoutAnimator {
   }
 
   protected getFrameBorderRadiuses(
-    context: NodeAnimationContext,
+    config: NodeAnimationConfig,
     progress: number,
   ): LayoutBorderRadiuses {
-    const from = context.borderRadiusesFrom;
-    const to = context.borderRadiusesTo;
+    const from = config.borderRadiusesFrom;
+    const to = config.borderRadiusesTo;
 
     const mixRadius = (
       from: LayoutBorderRadius,
@@ -179,13 +159,14 @@ export class LayoutAnimator {
   }
 
   protected estimateStartingBoundingBox(
+    layoutSnapshot: LayoutSnapshot,
     node: LayoutProjectionNode,
   ): LayoutBoundingBox | undefined {
     if (!node.boundingBox) throw new Error('Unknown node');
 
     let ancestor = node;
-    let ancestorSnapshot: NodeLayoutSnapshot | undefined = undefined;
-    while ((ancestorSnapshot = this.snapshots.get(ancestor.id)) === undefined) {
+    let ancestorSnapshot: LayoutNodeSnapshot | undefined = undefined;
+    while ((ancestorSnapshot = layoutSnapshot.get(ancestor.id)) === undefined) {
       if (!ancestor.parent) return;
       ancestor = ancestor.parent;
       if (ancestor === this.root) return;
@@ -243,23 +224,12 @@ export class LayoutAnimationEasingParser {
   }
 }
 
-class NodeLayoutSnapshotMap extends Map<
+class NodeAnimationConfigMap extends Map<
   LayoutProjectionNode['id'],
-  NodeLayoutSnapshot
+  NodeAnimationConfig
 > {}
 
-interface NodeLayoutSnapshot {
-  element: HTMLElement;
-  boundingBox: LayoutBoundingBox;
-  borderRadiuses: LayoutBorderRadiuses;
-}
-
-class NodeAnimationContextMap extends Map<
-  LayoutProjectionNode['id'],
-  NodeAnimationContext
-> {}
-
-interface NodeAnimationContext {
+interface NodeAnimationConfig {
   boundingBoxFrom: LayoutBoundingBox;
   boundingBoxTo: LayoutBoundingBox;
   borderRadiusesFrom: LayoutBorderRadiuses;
