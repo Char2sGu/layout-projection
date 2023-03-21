@@ -47,7 +47,7 @@ export class LayoutBoundingBoxAxisTransform {
   apply(value: number): number {
     const distanceFromOrigin = value - this.origin;
     const scaled = this.origin + distanceFromOrigin * this.scale;
-    const translated = scaled + this.translate * this.scale;
+    const translated = scaled + this.translate;
     return translated;
   }
 }
