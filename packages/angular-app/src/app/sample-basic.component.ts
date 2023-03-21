@@ -44,6 +44,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       .flag .box {
         width: 30%;
         height: 50%;
+        border-radius: 30%;
       }
 
       .circle {

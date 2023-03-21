@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, Type } from '@angular/core';
 
 import { SampleBasicComponent } from './sample-basic.component';
-import { SampleBorderRadiusComponent } from './sample-border-radius.component';
 import { SampleSharedElementComponent } from './sample-shared-element.component';
-import { SampleStreamComponent } from './sample-stream.component';
 
 @Component({
   selector: 'app-root',
@@ -68,9 +66,7 @@ import { SampleStreamComponent } from './sample-stream.component';
 })
 export class AppComponent {
   samples: Sample[] = [
-    { title: 'Basic (Broken)', component: SampleBasicComponent },
-    { title: 'Stream Input', component: SampleStreamComponent },
-    { title: 'Border Radius', component: SampleBorderRadiusComponent },
+    { title: 'Basic', component: SampleBasicComponent },
     { title: 'Shared Element', component: SampleSharedElementComponent },
   ];
 
