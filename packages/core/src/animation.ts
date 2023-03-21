@@ -82,7 +82,7 @@ export class LayoutAnimator {
   protected getAnimationConfigMap(
     snapshots: NodeSnapshotMap,
   ): NodeAnimationConfigMap {
-    this.root.measure();
+    this.measureTree();
 
     const map = new NodeAnimationConfigMap();
 
@@ -118,6 +118,14 @@ export class LayoutAnimator {
     );
 
     return map;
+  }
+
+  protected measureTree(): void {
+    // We have to perform the dom-write actions and dom-read actions separately
+    // to avoid layout thrashing.
+    // https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing
+    this.root.traverse((node) => node.reset(), { includeSelf: true });
+    this.root.traverse((node) => node.measure(), { includeSelf: true });
   }
 
   protected getFrameBoundingBox(

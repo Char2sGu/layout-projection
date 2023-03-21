@@ -78,13 +78,6 @@ export class Node {
   }
 
   measure(): void {
-    this.reset();
-
-    // We have to perform the dom-write actions and dom-read actions separately
-    // to avoid layout thrashing.
-    // https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing
-    this.traverse((child) => child.measure());
-
     this.boundingBox = this.measurer.measureBoundingBox(this.element);
     this.borderRadiuses = this.measurer.measureBorderRadiuses(
       this.element,
