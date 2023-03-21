@@ -70,7 +70,7 @@ export class LayoutAnimator {
         if (!config) throw new Error('Unknown node');
         const boundingBox = this.getFrameBoundingBox(config, progress);
         const borderRadiuses = this.getFrameBorderRadiuses(config, progress);
-        node.calculate(boundingBox);
+        node.boundingBoxTransform = node.calculateTransform(boundingBox);
         node.borderRadiuses = borderRadiuses;
       },
       { includeSelf: true },
@@ -181,10 +181,7 @@ export class LayoutAnimator {
     }
     if (!ancestor.boundingBox) throw new Error('Unknown ancestor');
 
-    /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    ancestor.calculate(ancestorSnapshot.boundingBox);
-    const transform = ancestor.boundingBoxTransform!;
-    /* eslint-enable @typescript-eslint/no-non-null-assertion */
+    const transform = ancestor.calculateTransform(ancestorSnapshot.boundingBox);
     const scale = transform.x.scale;
 
     return new BoundingBox({

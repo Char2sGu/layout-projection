@@ -85,14 +85,14 @@ export class Node {
     );
   }
 
-  calculate(destBoundingBox: BoundingBox): void {
+  calculateTransform(destBoundingBox: BoundingBox): BoundingBoxTransform {
     if (!this.boundingBox) throw new Error('Missing bounding box');
 
-    const currBoundingBox = this.calibrate(this.boundingBox);
+    const currBoundingBox = this.getActualBoundingBox(this.boundingBox);
     const currMidpoint = currBoundingBox.midpoint();
     const destMidpoint = destBoundingBox.midpoint();
 
-    this.boundingBoxTransform = {
+    const transform: BoundingBoxTransform = {
       x: new BoundingBoxAxisTransform({
         origin: currMidpoint.x,
         scale: destBoundingBox.width() / currBoundingBox.width(),
@@ -106,13 +106,13 @@ export class Node {
     };
 
     // edge case: invisible element (width/height is 0)
-    if (isNaN(this.boundingBoxTransform.x.scale))
-      this.boundingBoxTransform.x.scale = 1;
-    if (isNaN(this.boundingBoxTransform.y.scale))
-      this.boundingBoxTransform.y.scale = 1;
+    if (isNaN(transform.x.scale)) transform.x.scale = 1;
+    if (isNaN(transform.y.scale)) transform.y.scale = 1;
+
+    return transform;
   }
 
-  calibrate(boundingBox: BoundingBox): BoundingBox {
+  getActualBoundingBox(boundingBox: BoundingBox): BoundingBox {
     for (const ancestor of this.track()) {
       if (!ancestor.boundingBox || !ancestor.boundingBoxTransform) continue;
       const transform = ancestor.boundingBoxTransform;
