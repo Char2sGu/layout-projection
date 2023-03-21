@@ -1,5 +1,5 @@
 import { BorderRadiusConfig, BoundingBox } from './core.js';
-import { NodeMeasurer } from './measurement.js';
+import { NodeMeasurer } from './measure.js';
 import { Node } from './node.js';
 
 export class NodeSnapper {

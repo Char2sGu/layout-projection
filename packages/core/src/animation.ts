@@ -14,7 +14,7 @@ import {
   BorderRadiusCornerConfig,
   BoundingBox,
 } from './core.js';
-import { NodeMeasurer } from './measurement.js';
+import { NodeMeasurer } from './measure.js';
 import { Node } from './node.js';
 import { NodeSnapper, NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
 
