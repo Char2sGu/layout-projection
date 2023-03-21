@@ -62,6 +62,15 @@ export class Node {
       child.traverse(callback, { ...options, includeSelf: true });
     });
   }
+  track(): NodeTreePath {
+    const path = [];
+    let ancestor = this.parent;
+    while (ancestor) {
+      path.unshift(ancestor);
+      ancestor = ancestor.parent;
+    }
+    return path;
+  }
 
   reset(): void {
     this.element.style.transform = '';
@@ -111,7 +120,7 @@ export class Node {
   }
 
   calibrate(boundingBox: BoundingBox): BoundingBox {
-    for (const ancestor of this.getAncestors()) {
+    for (const ancestor of this.track()) {
       if (!ancestor.boundingBox || !ancestor.boundingBoxTransform) continue;
       const transform = ancestor.boundingBoxTransform;
       boundingBox = new BoundingBox({
@@ -129,7 +138,7 @@ export class Node {
     if (!this.borderRadiuses) throw new Error('Missing border radiuses');
 
     const ancestorTotalScale = { x: 1, y: 1 };
-    const ancestors = this.getAncestors();
+    const ancestors = this.track();
     for (const ancestor of ancestors) {
       if (!ancestor.boundingBoxTransform) continue;
       ancestorTotalScale.x *= ancestor.boundingBoxTransform.x.scale;
@@ -161,19 +170,11 @@ export class Node {
 
     this.traverse((child) => child.project());
   }
-
-  protected getAncestors(): Node[] {
-    const ancestors = [];
-    let ancestor = this.parent;
-    while (ancestor) {
-      ancestors.unshift(ancestor);
-      ancestor = ancestor.parent;
-    }
-    return ancestors;
-  }
 }
 
 export interface NodeTraverseOptions {
   includeSelf?: boolean;
   includeDeactivated?: boolean;
 }
+
+export class NodeTreePath extends Array<Node> {}
