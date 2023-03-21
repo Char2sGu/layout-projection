@@ -1,8 +1,10 @@
 import { inject, NgModule } from '@angular/core';
 import {
-  LayoutAnimationConfig,
-  LayoutBorderRadiusParser,
-  LayoutMeasurer,
+  BorderRadiusStyleParser,
+  LayoutAnimationEasingParser,
+  LayoutAnimator,
+  NodeMeasurer,
+  NodeSnapper,
 } from '@layout-projection/core';
 
 import { LayoutAnimationDirective } from './layout-animation.directive';
@@ -12,12 +14,30 @@ import { LayoutProjectionNodeDirective } from './layout-projection-node.directiv
   declarations: [LayoutProjectionNodeDirective, LayoutAnimationDirective],
   exports: [LayoutProjectionNodeDirective, LayoutAnimationDirective],
   providers: [
-    LayoutAnimationConfig,
     {
-      provide: LayoutMeasurer,
-      useFactory: () => new LayoutMeasurer(inject(LayoutBorderRadiusParser)),
+      provide: LayoutAnimator,
+      useFactory: () =>
+        new LayoutAnimator(
+          inject(NodeMeasurer),
+          inject(LayoutAnimationEasingParser),
+        ),
     },
-    LayoutBorderRadiusParser,
+    {
+      provide: LayoutAnimationEasingParser,
+      useFactory: () => new LayoutAnimationEasingParser(),
+    },
+    {
+      provide: NodeMeasurer,
+      useFactory: () => new NodeMeasurer(inject(BorderRadiusStyleParser)),
+    },
+    {
+      provide: NodeSnapper,
+      useFactory: () => new NodeSnapper(inject(NodeMeasurer)),
+    },
+    {
+      provide: BorderRadiusStyleParser,
+      useFactory: () => new BorderRadiusStyleParser(),
+    },
   ],
 })
 export class LayoutProjectionModule {}

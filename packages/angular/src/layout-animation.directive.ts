@@ -1,10 +1,5 @@
 import { Directive, Input, OnInit, Self } from '@angular/core';
-import {
-  LayoutAnimationConfig,
-  LayoutAnimator,
-  LayoutMeasurer,
-  LayoutProjectionNode,
-} from '@layout-projection/core';
+import { LayoutAnimator, Node, NodeSnapper } from '@layout-projection/core';
 import { Easing } from 'popmotion';
 import {
   animationFrames,
@@ -12,6 +7,7 @@ import {
   EMPTY,
   exhaustAll,
   first,
+  map,
   Observable,
   of,
   skip,
@@ -22,11 +18,8 @@ import {
 
 @Directive({
   selector: '[lpjNode][lpjAnimation],[lpjNode][animateOn]',
-  providers: [
-    { provide: LayoutAnimator, useExisting: LayoutAnimationDirective },
-  ],
 })
-export class LayoutAnimationDirective extends LayoutAnimator implements OnInit {
+export class LayoutAnimationDirective implements OnInit {
   /**
    * Accepts:
    * - A stream that informs on view model updates where DOM updates that should
@@ -46,28 +39,32 @@ export class LayoutAnimationDirective extends LayoutAnimator implements OnInit {
   @Input() animationEasing: string | Easing = 'ease-in-out';
 
   constructor(
-    @Self() node: LayoutProjectionNode,
-    measurer: LayoutMeasurer,
-    easingParser: LayoutAnimationConfig,
-  ) {
-    super(node, measurer, easingParser);
-  }
+    @Self() private node: Node,
+    private animator: LayoutAnimator,
+    private snapper: NodeSnapper,
+  ) {}
 
   ngOnInit(): void {
     this.animateOn$
       .pipe(
         exhaustAll(),
         skip(1),
-        tap(() => this.snapshot()),
-        switchMap(() => animationFrames().pipe(first())),
+        map(() => this.snapper.snapshotTree(this.node)),
+        switchMap((snapshots) =>
+          animationFrames().pipe(
+            first(),
+            map(() => snapshots),
+          ),
+        ),
+        tap((snapshots) =>
+          this.animator.animate({
+            root: this.node,
+            from: snapshots,
+            duration: this.animationDuration,
+            easing: this.animationEasing,
+          }),
+        ),
       )
-      .subscribe(() => this.animate());
-  }
-
-  override async animate(
-    duration: number = this.animationDuration,
-    easing: string | Easing = this.animationEasing,
-  ): Promise<void> {
-    return super.animate(duration, easing);
+      .subscribe();
   }
 }

@@ -16,7 +16,7 @@ import {
 } from './core.js';
 import { NodeMeasurer } from './measurement.js';
 import { Node } from './node.js';
-import { NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
+import { NodeSnapper, NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
 
 export class LayoutAnimator {
   protected animationStoppers = new WeakMap<Node, () => void>();
@@ -235,4 +235,29 @@ interface NodeAnimationConfig {
   boundingBoxTo: BoundingBox;
   borderRadiusesFrom: BorderRadiusConfig;
   borderRadiusesTo: BorderRadiusConfig;
+}
+
+export class LayoutAnimationService {
+  protected snapshots?: NodeSnapshotMap;
+
+  constructor(
+    public root: Node,
+    protected animator: LayoutAnimator,
+    protected snapper: NodeSnapper,
+  ) {}
+
+  snapshot(): void {
+    this.snapshots = this.snapper.snapshotTree(this.root);
+  }
+
+  async animate(
+    config: Pick<LayoutAnimationConfig, 'duration' | 'easing'>,
+  ): Promise<void> {
+    if (!this.snapshots) throw new Error('Missing snapshots');
+    return this.animator.animate({
+      ...config,
+      root: this.root,
+      from: this.snapshots,
+    });
+  }
 }
