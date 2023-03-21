@@ -32,13 +32,12 @@ export class LayoutAnimator {
 
       this.animationStoppers.get(root)?.();
 
-      this.measureTree(root);
-      const animationConfigMap = this.getAnimationConfigMap(root, snapshots);
+      this.initialize(root);
+      const configs = this.getAnimationConfigMap(root, snapshots);
 
       const projectFrame = (progress: number) =>
         root.traverse(
-          (node) =>
-            this.projectNodeForFrame(node, animationConfigMap, progress),
+          (node) => this.projectNodeForFrame(node, configs, progress),
           { includeSelf: true },
         );
 
@@ -60,7 +59,7 @@ export class LayoutAnimator {
     });
   }
 
-  protected measureTree(root: Node): void {
+  protected initialize(root: Node): void {
     // We have to perform the dom-write actions and dom-read actions separately
     // to avoid layout thrashing.
     // https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing
