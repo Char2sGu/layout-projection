@@ -28,17 +28,17 @@ export class BoundingBox {
   }
 }
 
-export interface BoundingBoxTransform {
-  x: BoundingBoxAxisTransform;
-  y: BoundingBoxAxisTransform;
+export interface TransformConfig {
+  x: TransformAxisConfig;
+  y: TransformAxisConfig;
 }
 
-export class BoundingBoxAxisTransform {
+export class TransformAxisConfig {
   origin: number;
   scale: number;
   translate: number;
 
-  constructor(data: Omit<BoundingBoxAxisTransform, 'apply'>) {
+  constructor(data: Omit<TransformAxisConfig, 'apply'>) {
     this.origin = data.origin;
     this.scale = data.scale;
     this.translate = data.translate;

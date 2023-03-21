@@ -2,8 +2,8 @@ import {
   BorderRadiusConfig,
   BorderRadiusCornerConfig,
   BoundingBox,
-  BoundingBoxAxisTransform,
-  BoundingBoxTransform,
+  TransformAxisConfig,
+  TransformConfig,
 } from './core.js';
 import { NodeMeasurer } from './measurement.js';
 
@@ -21,9 +21,8 @@ export class Node {
   children = new Set<Node>();
 
   boundingBox?: BoundingBox;
-  boundingBoxTransform?: BoundingBoxTransform;
-
   borderRadiuses?: BorderRadiusConfig;
+  transform?: TransformConfig;
 
   constructor(public element: HTMLElement, protected measurer: NodeMeasurer) {}
 
@@ -85,20 +84,34 @@ export class Node {
     );
   }
 
-  calculateTransform(destBoundingBox: BoundingBox): BoundingBoxTransform {
+  getActualBoundingBox(): BoundingBox {
     if (!this.boundingBox) throw new Error('Missing bounding box');
+    let boundingBox = this.boundingBox;
+    for (const ancestor of this.track()) {
+      if (!ancestor.boundingBox || !ancestor.transform) continue;
+      const transform = ancestor.transform;
+      boundingBox = new BoundingBox({
+        top: transform.y.apply(boundingBox.top),
+        left: transform.x.apply(boundingBox.left),
+        right: transform.x.apply(boundingBox.right),
+        bottom: transform.y.apply(boundingBox.bottom),
+      });
+    }
+    return boundingBox;
+  }
 
-    const currBoundingBox = this.getActualBoundingBox(this.boundingBox);
+  calculateTransform(destBoundingBox: BoundingBox): TransformConfig {
+    const currBoundingBox = this.getActualBoundingBox();
     const currMidpoint = currBoundingBox.midpoint();
     const destMidpoint = destBoundingBox.midpoint();
 
-    const transform: BoundingBoxTransform = {
-      x: new BoundingBoxAxisTransform({
+    const transform: TransformConfig = {
+      x: new TransformAxisConfig({
         origin: currMidpoint.x,
         scale: destBoundingBox.width() / currBoundingBox.width(),
         translate: destMidpoint.x - currMidpoint.x,
       }),
-      y: new BoundingBoxAxisTransform({
+      y: new TransformAxisConfig({
         origin: currMidpoint.y,
         scale: destBoundingBox.height() / currBoundingBox.height(),
         translate: destMidpoint.y - currMidpoint.y,
@@ -112,35 +125,21 @@ export class Node {
     return transform;
   }
 
-  getActualBoundingBox(boundingBox: BoundingBox): BoundingBox {
-    for (const ancestor of this.track()) {
-      if (!ancestor.boundingBox || !ancestor.boundingBoxTransform) continue;
-      const transform = ancestor.boundingBoxTransform;
-      boundingBox = new BoundingBox({
-        top: transform.y.apply(boundingBox.top),
-        left: transform.x.apply(boundingBox.left),
-        right: transform.x.apply(boundingBox.right),
-        bottom: transform.y.apply(boundingBox.bottom),
-      });
-    }
-    return boundingBox;
-  }
-
   project(): void {
-    if (!this.boundingBoxTransform) throw new Error('Missing transform');
+    if (!this.transform) throw new Error('Missing transform');
     if (!this.borderRadiuses) throw new Error('Missing border radiuses');
 
     const ancestorTotalScale = { x: 1, y: 1 };
     const ancestors = this.track();
     for (const ancestor of ancestors) {
-      if (!ancestor.boundingBoxTransform) continue;
-      ancestorTotalScale.x *= ancestor.boundingBoxTransform.x.scale;
-      ancestorTotalScale.y *= ancestor.boundingBoxTransform.y.scale;
+      if (!ancestor.transform) continue;
+      ancestorTotalScale.x *= ancestor.transform.x.scale;
+      ancestorTotalScale.y *= ancestor.transform.y.scale;
     }
 
     const style = this.element.style;
 
-    const transform = this.boundingBoxTransform;
+    const transform = this.transform;
     const translateX = transform.x.translate / ancestorTotalScale.x;
     const translateY = transform.y.translate / ancestorTotalScale.y;
     style.transform = [
@@ -149,8 +148,8 @@ export class Node {
     ].join(' ');
 
     const totalScale = {
-      x: ancestorTotalScale.x * this.boundingBoxTransform.x.scale,
-      y: ancestorTotalScale.y * this.boundingBoxTransform.y.scale,
+      x: ancestorTotalScale.x * this.transform.x.scale,
+      y: ancestorTotalScale.y * this.transform.y.scale,
     };
 
     const radiuses = this.borderRadiuses;

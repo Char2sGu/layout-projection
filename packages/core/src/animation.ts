@@ -70,7 +70,7 @@ export class LayoutAnimator {
         if (!config) throw new Error('Unknown node');
         const boundingBox = this.getFrameBoundingBox(config, progress);
         const borderRadiuses = this.getFrameBorderRadiuses(config, progress);
-        node.boundingBoxTransform = node.calculateTransform(boundingBox);
+        node.transform = node.calculateTransform(boundingBox);
         node.borderRadiuses = borderRadiuses;
       },
       { includeSelf: true },
