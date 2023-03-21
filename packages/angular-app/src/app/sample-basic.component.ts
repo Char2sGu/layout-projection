@@ -1,18 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import { takeUntil, timer } from 'rxjs';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-sample-basic',
   template: `
-    <div class="wrapper" lpjNode [animateOn]="flag">
-      <div class="content" [class.flag]="flag" lpjNode></div>
+    <div class="wrapper" lpjNode [animateOn]="flag" (click)="flag = !flag">
+      <div class="container" [class.flag]="flag">
+        <div class="box" lpjNode>
+          <div class="circle" lpjNode></div>
+        </div>
+      </div>
     </div>
   `,
   styles: [
@@ -27,43 +23,39 @@ import { takeUntil, timer } from 'rxjs';
         height: 100%;
       }
 
-      .content {
-        position: absolute;
+      .container {
+        height: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      .container.flag {
+        justify-content: flex-end;
+      }
+
+      .box {
+        display: flex;
+        width: 50%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        background-color: black;
+      }
+      .flag .box {
+        width: 30%;
+        height: 50%;
+      }
+
+      .circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
         background-color: white;
-      }
-      .content:not(.flag) {
-        top: 100px;
-        left: 100px;
-        width: 100px;
-        height: 100px;
-      }
-      .content.flag {
-        bottom: 100px;
-        right: 100px;
-        width: 200px;
-        height: 150px;
       }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SampleBasicComponent implements OnInit, OnDestroy {
+export class SampleBasicComponent {
   flag = false;
-
-  private destroy$ = new EventEmitter();
-
-  constructor(private changeDetector: ChangeDetectorRef) {}
-
-  ngOnInit(): void {
-    timer(0, 1000)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.flag = !this.flag;
-        this.changeDetector.markForCheck();
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.emit();
-  }
 }
