@@ -1,12 +1,12 @@
 import { mix } from 'popmotion';
 
-export class LayoutBoundingBox {
+export class BoundingBox {
   top: number;
   left: number;
   right: number;
   bottom: number;
 
-  constructor(data: Omit<LayoutBoundingBox, 'width' | 'height' | 'midpoint'>) {
+  constructor(data: Omit<BoundingBox, 'width' | 'height' | 'midpoint'>) {
     this.top = data.top;
     this.left = data.left;
     this.right = data.right;
@@ -28,17 +28,17 @@ export class LayoutBoundingBox {
   }
 }
 
-export interface LayoutBoundingBoxTransform {
-  x: LayoutBoundingBoxAxisTransform;
-  y: LayoutBoundingBoxAxisTransform;
+export interface BoundingBoxTransform {
+  x: BoundingBoxAxisTransform;
+  y: BoundingBoxAxisTransform;
 }
 
-export class LayoutBoundingBoxAxisTransform {
+export class BoundingBoxAxisTransform {
   origin: number;
   scale: number;
   translate: number;
 
-  constructor(data: Omit<LayoutBoundingBoxAxisTransform, 'apply'>) {
+  constructor(data: Omit<BoundingBoxAxisTransform, 'apply'>) {
     this.origin = data.origin;
     this.scale = data.scale;
     this.translate = data.translate;
@@ -52,14 +52,14 @@ export class LayoutBoundingBoxAxisTransform {
   }
 }
 
-export interface LayoutBorderRadiuses {
-  topLeft: LayoutBorderRadius;
-  topRight: LayoutBorderRadius;
-  bottomLeft: LayoutBorderRadius;
-  bottomRight: LayoutBorderRadius;
+export interface BorderRadiusConfig {
+  topLeft: BorderRadiusCornerConfig;
+  topRight: BorderRadiusCornerConfig;
+  bottomLeft: BorderRadiusCornerConfig;
+  bottomRight: BorderRadiusCornerConfig;
 }
 
-export interface LayoutBorderRadius {
+export interface BorderRadiusCornerConfig {
   x: number;
   y: number;
 }

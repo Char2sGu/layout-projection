@@ -1,27 +1,27 @@
 import * as styleUnits from 'style-value-types';
 
 import {
-  LayoutBorderRadius,
-  LayoutBorderRadiuses,
-  LayoutBoundingBox,
+  BorderRadiusConfig,
+  BorderRadiusCornerConfig,
+  BoundingBox,
 } from './core.js';
 
-export class LayoutMeasurer {
-  constructor(protected borderRadiusParser: LayoutBorderRadiusParser) {}
+export class NodeMeasurer {
+  constructor(protected borderRadiusStyleParser: BorderRadiusStyleParser) {}
 
-  measureBoundingBox(element: HTMLElement): LayoutBoundingBox {
-    return new LayoutBoundingBox(element.getBoundingClientRect());
+  measureBoundingBox(element: HTMLElement): BoundingBox {
+    return new BoundingBox(element.getBoundingClientRect());
   }
 
   measureBorderRadiuses(
     element: HTMLElement,
-    boundingBox: LayoutBoundingBox = this.measureBoundingBox(element),
-  ): LayoutBorderRadiuses {
+    boundingBox: BoundingBox = this.measureBoundingBox(element),
+  ): BorderRadiusConfig {
     const style = getComputedStyle(element);
 
-    const parse = (raw: string) =>
-      this.borderRadiusParser.parseBorderRadius(
-        raw,
+    const parse = (style: string) =>
+      this.borderRadiusStyleParser.parse(
+        style,
         boundingBox.width(),
         boundingBox.height(),
       );
@@ -35,24 +35,24 @@ export class LayoutMeasurer {
   }
 }
 
-export class LayoutBorderRadiusParser {
-  parseBorderRadius(
-    raw: string,
+export class BorderRadiusStyleParser {
+  parse(
+    style: string,
     width: number,
     height: number,
-  ): LayoutBorderRadius {
-    if (raw.match(/\d.*?px \d.*?px/u)) {
-      const [x, y] = raw.split(' ').map((value) => parseFloat(value));
+  ): BorderRadiusCornerConfig {
+    if (style.match(/\d.*?px \d.*?px/u)) {
+      const [x, y] = style.split(' ').map((value) => parseFloat(value));
       return { x, y };
     }
-    if (styleUnits.percent.test(raw)) {
-      const value = parseFloat(raw) / 100;
+    if (styleUnits.percent.test(style)) {
+      const value = parseFloat(style) / 100;
       return { x: value * width, y: value * height };
     }
-    if (styleUnits.px.test(raw)) {
-      const value = parseFloat(raw);
+    if (styleUnits.px.test(style)) {
+      const value = parseFloat(style);
       return { x: value, y: value };
     }
-    throw new Error(`Unsupported radius: ${raw}`);
+    throw new Error(`Unsupported radius: ${style}`);
   }
 }

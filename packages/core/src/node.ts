@@ -1,34 +1,31 @@
 import {
-  LayoutBorderRadius,
-  LayoutBorderRadiuses,
-  LayoutBoundingBox,
-  LayoutBoundingBoxAxisTransform,
-  LayoutBoundingBoxTransform,
+  BorderRadiusConfig,
+  BorderRadiusCornerConfig,
+  BoundingBox,
+  BoundingBoxAxisTransform,
+  BoundingBoxTransform,
 } from './core.js';
-import { LayoutMeasurer } from './measurement.js';
+import { NodeMeasurer } from './measurement.js';
 
 /**
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
  * @see https://gist.github.com/TheNightmareX/f5bf72e81d2667f6036e91cf81270ef7 Layout Projection - Matt Perry
  */
-export class LayoutProjectionNode {
+export class Node {
   static idNext = 1;
 
-  id = `anonymous-${LayoutProjectionNode.idNext++}`;
+  id = `anonymous-${Node.idNext++}`;
   activated = false;
 
-  parent?: LayoutProjectionNode;
-  children = new Set<LayoutProjectionNode>();
+  parent?: Node;
+  children = new Set<Node>();
 
-  boundingBox?: LayoutBoundingBox;
-  boundingBoxTransform?: LayoutBoundingBoxTransform;
+  boundingBox?: BoundingBox;
+  boundingBoxTransform?: BoundingBoxTransform;
 
-  borderRadiuses?: LayoutBorderRadiuses;
+  borderRadiuses?: BorderRadiusConfig;
 
-  constructor(
-    public element: HTMLElement,
-    protected measurer: LayoutMeasurer,
-  ) {}
+  constructor(public element: HTMLElement, protected measurer: NodeMeasurer) {}
 
   identifyAs(id: string): void {
     this.id = id;
@@ -41,7 +38,7 @@ export class LayoutProjectionNode {
     this.activated = false;
   }
 
-  attach(parent: LayoutProjectionNode): void {
+  attach(parent: Node): void {
     this.parent = parent;
     parent.children.add(this);
   }
@@ -52,8 +49,8 @@ export class LayoutProjectionNode {
   }
 
   traverse(
-    callback: (node: LayoutProjectionNode) => void,
-    options: LayoutProjectionNodeTraverseOptions = {},
+    callback: (node: Node) => void,
+    options: NodeTraverseOptions = {},
   ): void {
     options.includeSelf ??= false;
     options.includeDeactivated ??= false;
@@ -86,7 +83,7 @@ export class LayoutProjectionNode {
     );
   }
 
-  calculate(destBoundingBox: LayoutBoundingBox): void {
+  calculate(destBoundingBox: BoundingBox): void {
     if (!this.boundingBox) throw new Error('Missing bounding box');
 
     const currBoundingBox = this.calibrate(this.boundingBox);
@@ -94,12 +91,12 @@ export class LayoutProjectionNode {
     const destMidpoint = destBoundingBox.midpoint();
 
     this.boundingBoxTransform = {
-      x: new LayoutBoundingBoxAxisTransform({
+      x: new BoundingBoxAxisTransform({
         origin: currMidpoint.x,
         scale: destBoundingBox.width() / currBoundingBox.width(),
         translate: destMidpoint.x - currMidpoint.x,
       }),
-      y: new LayoutBoundingBoxAxisTransform({
+      y: new BoundingBoxAxisTransform({
         origin: currMidpoint.y,
         scale: destBoundingBox.height() / currBoundingBox.height(),
         translate: destMidpoint.y - currMidpoint.y,
@@ -113,11 +110,11 @@ export class LayoutProjectionNode {
       this.boundingBoxTransform.y.scale = 1;
   }
 
-  calibrate(boundingBox: LayoutBoundingBox): LayoutBoundingBox {
+  calibrate(boundingBox: BoundingBox): BoundingBox {
     for (const ancestor of this.getAncestors()) {
       if (!ancestor.boundingBox || !ancestor.boundingBoxTransform) continue;
       const transform = ancestor.boundingBoxTransform;
-      boundingBox = new LayoutBoundingBox({
+      boundingBox = new BoundingBox({
         top: transform.y.apply(boundingBox.top),
         left: transform.x.apply(boundingBox.left),
         right: transform.x.apply(boundingBox.right),
@@ -155,7 +152,7 @@ export class LayoutProjectionNode {
     };
 
     const radiuses = this.borderRadiuses;
-    const radiusStyle = (radius: LayoutBorderRadius) =>
+    const radiusStyle = (radius: BorderRadiusCornerConfig) =>
       `${radius.x / totalScale.x}px ${radius.y / totalScale.y}px`;
     style.borderTopLeftRadius = radiusStyle(radiuses.topLeft);
     style.borderTopRightRadius = radiusStyle(radiuses.topRight);
@@ -165,7 +162,7 @@ export class LayoutProjectionNode {
     this.traverse((child) => child.project());
   }
 
-  protected getAncestors(): LayoutProjectionNode[] {
+  protected getAncestors(): Node[] {
     const ancestors = [];
     let ancestor = this.parent;
     while (ancestor) {
@@ -176,7 +173,7 @@ export class LayoutProjectionNode {
   }
 }
 
-export interface LayoutProjectionNodeTraverseOptions {
+export interface NodeTraverseOptions {
   includeSelf?: boolean;
   includeDeactivated?: boolean;
 }

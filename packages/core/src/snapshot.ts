@@ -1,44 +1,41 @@
-import { LayoutBorderRadiuses, LayoutBoundingBox } from './core.js';
-import { LayoutMeasurer } from './measurement.js';
-import { LayoutProjectionNode } from './projection.js';
+import { BorderRadiusConfig, BoundingBox } from './core.js';
+import { NodeMeasurer } from './measurement.js';
+import { Node } from './node.js';
 
-export class LayoutSnapper {
-  constructor(protected measurer: LayoutMeasurer) {}
+export class NodeSnapper {
+  constructor(protected measurer: NodeMeasurer) {}
 
-  snapshot(root: LayoutProjectionNode): LayoutSnapshot {
-    const snapshot = new LayoutSnapshot();
+  snapshot(node: Node): NodeSnapshot {
+    const boundingBox = this.measurer.measureBoundingBox(node.element);
+    const borderRadiuses = this.measurer.measureBorderRadiuses(
+      node.element,
+      boundingBox,
+    );
+    return {
+      element: node.element,
+      boundingBox,
+      borderRadiuses,
+    };
+  }
 
+  snapshotTree(root: Node): NodeSnapshotMap {
+    const snapshots = new NodeSnapshotMap();
     root.traverse(
       (node) => {
-        const boundingBox = this.measurer.measureBoundingBox(node.element);
-        const borderRadiuses = this.measurer.measureBorderRadiuses(
-          node.element,
-          boundingBox,
-        );
-
-        if (snapshot.has(node.id))
+        if (snapshots.has(node.id))
           throw new Error(`Node ID conflict: "${node.id}"`);
-
-        snapshot.set(node.id, {
-          element: node.element,
-          boundingBox,
-          borderRadiuses,
-        });
+        snapshots.set(node.id, this.snapshot(node));
       },
       { includeSelf: true },
     );
-
-    return snapshot;
+    return snapshots;
   }
 }
 
-export class LayoutSnapshot extends Map<
-  LayoutProjectionNode['id'],
-  LayoutNodeSnapshot
-> {}
-
-export interface LayoutNodeSnapshot {
+export interface NodeSnapshot {
   element: HTMLElement;
-  boundingBox: LayoutBoundingBox;
-  borderRadiuses: LayoutBorderRadiuses;
+  boundingBox: BoundingBox;
+  borderRadiuses: BorderRadiusConfig;
 }
+
+export class NodeSnapshotMap extends Map<Node['id'], NodeSnapshot> {}

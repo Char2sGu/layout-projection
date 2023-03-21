@@ -10,25 +10,25 @@ import {
 } from 'popmotion';
 
 import {
-  LayoutBorderRadius,
-  LayoutBorderRadiuses,
-  LayoutBoundingBox,
+  BorderRadiusConfig,
+  BorderRadiusCornerConfig,
+  BoundingBox,
 } from './core.js';
-import { LayoutMeasurer } from './measurement.js';
-import { LayoutProjectionNode } from './projection.js';
-import { LayoutNodeSnapshot, LayoutSnapshot } from './snapshot.js';
+import { NodeMeasurer } from './measurement.js';
+import { Node } from './node.js';
+import { NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
 
 export class LayoutAnimator {
   protected animationStopper?: () => void;
 
   constructor(
-    public root: LayoutProjectionNode,
-    protected measurer: LayoutMeasurer,
+    public root: Node,
+    protected measurer: NodeMeasurer,
     protected easingParser: LayoutAnimationEasingParser,
   ) {}
 
   async animate(
-    from: LayoutSnapshot,
+    from: NodeSnapshotMap,
     duration: number,
     easing: string | Easing,
   ): Promise<void> {
@@ -80,7 +80,7 @@ export class LayoutAnimator {
   }
 
   protected getAnimationConfigMap(
-    layoutSnapshot: LayoutSnapshot,
+    snapshots: NodeSnapshotMap,
   ): NodeAnimationConfigMap {
     this.root.measure();
 
@@ -91,19 +91,19 @@ export class LayoutAnimator {
         if (!node.boundingBox || !node.borderRadiuses)
           throw new Error('Unknown node');
 
-        const nodeSnapshot = layoutSnapshot.get(node.id);
+        const snapshot = snapshots.get(node.id);
         // This is the old node instance in a shared-element layout animation,
         // it should share the same animation config with the new instance.
-        if (map.has(node.id) && node.element === nodeSnapshot?.element) return;
+        if (map.has(node.id) && node.element === snapshot?.element) return;
 
         const boundingBoxFrom =
-          nodeSnapshot?.boundingBox ??
-          this.estimateStartingBoundingBox(layoutSnapshot, node) ??
+          snapshot?.boundingBox ??
+          this.estimateStartingBoundingBox(snapshots, node) ??
           node.boundingBox;
         const boundingBoxTo = node.boundingBox;
 
         const borderRadiusesFrom =
-          nodeSnapshot?.borderRadiuses ??
+          snapshot?.borderRadiuses ??
           this.measurer.measureBorderRadiuses(node.element, node.boundingBox);
         const borderRadiusesTo = node.borderRadiuses;
 
@@ -123,10 +123,10 @@ export class LayoutAnimator {
   protected getFrameBoundingBox(
     config: NodeAnimationConfig,
     progress: number,
-  ): LayoutBoundingBox {
+  ): BoundingBox {
     const from = config.boundingBoxFrom;
     const to = config.boundingBoxTo;
-    return new LayoutBoundingBox({
+    return new BoundingBox({
       top: mix(from.top, to.top, progress),
       left: mix(from.left, to.left, progress),
       right: mix(from.right, to.right, progress),
@@ -137,15 +137,15 @@ export class LayoutAnimator {
   protected getFrameBorderRadiuses(
     config: NodeAnimationConfig,
     progress: number,
-  ): LayoutBorderRadiuses {
+  ): BorderRadiusConfig {
     const from = config.borderRadiusesFrom;
     const to = config.borderRadiusesTo;
 
     const mixRadius = (
-      from: LayoutBorderRadius,
-      to: LayoutBorderRadius,
+      from: BorderRadiusCornerConfig,
+      to: BorderRadiusCornerConfig,
       progress: number,
-    ): LayoutBorderRadius => ({
+    ): BorderRadiusCornerConfig => ({
       x: mix(from.x, to.x, progress),
       y: mix(from.y, to.y, progress),
     });
@@ -159,14 +159,14 @@ export class LayoutAnimator {
   }
 
   protected estimateStartingBoundingBox(
-    layoutSnapshot: LayoutSnapshot,
-    node: LayoutProjectionNode,
-  ): LayoutBoundingBox | undefined {
+    snapshots: NodeSnapshotMap,
+    node: Node,
+  ): BoundingBox | undefined {
     if (!node.boundingBox) throw new Error('Unknown node');
 
     let ancestor = node;
-    let ancestorSnapshot: LayoutNodeSnapshot | undefined = undefined;
-    while ((ancestorSnapshot = layoutSnapshot.get(ancestor.id)) === undefined) {
+    let ancestorSnapshot: NodeSnapshot | undefined = undefined;
+    while ((ancestorSnapshot = snapshots.get(ancestor.id)) === undefined) {
       if (!ancestor.parent) return;
       ancestor = ancestor.parent;
       if (ancestor === this.root) return;
@@ -179,7 +179,7 @@ export class LayoutAnimator {
     /* eslint-enable @typescript-eslint/no-non-null-assertion */
     const scale = transform.x.scale;
 
-    return new LayoutBoundingBox({
+    return new BoundingBox({
       top:
         ancestorSnapshot.boundingBox.top -
         (ancestor.boundingBox.top - node.boundingBox.top) * scale,
@@ -224,14 +224,11 @@ export class LayoutAnimationEasingParser {
   }
 }
 
-class NodeAnimationConfigMap extends Map<
-  LayoutProjectionNode['id'],
-  NodeAnimationConfig
-> {}
+class NodeAnimationConfigMap extends Map<Node['id'], NodeAnimationConfig> {}
 
 interface NodeAnimationConfig {
-  boundingBoxFrom: LayoutBoundingBox;
-  boundingBoxTo: LayoutBoundingBox;
-  borderRadiusesFrom: LayoutBorderRadiuses;
-  borderRadiusesTo: LayoutBorderRadiuses;
+  boundingBoxFrom: BoundingBox;
+  boundingBoxTo: BoundingBox;
+  borderRadiusesFrom: BorderRadiusConfig;
+  borderRadiusesTo: BorderRadiusConfig;
 }
