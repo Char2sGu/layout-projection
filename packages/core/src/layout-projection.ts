@@ -100,7 +100,7 @@ export class LayoutProjectionNode {
         translate: destMidpoint.x - currMidpoint.x,
       }),
       y: new LayoutBoundingBoxAxisTransform({
-        origin: destMidpoint.y,
+        origin: currMidpoint.y,
         scale: destBoundingBox.height() / currBoundingBox.height(),
         translate: destMidpoint.y - currMidpoint.y,
       }),
