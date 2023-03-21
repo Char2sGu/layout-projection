@@ -85,8 +85,7 @@ export class LayoutAnimator {
 
     this.root.traverse(
       (node) => {
-        if (!node.boundingBox || !node.borderRadiuses)
-          throw new Error('Unknown node');
+        if (!node.measured()) throw new Error('Unknown node');
 
         const snapshot = snapshots.get(node.id);
         // This is the old node instance in a shared-element layout animation,
@@ -167,16 +166,16 @@ export class LayoutAnimator {
     snapshots: NodeSnapshotMap,
     node: Node,
   ): BoundingBox | undefined {
-    if (!node.boundingBox) throw new Error('Unknown node');
+    if (!node.measured()) throw new Error('Unknown node');
 
-    let ancestor = node;
+    let ancestor: Node = node;
     let ancestorSnapshot: NodeSnapshot | undefined = undefined;
     while ((ancestorSnapshot = snapshots.get(ancestor.id)) === undefined) {
       if (!ancestor.parent) return;
       ancestor = ancestor.parent;
       if (ancestor === this.root) return;
     }
-    if (!ancestor.boundingBox) throw new Error('Unknown ancestor');
+    if (!ancestor.measured()) throw new Error('Unknown ancestor');
 
     const transform = ancestor.calculateTransform(ancestorSnapshot.boundingBox);
     const scale = transform.x.scale;

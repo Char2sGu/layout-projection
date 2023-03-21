@@ -86,9 +86,13 @@ export class Node {
       this.boundingBox,
     );
   }
+  measured(): this is Node &
+    Required<Pick<Node, 'boundingBox' | 'borderRadiuses'>> {
+    return !!this.boundingBox && !!this.borderRadiuses;
+  }
 
   project(destBoundingBox: BoundingBox): void {
-    if (!this.borderRadiuses) throw new Error('Missing border radiuses');
+    if (!this.measured()) throw new Error('Node not measured');
 
     this.transform = this.calculateTransform(destBoundingBox);
 
@@ -150,7 +154,7 @@ export class Node {
   }
 
   calculateTransformedBoundingBox(): BoundingBox {
-    if (!this.boundingBox) throw new Error('Missing bounding box');
+    if (!this.measured()) throw new Error('Node not measured');
     let boundingBox = this.boundingBox;
     for (const ancestor of this.track()) {
       if (!ancestor.boundingBox || !ancestor.transform) continue;
