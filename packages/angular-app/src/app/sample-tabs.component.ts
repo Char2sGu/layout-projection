@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-sample-shared-element',
+  selector: 'app-sample-tabs',
   template: `
     <div class="container">
       <div class="tabs" lpjNode [animateOn]="tabActive">
@@ -78,7 +78,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SampleSharedElementComponent {
+export class SampleTabsComponent {
   tabs: Tab[] = [{ title: 'Apple' }, { title: 'Banana' }, { title: 'Orange' }];
   tabActive = this.tabs[0];
 }

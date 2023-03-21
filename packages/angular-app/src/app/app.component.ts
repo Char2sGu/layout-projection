@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Type } from '@angular/core';
 
 import { SampleBasicComponent } from './sample-basic.component';
-import { SampleSharedElementComponent } from './sample-shared-element.component';
+import { SampleTabsComponent } from './sample-tabs.component';
 
 @Component({
   selector: 'app-root',
@@ -67,7 +67,7 @@ import { SampleSharedElementComponent } from './sample-shared-element.component'
 export class AppComponent {
   samples: Sample[] = [
     { title: 'Basic', component: SampleBasicComponent },
-    { title: 'Shared Element', component: SampleSharedElementComponent },
+    { title: 'Tabs', component: SampleTabsComponent },
   ];
 
   #sampleActiveIndex = 0;
