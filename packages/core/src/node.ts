@@ -72,6 +72,9 @@ export class Node {
   }
 
   reset(): void {
+    this.transform = undefined;
+    this.boundingBox = undefined;
+    this.borderRadiuses = undefined;
     this.element.style.transform = '';
     this.element.style.borderRadius = '';
   }
@@ -84,50 +87,10 @@ export class Node {
     );
   }
 
-  getActualBoundingBox(): BoundingBox {
-    if (!this.boundingBox) throw new Error('Missing bounding box');
-    let boundingBox = this.boundingBox;
-    for (const ancestor of this.track()) {
-      if (!ancestor.boundingBox || !ancestor.transform) continue;
-      const transform = ancestor.transform;
-      boundingBox = new BoundingBox({
-        top: transform.y.apply(boundingBox.top),
-        left: transform.x.apply(boundingBox.left),
-        right: transform.x.apply(boundingBox.right),
-        bottom: transform.y.apply(boundingBox.bottom),
-      });
-    }
-    return boundingBox;
-  }
-
-  calculateTransform(destBoundingBox: BoundingBox): TransformConfig {
-    const currBoundingBox = this.getActualBoundingBox();
-    const currMidpoint = currBoundingBox.midpoint();
-    const destMidpoint = destBoundingBox.midpoint();
-
-    const transform: TransformConfig = {
-      x: new TransformAxisConfig({
-        origin: currMidpoint.x,
-        scale: destBoundingBox.width() / currBoundingBox.width(),
-        translate: destMidpoint.x - currMidpoint.x,
-      }),
-      y: new TransformAxisConfig({
-        origin: currMidpoint.y,
-        scale: destBoundingBox.height() / currBoundingBox.height(),
-        translate: destMidpoint.y - currMidpoint.y,
-      }),
-    };
-
-    // edge case: invisible element (width/height is 0)
-    if (isNaN(transform.x.scale)) transform.x.scale = 1;
-    if (isNaN(transform.y.scale)) transform.y.scale = 1;
-
-    return transform;
-  }
-
-  project(): void {
-    if (!this.transform) throw new Error('Missing transform');
+  project(destBoundingBox: BoundingBox): void {
     if (!this.borderRadiuses) throw new Error('Missing border radiuses');
+
+    this.transform = this.calculateTransform(destBoundingBox);
 
     const ancestorTotalScale = { x: 1, y: 1 };
     const ancestors = this.track();
@@ -159,8 +122,47 @@ export class Node {
     style.borderTopRightRadius = radiusStyle(radiuses.topRight);
     style.borderBottomLeftRadius = radiusStyle(radiuses.bottomLeft);
     style.borderBottomRightRadius = radiusStyle(radiuses.bottomRight);
+  }
 
-    this.traverse((child) => child.project());
+  calculateTransform(destBoundingBox: BoundingBox): TransformConfig {
+    const currBoundingBox = this.calculateTransformedBoundingBox();
+    const currMidpoint = currBoundingBox.midpoint();
+    const destMidpoint = destBoundingBox.midpoint();
+
+    const transform: TransformConfig = {
+      x: new TransformAxisConfig({
+        origin: currMidpoint.x,
+        scale: destBoundingBox.width() / currBoundingBox.width(),
+        translate: destMidpoint.x - currMidpoint.x,
+      }),
+      y: new TransformAxisConfig({
+        origin: currMidpoint.y,
+        scale: destBoundingBox.height() / currBoundingBox.height(),
+        translate: destMidpoint.y - currMidpoint.y,
+      }),
+    };
+
+    // edge case: invisible element (width/height is 0)
+    if (isNaN(transform.x.scale)) transform.x.scale = 1;
+    if (isNaN(transform.y.scale)) transform.y.scale = 1;
+
+    return transform;
+  }
+
+  calculateTransformedBoundingBox(): BoundingBox {
+    if (!this.boundingBox) throw new Error('Missing bounding box');
+    let boundingBox = this.boundingBox;
+    for (const ancestor of this.track()) {
+      if (!ancestor.boundingBox || !ancestor.transform) continue;
+      const transform = ancestor.transform;
+      boundingBox = new BoundingBox({
+        top: transform.y.apply(boundingBox.top),
+        left: transform.x.apply(boundingBox.left),
+        right: transform.x.apply(boundingBox.right),
+        bottom: transform.y.apply(boundingBox.bottom),
+      });
+    }
+    return boundingBox;
   }
 }
 

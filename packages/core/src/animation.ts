@@ -38,6 +38,7 @@ export class LayoutAnimator {
         this.animationStopper = undefined;
       }
 
+      this.measureTree();
       const animationConfigMap = this.getAnimationConfigMap(from);
 
       const projectFrame = (progress: number) =>
@@ -70,20 +71,16 @@ export class LayoutAnimator {
         if (!config) throw new Error('Unknown node');
         const boundingBox = this.getFrameBoundingBox(config, progress);
         const borderRadiuses = this.getFrameBorderRadiuses(config, progress);
-        node.transform = node.calculateTransform(boundingBox);
         node.borderRadiuses = borderRadiuses;
+        node.project(boundingBox);
       },
       { includeSelf: true },
     );
-
-    this.root.project();
   }
 
   protected getAnimationConfigMap(
     snapshots: NodeSnapshotMap,
   ): NodeAnimationConfigMap {
-    this.measureTree();
-
     const map = new NodeAnimationConfigMap();
 
     this.root.traverse(
