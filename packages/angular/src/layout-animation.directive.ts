@@ -5,7 +5,6 @@ import {
   NodeSnapper,
   NodeSnapshotMap,
 } from '@layout-projection/core';
-import { Easing } from 'popmotion';
 import {
   animationFrames,
   BehaviorSubject,
@@ -19,6 +18,8 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
+
+import { LayoutAnimationConfigDirective } from './layout-animation-config.directive';
 
 @Directive({
   selector: '[lpjNode][lpjAnimation],[lpjNode][animateOn]',
@@ -43,10 +44,9 @@ export class LayoutAnimationDirective implements OnInit {
   }
   private animateOn$ = new BehaviorSubject<Observable<void>>(EMPTY);
 
-  @Input() animationDuration: number = 225;
-  @Input() animationEasing: string | Easing = 'ease-in-out';
+  animationConfigs = new Set<LayoutAnimationConfigDirective>();
 
-  private snapshots?: NodeSnapshotMap;
+  private snapshots = new NodeSnapshotMap();
 
   constructor(
     @Self() private node: Node,
@@ -67,16 +67,21 @@ export class LayoutAnimationDirective implements OnInit {
   }
 
   snapshot(): void {
-    this.snapshots = this.snapper.snapshotTree(this.node);
+    this.snapper.snapshotFrom(this.node, this.snapshots);
   }
 
   async animate(): Promise<void> {
     if (!this.snapshots) throw new Error('Missing snapshots');
-    return this.animator.animate({
-      root: this.node,
-      from: this.snapshots,
-      duration: this.animationDuration,
-      easing: this.animationEasing,
-    });
+    const configs = [...this.animationConfigs];
+    await Promise.all(
+      configs.map((config) => {
+        this.animator.animate({
+          root: config.node,
+          from: this.snapshots,
+          duration: config.animation.duration ?? 225,
+          easing: config.animation.easing ?? 'ease-in-out',
+        });
+      }),
+    );
   }
 }

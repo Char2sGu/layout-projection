@@ -8,11 +8,20 @@ import {
 } from '@layout-projection/core';
 
 import { LayoutAnimationDirective } from './layout-animation.directive';
+import { LayoutAnimationConfigDirective } from './layout-animation-config.directive';
 import { LayoutProjectionNodeDirective } from './layout-projection-node.directive';
 
 @NgModule({
-  declarations: [LayoutProjectionNodeDirective, LayoutAnimationDirective],
-  exports: [LayoutProjectionNodeDirective, LayoutAnimationDirective],
+  declarations: [
+    LayoutProjectionNodeDirective,
+    LayoutAnimationDirective,
+    LayoutAnimationConfigDirective,
+  ],
+  exports: [
+    LayoutProjectionNodeDirective,
+    LayoutAnimationDirective,
+    LayoutAnimationConfigDirective,
+  ],
   providers: [
     {
       provide: LayoutAnimator,

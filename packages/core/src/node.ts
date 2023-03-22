@@ -73,8 +73,6 @@ export class Node {
 
   reset(): void {
     this.transform = undefined;
-    this.boundingBox = undefined;
-    this.borderRadiuses = undefined;
     this.element.style.transform = '';
     this.element.style.borderRadius = '';
   }

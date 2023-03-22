@@ -1,20 +1,29 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { BehaviorSubject, skip } from 'rxjs';
 
 @Component({
   selector: 'app-sample-tabs',
   template: `
     <div class="container">
-      <div class="tabs" lpjNode [animateOn]="tabActive">
+      <div class="tabs" lpjNode [animateOn]="tabActiveChange$">
         <div
           class="tab"
-          [class.active]="tabActive === tab"
+          [class.active]="tabActive$.value === tab"
           *ngFor="let tab of tabs"
-          (click)="tabActive = tab"
+          (click)="tabActive$.next(tab)"
         >
           <span class="tab-title">{{ tab.title }}</span>
-          <ng-container *ngIf="tabActive === tab">
-            <div class="tab-overlay" lpjNode="overlay"></div>
-            <div class="tab-underline" lpjNode="underline"></div>
+          <ng-container *ngIf="tabActive$.value === tab">
+            <div
+              class="tab-overlay"
+              lpjNode="overlay"
+              [animation]="{ duration: 500 }"
+            ></div>
+            <div
+              class="tab-underline"
+              lpjNode="underline"
+              [animation]="{ duration: 300 }"
+            ></div>
           </ng-container>
         </div>
       </div>
@@ -80,7 +89,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 })
 export class SampleTabsComponent {
   tabs: Tab[] = [{ title: 'Apple' }, { title: 'Banana' }, { title: 'Orange' }];
-  tabActive = this.tabs[0];
+  tabActive$ = new BehaviorSubject(this.tabs[0]);
+  tabActiveChange$ = this.tabActive$.pipe(skip(1));
 }
 
 interface Tab {

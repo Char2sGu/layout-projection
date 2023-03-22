@@ -5,30 +5,30 @@ import { Node } from './node.js';
 export class NodeSnapper {
   constructor(protected measurer: NodeMeasurer) {}
 
-  snapshot(node: Node): NodeSnapshot {
+  snapshot(node: Node, snapshots: NodeSnapshotMap): void {
     const boundingBox = this.measurer.measureBoundingBox(node.element);
     const borderRadiuses = this.measurer.measureBorderRadiuses(
       node.element,
       boundingBox,
     );
-    return {
+    snapshots.set(node.id, {
       element: node.element,
       boundingBox,
       borderRadiuses,
-    };
+    });
   }
 
-  snapshotTree(root: Node): NodeSnapshotMap {
-    const snapshots = new NodeSnapshotMap();
+  snapshotFrom(root: Node, snapshots: NodeSnapshotMap): void {
+    const visitedIds = new Set<Node['id']>();
     root.traverse(
       (node) => {
-        if (snapshots.has(node.id))
+        if (visitedIds.has(node.id))
           throw new Error(`Node ID conflict: "${node.id}"`);
-        snapshots.set(node.id, this.snapshot(node));
+        visitedIds.add(node.id);
+        this.snapshot(node, snapshots);
       },
       { includeSelf: true },
     );
-    return snapshots;
   }
 }
 
