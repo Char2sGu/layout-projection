@@ -29,6 +29,10 @@ export class LayoutAnimationDirective implements OnInit {
    * - A stream that informs on view model updates where DOM updates that should
    * be animated will follow.
    * - An arbitrary value which will be set to another value before DOM updates.
+   *
+   * Note: If using an arbitrary value, layout changes of the host element will
+   * not be animated because Angular updates the input binding after the DOM and
+   * we are unable to snapshot the original layout.
    */
   @Input() set animateOn(value: unknown) {
     const stream =

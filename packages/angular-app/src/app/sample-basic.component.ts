@@ -1,13 +1,18 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-sample-basic',
   template: `
-    <div class="wrapper" lpjNode [animateOn]="flag" (click)="flag = !flag">
-      <div class="container" [class.flag]="flag">
-        <div class="box" lpjNode>
-          <div class="circle" lpjNode></div>
-        </div>
+    <div
+      class="container"
+      [class.flag]="flag$.value"
+      lpjNode
+      [animateOn]="flag$"
+      (click)="flag$.next(!flag$.value)"
+    >
+      <div class="box" lpjNode>
+        <div class="circle" lpjNode></div>
       </div>
     </div>
   `,
@@ -17,10 +22,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         display: block;
         height: 100%;
         background-color: purple;
-      }
-
-      .wrapper {
-        height: 100%;
       }
 
       .container {
@@ -58,5 +59,5 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SampleBasicComponent {
-  flag = false;
+  flag$ = new BehaviorSubject(false);
 }
