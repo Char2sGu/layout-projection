@@ -1,5 +1,10 @@
 import { Directive, Input, OnInit, Self } from '@angular/core';
-import { LayoutAnimator, Node, NodeSnapper } from '@layout-projection/core';
+import {
+  LayoutAnimator,
+  Node,
+  NodeSnapper,
+  NodeSnapshotMap,
+} from '@layout-projection/core';
 import { Easing } from 'popmotion';
 import {
   animationFrames,
@@ -7,7 +12,6 @@ import {
   EMPTY,
   exhaustAll,
   first,
-  map,
   Observable,
   of,
   skip,
@@ -38,6 +42,8 @@ export class LayoutAnimationDirective implements OnInit {
   @Input() animationDuration: number = 225;
   @Input() animationEasing: string | Easing = 'ease-in-out';
 
+  private snapshots?: NodeSnapshotMap;
+
   constructor(
     @Self() private node: Node,
     private animator: LayoutAnimator,
@@ -49,22 +55,24 @@ export class LayoutAnimationDirective implements OnInit {
       .pipe(
         exhaustAll(),
         skip(1),
-        map(() => this.snapper.snapshotTree(this.node)),
-        switchMap((snapshots) =>
-          animationFrames().pipe(
-            first(),
-            map(() => snapshots),
-          ),
-        ),
-        tap((snapshots) =>
-          this.animator.animate({
-            root: this.node,
-            from: snapshots,
-            duration: this.animationDuration,
-            easing: this.animationEasing,
-          }),
-        ),
+        tap(() => this.snapshot()),
+        switchMap(() => animationFrames().pipe(first())),
+        tap(() => this.animate()),
       )
       .subscribe();
+  }
+
+  snapshot(): void {
+    this.snapshots = this.snapper.snapshotTree(this.node);
+  }
+
+  async animate(): Promise<void> {
+    if (!this.snapshots) throw new Error('Missing snapshots');
+    return this.animator.animate({
+      root: this.node,
+      from: this.snapshots,
+      duration: this.animationDuration,
+      easing: this.animationEasing,
+    });
   }
 }
