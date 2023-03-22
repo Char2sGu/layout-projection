@@ -17,12 +17,14 @@ import { BehaviorSubject, skip } from 'rxjs';
             <div
               class="tab-overlay"
               lpjNode="overlay"
-              [animation]="{ duration: 500 }"
+              animated
+              [animationDuration]="500"
             ></div>
             <div
               class="tab-underline"
               lpjNode="underline"
-              [animation]="{ duration: 300 }"
+              animated
+              [animationDuration]="225"
             ></div>
           </ng-container>
         </div>

@@ -78,8 +78,8 @@ export class LayoutAnimationDirective implements OnInit {
         this.animator.animate({
           root: config.node,
           from: this.snapshots,
-          duration: config.animation.duration ?? 225,
-          easing: config.animation.easing ?? 'ease-in-out',
+          duration: config.animationDuration,
+          easing: config.animationEasing,
         });
       }),
     );

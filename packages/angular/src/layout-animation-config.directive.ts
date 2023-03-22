@@ -1,14 +1,14 @@
 import { Directive, Input, OnDestroy, Self } from '@angular/core';
-import { Node } from '@layout-projection/core';
+import { LayoutAnimationConfig, Node } from '@layout-projection/core';
 
-import { LayoutAnimationConfig } from './core';
 import { LayoutAnimationDirective } from './layout-animation.directive';
 
 @Directive({
-  selector: '[lpjNode][lpjAnimation],[lpjNode][animateOn],[lpjNode][animation]',
+  selector: '[lpjNode][lpjAnimation],[lpjNode][animateOn],[lpjNode][animated]',
 })
 export class LayoutAnimationConfigDirective implements OnDestroy {
-  @Input() animation: LayoutAnimationConfig = {};
+  @Input() animationDuration: LayoutAnimationConfig['duration'] = 225;
+  @Input() animationEasing: LayoutAnimationConfig['easing'] = 'ease-in-out';
 
   constructor(
     @Self() public node: Node,
