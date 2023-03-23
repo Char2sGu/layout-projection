@@ -19,8 +19,9 @@ import {
   exportAs: 'lpjAnimation',
 })
 export class LayoutAnimationDirective implements OnDestroy {
-  @Input() animationDuration: LayoutAnimationConfig['duration'] = 225;
-  @Input() animationEasing: LayoutAnimationConfig['easing'] = 'ease-in-out';
+  @Input('lpjAnimation') config: Partial<
+    Pick<LayoutAnimationConfig, 'duration' | 'easing'>
+  > = {};
 
   constructor(
     @Self() public node: Node,
@@ -42,11 +43,12 @@ export class LayoutAnimationDirective implements OnDestroy {
 
   async animate(): Promise<void> {
     if (!this.snapshots) throw new Error('Missing snapshots');
+    const { duration = 225, easing = 'ease-in-out' } = this.config;
     await this.animator.animate({
       root: this.node,
       from: this.snapshots,
-      duration: this.animationDuration,
-      easing: this.animationEasing,
+      duration,
+      easing,
     });
   }
 }
