@@ -3,6 +3,7 @@
  */
 
 export * from './layout-animation.directive';
-export * from './layout-animation-config.directive';
+export * from './layout-animation-scope.directive';
+export * from './layout-animation-trigger.directive';
 export * from './layout-projection.module';
 export * from './layout-projection-node.directive';

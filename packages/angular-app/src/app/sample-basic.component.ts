@@ -3,9 +3,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
   selector: 'app-sample-basic',
   template: `
-    <div class="wrapper" lpjNode [animateOn]="flag">
+    <div class="wrapper" lpjAnimationScope lpjNode lpjAnimation>
+      <ng-container *lpjAnimationTrigger="flag; for: 'box'"></ng-container>
       <div class="container" [class.flag]="flag" (click)="flag = !flag">
-        <div class="box" lpjNode>
+        <div class="box" lpjNode="box" lpjAnimation #entry="lpjAnimation">
           <div class="circle" lpjNode></div>
         </div>
       </div>

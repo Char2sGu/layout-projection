@@ -5,7 +5,10 @@ import { BehaviorSubject, skip } from 'rxjs';
   selector: 'app-sample-tabs',
   template: `
     <div class="container">
-      <div class="tabs" lpjNode [animateOn]="tabActiveChange$">
+      <div class="tabs" lpjAnimationScope>
+        <ng-container
+          *lpjAnimationTrigger="tabActive$; for: ['overlay', 'underline']"
+        ></ng-container>
         <div
           class="tab"
           [class.active]="tabActive$.value === tab"
@@ -17,13 +20,13 @@ import { BehaviorSubject, skip } from 'rxjs';
             <div
               class="tab-overlay"
               lpjNode="overlay"
-              animated
+              lpjAnimation
               [animationDuration]="500"
             ></div>
             <div
               class="tab-underline"
               lpjNode="underline"
-              animated
+              lpjAnimation
               [animationDuration]="225"
             ></div>
           </ng-container>

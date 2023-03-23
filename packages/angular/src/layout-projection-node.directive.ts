@@ -10,6 +10,7 @@ import { Node, NodeMeasurer } from '@layout-projection/core';
 
 @Directive({
   selector: '[lpjNode]',
+  exportAs: 'lpjNode',
   providers: [
     {
       provide: Node,
