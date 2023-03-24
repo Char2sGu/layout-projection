@@ -77,9 +77,11 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
 
   findTargets(): LayoutAnimationEntryDirective[] {
-    return Array.from(this.registry).filter((directive) =>
+    const targets = Array.from(this.registry).filter((directive) =>
       this.targetIds.includes(directive.node.id),
     );
+    if (!targets.length) throw new Error(`Failed to find any target entry`);
+    return targets;
   }
 }
 
