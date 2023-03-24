@@ -1,4 +1,4 @@
-import { Directive, Input, OnInit } from '@angular/core';
+import { Directive, Host, Input, OnInit } from '@angular/core';
 import {
   animationFrames,
   BehaviorSubject,
@@ -54,7 +54,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
   private targetIds: string[] = [];
 
-  constructor(private registry: LayoutAnimationEntryRegistry) {}
+  constructor(@Host() private registry: LayoutAnimationEntryRegistry) {}
 
   ngOnInit(): void {
     this.trigger$
