@@ -19,9 +19,12 @@ import {
   exportAs: 'lpjAnimation',
 })
 export class LayoutAnimationEntryDirective implements OnDestroy {
-  @Input('lpjAnimation') config: Partial<
-    Pick<LayoutAnimationConfig, 'duration' | 'easing'>
-  > = {};
+  @Input() set lpjAnimation(v: '' | this['config']) {
+    if (typeof v === 'string') return;
+    this.config = v;
+  }
+
+  config: Partial<Pick<LayoutAnimationConfig, 'duration' | 'easing'>> = {};
 
   constructor(
     @Self() public node: Node,
