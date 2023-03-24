@@ -1,12 +1,19 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-sample-basic',
   template: `
-    <ng-container lpjAnimationScope>
-      <ng-container *lpjAnimationTrigger="flag; for: boxNode"></ng-container>
-      <div class="container" [class.flag]="flag" (click)="flag = !flag">
-        <div class="box" lpjNode="box" lpjAnimation #boxNode="lpjNode">
+    <ng-container
+      lpjAnimationScope
+      *ngIf="{ flag: flag$ | async } as viewModel"
+    >
+      <div
+        class="container"
+        [class.flag]="viewModel.flag"
+        (click)="flag$.next(!viewModel.flag)"
+      >
+        <div class="box" lpjNode lpjAnimation [lpjAnimationTrigger]="flag$">
           <div class="circle" lpjNode></div>
         </div>
       </div>
@@ -55,5 +62,5 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SampleBasicComponent {
-  flag = false;
+  flag$ = new BehaviorSubject(false);
 }

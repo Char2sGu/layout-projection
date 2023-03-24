@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { BehaviorSubject, skip } from 'rxjs';
 
 @Component({
   selector: 'app-sample-tabs',
@@ -7,16 +6,16 @@ import { BehaviorSubject, skip } from 'rxjs';
     <div class="container">
       <div class="tabs" lpjAnimationScope>
         <ng-container
-          *lpjAnimationTrigger="tabActive$; for: ['overlay', 'underline']"
+          *lpjAnimationTrigger="tabActive; for: ['overlay', 'underline']"
         ></ng-container>
         <div
           class="tab"
-          [class.active]="tabActive$.value === tab"
+          [class.active]="tabActive === tab"
           *ngFor="let tab of tabs"
-          (click)="tabActive$.next(tab)"
+          (click)="tabActive = tab"
         >
           <span class="tab-title">{{ tab.title }}</span>
-          <ng-container *ngIf="tabActive$.value === tab">
+          <ng-container *ngIf="tabActive === tab">
             <div
               class="tab-overlay"
               lpjNode="overlay"
@@ -92,8 +91,7 @@ import { BehaviorSubject, skip } from 'rxjs';
 })
 export class SampleTabsComponent {
   tabs: Tab[] = [{ title: 'Apple' }, { title: 'Banana' }, { title: 'Orange' }];
-  tabActive$ = new BehaviorSubject(this.tabs[0]);
-  tabActiveChange$ = this.tabActive$.pipe(skip(1));
+  tabActive = this.tabs[0];
 }
 
 interface Tab {
