@@ -7,6 +7,8 @@ import {
   NodeSnapshotMap,
 } from '@layout-projection/core';
 
+import { LayoutAnimationScopeNodeRegistry } from './layout-animation-scope.directive';
+
 @Directive({
   selector: '[lpjNode][lpjAnimation]',
   exportAs: 'lpjAnimation',
@@ -24,10 +26,14 @@ export class LayoutAnimationEntryDirective {
     private animator: LayoutAnimator,
     private snapper: NodeSnapper,
     @Host() private snapshots: NodeSnapshotMap,
+    @Host() private registry: LayoutAnimationScopeNodeRegistry,
   ) {}
 
   snapshot(): void {
-    this.snapper.snapshotFrom(this.node, this.snapshots);
+    this.node.traverse((node) => {
+      if (!this.registry.has(node)) return;
+      this.snapper.snapshot(node, this.snapshots);
+    });
   }
 
   async animate(): Promise<void> {
