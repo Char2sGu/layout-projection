@@ -7,4 +7,4 @@ export * from './layout-animation-scope.directive';
 export * from './layout-animation-self-trigger.directive';
 export * from './layout-animation-trigger.directive';
 export * from './layout-projection.module';
-export * from './layout-projection-node.directive';
+export * from './node.directive';

@@ -11,18 +11,18 @@ import { LayoutAnimationEntryDirective } from './layout-animation-entry.directiv
 import { LayoutAnimationScopeDirective } from './layout-animation-scope.directive';
 import { LayoutAnimationSelfTriggerDirective } from './layout-animation-self-trigger.directive';
 import { LayoutAnimationTriggerDirective } from './layout-animation-trigger.directive';
-import { LayoutProjectionNodeDirective } from './layout-projection-node.directive';
+import { NodeDirective } from './node.directive';
 
 @NgModule({
   declarations: [
-    LayoutProjectionNodeDirective,
+    NodeDirective,
     LayoutAnimationEntryDirective,
     LayoutAnimationScopeDirective,
     LayoutAnimationTriggerDirective,
     LayoutAnimationSelfTriggerDirective,
   ],
   exports: [
-    LayoutProjectionNodeDirective,
+    NodeDirective,
     LayoutAnimationEntryDirective,
     LayoutAnimationScopeDirective,
     LayoutAnimationTriggerDirective,

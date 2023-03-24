@@ -14,11 +14,11 @@ import { Node, NodeMeasurer } from '@layout-projection/core';
   providers: [
     {
       provide: Node,
-      useExisting: LayoutProjectionNodeDirective,
+      useExisting: NodeDirective,
     },
   ],
 })
-export class LayoutProjectionNodeDirective extends Node implements OnDestroy {
+export class NodeDirective extends Node implements OnDestroy {
   @Input() set lpjNode(v: string | false) {
     if (typeof v === 'string') {
       if (v) this.identifyAs(v);
