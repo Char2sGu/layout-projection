@@ -17,6 +17,7 @@ import {
   LayoutAnimationEntryDirective,
   LayoutAnimationEntryRegistry,
 } from './layout-animation-entry.directive';
+import { LayoutProjectionNodeDirective } from './layout-projection-node.directive';
 
 @Directive({
   selector: '[lpjAnimationTrigger]',
@@ -41,8 +42,15 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
   private trigger$ = new BehaviorSubject<Observable<void>>(EMPTY);
 
-  @Input() set lpjAnimationTriggerFor(value: string | string[]) {
-    this.targetIds = value instanceof Array ? value : [value];
+  @Input() set lpjAnimationTriggerFor(
+    value:
+      | LayoutAnimationTriggerTargetInput
+      | LayoutAnimationTriggerTargetInput[],
+  ) {
+    const normalize = (input: LayoutAnimationTriggerTargetInput) =>
+      input instanceof LayoutProjectionNodeDirective ? input.id : input;
+    this.targetIds =
+      value instanceof Array ? value.map(normalize) : [normalize(value)];
   }
   private targetIds: string[] = [];
 
@@ -74,3 +82,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
     );
   }
 }
+
+export type LayoutAnimationTriggerTargetInput =
+  | LayoutProjectionNodeDirective
+  | string;
