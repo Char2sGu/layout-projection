@@ -1,4 +1,4 @@
-import { Directive } from '@angular/core';
+import { Directive, Self } from '@angular/core';
 import { Node, NodeSnapshotMap } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
@@ -23,4 +23,10 @@ export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntryD
     },
   ],
 })
-export class LayoutAnimationScopeDirective {}
+export class LayoutAnimationScopeDirective {
+  constructor(
+    @Self() public nodeRegistry: LayoutAnimationScopeNodeRegistry,
+    @Self() public entryRegistry: LayoutAnimationScopeEntryRegistry,
+    @Self() public snapshots: NodeSnapshotMap,
+  ) {}
+}
