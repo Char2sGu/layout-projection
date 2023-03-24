@@ -1,4 +1,4 @@
-import { Directive, Host, Input, Self } from '@angular/core';
+import { Directive, Host, Input, Optional, Self } from '@angular/core';
 import {
   LayoutAnimationConfig,
   LayoutAnimator,
@@ -26,13 +26,12 @@ export class LayoutAnimationEntryDirective {
     private animator: LayoutAnimator,
     private snapper: NodeSnapper,
     @Host() private snapshots: NodeSnapshotMap,
-    @Host() private nodeRegistry: LayoutAnimationScopeNodeRegistry,
+    @Host() @Optional() private nodeRegistry?: LayoutAnimationScopeNodeRegistry,
   ) {}
 
   snapshot(): void {
-    this.snapper.snapshotTree(this.node, this.snapshots, (node) =>
-      this.nodeRegistry.has(node),
-    );
+    const filter = this.nodeRegistry?.has.bind(this.nodeRegistry);
+    this.snapper.snapshotTree(this.node, this.snapshots, filter);
   }
 
   async animate(): Promise<void> {
