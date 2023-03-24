@@ -14,6 +14,8 @@ import {
   NodeSnapshotMap,
 } from '@layout-projection/core';
 
+import { LayoutAnimationScopeItemRegistry } from './layout-animation-scope.directive';
+
 @Directive({
   selector: '[lpjNode][lpjAnimation]',
   exportAs: 'lpjAnimation',
@@ -31,7 +33,7 @@ export class LayoutAnimationEntryDirective implements OnDestroy {
     private animator: LayoutAnimator,
     private snapper: NodeSnapper,
     @Host() private snapshots: NodeSnapshotMap,
-    @Host() @Optional() private registry?: LayoutAnimationEntryRegistry,
+    @Host() @Optional() private registry?: LayoutAnimationScopeItemRegistry,
   ) {
     this.registry?.add(this);
   }
@@ -55,5 +57,3 @@ export class LayoutAnimationEntryDirective implements OnDestroy {
     });
   }
 }
-
-export class LayoutAnimationEntryRegistry extends Set<LayoutAnimationEntryDirective> {}

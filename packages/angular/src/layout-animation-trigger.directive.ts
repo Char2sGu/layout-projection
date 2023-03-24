@@ -14,10 +14,8 @@ import {
   tap,
 } from 'rxjs';
 
-import {
-  LayoutAnimationEntryDirective,
-  LayoutAnimationEntryRegistry,
-} from './layout-animation-entry.directive';
+import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
+import { LayoutAnimationScopeItemRegistry } from './layout-animation-scope.directive';
 
 @Directive({
   selector: '[lpjAnimationTrigger]',
@@ -54,7 +52,9 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
   private targetIds: string[] = [];
 
-  constructor(@Host() private registry: LayoutAnimationEntryRegistry) {}
+  constructor(
+    @Host() private entryRegistry: LayoutAnimationScopeItemRegistry,
+  ) {}
 
   ngOnInit(): void {
     this.trigger$
@@ -77,7 +77,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
 
   findTargets(): LayoutAnimationEntryDirective[] {
-    const targets = Array.from(this.registry).filter((directive) =>
+    const targets = Array.from(this.entryRegistry).filter((directive) =>
       this.targetIds.includes(directive.node.id),
     );
     if (!targets.length) throw new Error(`Failed to find any target entry`);
