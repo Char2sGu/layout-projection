@@ -1,4 +1,11 @@
-import { Directive, Host, OnDestroy, Optional, Self } from '@angular/core';
+import {
+  Directive,
+  Host,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Self,
+} from '@angular/core';
 import { Node } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
@@ -7,17 +14,22 @@ import {
   LayoutAnimationScopeNodeRegistry,
 } from './layout-animation-scope.directive';
 
+// Register instances in `ngOnInit` instead of `constructor` to register the
+// updated IDs of nodes.
+
 @Directive({
   selector: '[lpjNode]',
 })
-export class LayoutAnimationScopeNodeRegistrarDirective implements OnDestroy {
+export class LayoutAnimationScopeNodeRegistrarDirective
+  implements OnInit, OnDestroy
+{
   constructor(
     @Self() private node: Node,
     @Host() @Optional() private registry?: LayoutAnimationScopeNodeRegistry,
-  ) {
-    this.registry?.add(node);
+  ) {}
+  ngOnInit(): void {
+    this.registry?.add(this.node);
   }
-
   ngOnDestroy(): void {
     this.registry?.delete(this.node);
   }
@@ -26,14 +38,16 @@ export class LayoutAnimationScopeNodeRegistrarDirective implements OnDestroy {
 @Directive({
   selector: '[lpjAnimation]',
 })
-export class LayoutAnimationScopeEntryRegistrarDirective implements OnDestroy {
+export class LayoutAnimationScopeEntryRegistrarDirective
+  implements OnInit, OnDestroy
+{
   constructor(
     @Self() private entry: LayoutAnimationEntryDirective,
     @Host() @Optional() private registry?: LayoutAnimationScopeEntryRegistry,
-  ) {
-    this.registry?.add(entry);
+  ) {}
+  ngOnInit(): void {
+    this.registry?.add(this.entry);
   }
-
   ngOnDestroy(): void {
     this.registry?.delete(this.entry);
   }
