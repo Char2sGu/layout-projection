@@ -1,11 +1,4 @@
-import {
-  Directive,
-  Host,
-  Input,
-  OnDestroy,
-  Optional,
-  Self,
-} from '@angular/core';
+import { Directive, Host, Input, Self } from '@angular/core';
 import {
   LayoutAnimationConfig,
   LayoutAnimator,
@@ -14,13 +7,11 @@ import {
   NodeSnapshotMap,
 } from '@layout-projection/core';
 
-import { LayoutAnimationScopeItemRegistry } from './layout-animation-scope.directive';
-
 @Directive({
   selector: '[lpjNode][lpjAnimation]',
   exportAs: 'lpjAnimation',
 })
-export class LayoutAnimationEntryDirective implements OnDestroy {
+export class LayoutAnimationEntryDirective {
   @Input() set lpjAnimation(v: '' | this['config']) {
     if (typeof v === 'string') return;
     this.config = v;
@@ -33,14 +24,7 @@ export class LayoutAnimationEntryDirective implements OnDestroy {
     private animator: LayoutAnimator,
     private snapper: NodeSnapper,
     @Host() private snapshots: NodeSnapshotMap,
-    @Host() @Optional() private registry?: LayoutAnimationScopeItemRegistry,
-  ) {
-    this.registry?.add(this);
-  }
-
-  ngOnDestroy(): void {
-    this.registry?.delete(this);
-  }
+  ) {}
 
   snapshot(): void {
     this.snapper.snapshotFrom(this.node, this.snapshots);

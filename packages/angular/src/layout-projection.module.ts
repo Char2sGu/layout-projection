@@ -8,7 +8,10 @@ import {
 } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
-import { LayoutAnimationScopeDirective } from './layout-animation-scope.directive';
+import {
+  LayoutAnimationScopeDirective,
+  LayoutAnimationScopeEntryRegistrarDirective,
+} from './layout-animation-scope.directive';
 import { LayoutAnimationSelfTriggerDirective } from './layout-animation-self-trigger.directive';
 import { LayoutAnimationTriggerDirective } from './layout-animation-trigger.directive';
 import { NodeDirective } from './node.directive';
@@ -18,6 +21,7 @@ import { NodeDirective } from './node.directive';
     NodeDirective,
     LayoutAnimationEntryDirective,
     LayoutAnimationScopeDirective,
+    LayoutAnimationScopeEntryRegistrarDirective,
     LayoutAnimationTriggerDirective,
     LayoutAnimationSelfTriggerDirective,
   ],
@@ -25,6 +29,7 @@ import { NodeDirective } from './node.directive';
     NodeDirective,
     LayoutAnimationEntryDirective,
     LayoutAnimationScopeDirective,
+    LayoutAnimationScopeEntryRegistrarDirective,
     LayoutAnimationTriggerDirective,
     LayoutAnimationSelfTriggerDirective,
   ],
