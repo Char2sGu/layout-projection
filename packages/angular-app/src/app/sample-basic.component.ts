@@ -3,14 +3,14 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
   selector: 'app-sample-basic',
   template: `
-    <div class="wrapper" lpjAnimationScope lpjNode lpjAnimation>
+    <ng-container lpjAnimationScope>
       <ng-container *lpjAnimationTrigger="flag; for: 'box'"></ng-container>
       <div class="container" [class.flag]="flag" (click)="flag = !flag">
-        <div class="box" lpjNode="box" lpjAnimation #entry="lpjAnimation">
+        <div class="box" lpjNode="box" lpjAnimation>
           <div class="circle" lpjNode></div>
         </div>
       </div>
-    </div>
+    </ng-container>
   `,
   styles: [
     `
@@ -18,10 +18,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
         display: block;
         height: 100%;
         background-color: purple;
-      }
-
-      .wrapper {
-        height: 100%;
       }
 
       .container {
