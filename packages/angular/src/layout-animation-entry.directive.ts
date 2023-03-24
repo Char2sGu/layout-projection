@@ -26,14 +26,13 @@ export class LayoutAnimationEntryDirective {
     private animator: LayoutAnimator,
     private snapper: NodeSnapper,
     @Host() private snapshots: NodeSnapshotMap,
-    @Host() private registry: LayoutAnimationScopeNodeRegistry,
+    @Host() private nodeRegistry: LayoutAnimationScopeNodeRegistry,
   ) {}
 
   snapshot(): void {
-    this.node.traverse((node) => {
-      if (!this.registry.has(node)) return;
-      this.snapper.snapshot(node, this.snapshots);
-    });
+    this.snapper.snapshotTree(this.node, this.snapshots, (node) =>
+      this.nodeRegistry.has(node),
+    );
   }
 
   async animate(): Promise<void> {
