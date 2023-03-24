@@ -4,9 +4,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-sample-basic',
   template: `
     <ng-container lpjAnimationScope>
-      <ng-container *lpjAnimationTrigger="flag; for: 'box'"></ng-container>
+      <ng-container *lpjAnimationTrigger="flag; for: boxNode"></ng-container>
       <div class="container" [class.flag]="flag" (click)="flag = !flag">
-        <div class="box" lpjNode="box" lpjAnimation>
+        <div class="box" lpjNode="box" lpjAnimation #boxNode="lpjNode">
           <div class="circle" lpjNode></div>
         </div>
       </div>
