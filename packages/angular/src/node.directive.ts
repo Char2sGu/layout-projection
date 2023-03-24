@@ -11,12 +11,7 @@ import { Node, NodeMeasurer } from '@layout-projection/core';
 @Directive({
   selector: '[lpjNode]',
   exportAs: 'lpjNode',
-  providers: [
-    {
-      provide: Node,
-      useExisting: NodeDirective,
-    },
-  ],
+  providers: [{ provide: Node, useExisting: NodeDirective }],
 })
 export class NodeDirective extends Node implements OnDestroy {
   @Input() set lpjNode(v: string | false) {
