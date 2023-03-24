@@ -15,7 +15,7 @@ import {
 } from 'rxjs';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
-import { LayoutAnimationScopeItemRegistry } from './layout-animation-scope.directive';
+import { LayoutAnimationScopeEntryRegistry } from './layout-animation-scope.directive';
 
 @Directive({
   selector: '[lpjAnimationTrigger]',
@@ -53,7 +53,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   private targetIds: string[] = [];
 
   constructor(
-    @Host() private entryRegistry: LayoutAnimationScopeItemRegistry,
+    @Host() private entryRegistry: LayoutAnimationScopeEntryRegistry,
   ) {}
 
   ngOnInit(): void {
