@@ -18,7 +18,7 @@ import {
   selector: '[lpjNode][lpjAnimation]',
   exportAs: 'lpjAnimation',
 })
-export class LayoutAnimationDirective implements OnDestroy {
+export class LayoutAnimationEntryDirective implements OnDestroy {
   @Input('lpjAnimation') config: Partial<
     Pick<LayoutAnimationConfig, 'duration' | 'easing'>
   > = {};
@@ -28,7 +28,7 @@ export class LayoutAnimationDirective implements OnDestroy {
     private animator: LayoutAnimator,
     private snapper: NodeSnapper,
     @Host() private snapshots: NodeSnapshotMap,
-    @Host() @Optional() private registry?: LayoutAnimationDirectiveRegistry,
+    @Host() @Optional() private registry?: LayoutAnimationEntryRegistry,
   ) {
     this.registry?.add(this);
   }
@@ -53,4 +53,4 @@ export class LayoutAnimationDirective implements OnDestroy {
   }
 }
 
-export class LayoutAnimationDirectiveRegistry extends Set<LayoutAnimationDirective> {}
+export class LayoutAnimationEntryRegistry extends Set<LayoutAnimationEntryDirective> {}

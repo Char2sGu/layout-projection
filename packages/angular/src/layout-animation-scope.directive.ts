@@ -1,7 +1,7 @@
 import { Directive } from '@angular/core';
 import { NodeSnapshotMap } from '@layout-projection/core';
 
-import { LayoutAnimationDirectiveRegistry } from './layout-animation.directive';
+import { LayoutAnimationEntryRegistry } from './layout-animation-entry.directive';
 
 @Directive({
   selector: '[lpjAnimationScope]',
@@ -11,8 +11,8 @@ import { LayoutAnimationDirectiveRegistry } from './layout-animation.directive';
       useValue: new NodeSnapshotMap(),
     },
     {
-      provide: LayoutAnimationDirectiveRegistry,
-      useValue: new LayoutAnimationDirectiveRegistry(),
+      provide: LayoutAnimationEntryRegistry,
+      useValue: new LayoutAnimationEntryRegistry(),
     },
   ],
 })

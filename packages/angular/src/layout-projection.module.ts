@@ -7,7 +7,7 @@ import {
   NodeSnapper,
 } from '@layout-projection/core';
 
-import { LayoutAnimationDirective } from './layout-animation.directive';
+import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 import { LayoutAnimationScopeDirective } from './layout-animation-scope.directive';
 import { LayoutAnimationTriggerDirective } from './layout-animation-trigger.directive';
 import { LayoutProjectionNodeDirective } from './layout-projection-node.directive';
@@ -15,13 +15,13 @@ import { LayoutProjectionNodeDirective } from './layout-projection-node.directiv
 @NgModule({
   declarations: [
     LayoutProjectionNodeDirective,
-    LayoutAnimationDirective,
+    LayoutAnimationEntryDirective,
     LayoutAnimationScopeDirective,
     LayoutAnimationTriggerDirective,
   ],
   exports: [
     LayoutProjectionNodeDirective,
-    LayoutAnimationDirective,
+    LayoutAnimationEntryDirective,
     LayoutAnimationScopeDirective,
     LayoutAnimationTriggerDirective,
   ],

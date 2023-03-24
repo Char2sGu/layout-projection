@@ -14,9 +14,9 @@ import {
 } from 'rxjs';
 
 import {
-  LayoutAnimationDirective,
-  LayoutAnimationDirectiveRegistry,
-} from './layout-animation.directive';
+  LayoutAnimationEntryDirective,
+  LayoutAnimationEntryRegistry,
+} from './layout-animation-entry.directive';
 
 @Directive({
   selector: '[lpjAnimationTrigger]',
@@ -46,7 +46,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
   private targetIds: string[] = [];
 
-  constructor(private registry: LayoutAnimationDirectiveRegistry) {}
+  constructor(private registry: LayoutAnimationEntryRegistry) {}
 
   ngOnInit(): void {
     this.trigger$
@@ -61,14 +61,14 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
 
   snapshot(): void {
-    this.findTargets().forEach((directive) => directive.snapshot());
+    this.findTargets().forEach((entry) => entry.snapshot());
   }
 
   animate(): void {
-    this.findTargets().forEach((directive) => directive.animate());
+    this.findTargets().forEach((entry) => entry.animate());
   }
 
-  findTargets(): LayoutAnimationDirective[] {
+  findTargets(): LayoutAnimationEntryDirective[] {
     return Array.from(this.registry).filter((directive) =>
       this.targetIds.includes(directive.node.id),
     );
