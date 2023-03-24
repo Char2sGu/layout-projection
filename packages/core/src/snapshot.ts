@@ -18,10 +18,15 @@ export class NodeSnapper {
     });
   }
 
-  snapshotFrom(root: Node, snapshots: NodeSnapshotMap): void {
+  snapshotTree(
+    root: Node,
+    snapshots: NodeSnapshotMap,
+    filter?: (node: Node) => boolean,
+  ): void {
     const visitedIds = new Set<Node['id']>();
     root.traverse(
       (node) => {
+        if (filter && !filter(node)) return;
         if (visitedIds.has(node.id))
           throw new Error(`Node ID conflict: "${node.id}"`);
         visitedIds.add(node.id);
