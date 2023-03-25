@@ -194,4 +194,44 @@ export class AppComponent {
 
 # Advanced
 
-TODO
+## Standalone Animation Trigger
+
+`[lpjAnimationTrigger]` can not only be attached on existing animation entries, but also be used individually on any elements within an animation scope to serve as a standalone animation trigger.
+
+When an animation trigger is a standalone animation trigger, the `lpjAnimationTriggerFor` input must be provided, specifying the target animation entry of this animation trigger:
+
+```html
+<ng-container *lpjAnimationTrigger="input; for: target"></ng-container>
+<!-- equivalent to -->
+<ng-container
+  [lpjAnimationTrigger]="input"
+  [lpjAnimationTriggerFor]="target"
+></ng-container>
+```
+
+The `lpjAnimationTriggerFor` input accepts:
+
+- A `Node` instance in the animation scope
+  ```html
+  <ng-container lpjAnimationScope>
+    <ng-container *lpjAnimationTrigger="items$; for: listNode"></ng-container>
+    <mat-list lpjNode #listNode="lpjNode"><mat-list>
+  </ng-container>
+  ```
+- A `string` indicating the ID of a `Node` instance in the animation scope
+  ```html
+  <ng-container lpjAnimationScope>
+    <ng-container *lpjAnimationTrigger="expanded; for: 'list'"></ng-container>
+    <mat-list *ngIf="!expanded" lpjNode="list">...<mat-list>
+    <mat-list *ngIf="expanded" lpjNode="list">...<mat-list>
+  </ng-container>
+  ```
+- An array of the above types of inputs
+
+A standalone animation trigger can be extremely useful in cases of
+
+- many animation triggers for one animation entry
+- one animation trigger for many animation entries
+- [shared-element animations](#shared-element-animation) where the node instance of the animation entry varies.
+
+## Shared-element Animation
