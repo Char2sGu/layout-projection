@@ -8,6 +8,10 @@ npm i \
  @layout-projection/angular
 ```
 
+# Examples
+
+TODO: Online sandbox IDE links
+
 # Tutorial
 
 The power of Layout Projection comes from the `LayoutProjectionModule`. Make sure this module is imported in order to leverage the power.
@@ -40,7 +44,7 @@ Applying the `[lpjNode]` directive to an element would mark the element as a nod
 </div>
 ```
 
-In the above case, `<span>` and `<p>` are not marked as nodes because they are inline elements, but marking them is completely ok and would do no harm. If you are not sure whether or not a node should be marked as a node, just mark it.
+In the above example, `<span>` and `<p>` are not marked as nodes because they are inline elements, but marking them is completely ok and would do no harm. If you are not sure whether or not a node should be marked as a node, just mark it.
 
 Actually, not all the non-inline elements in a component are required to be marked as nodes, and in some cases all elements in certain components do not need to be marked as nodes, but it's **strongly** recommended for beginners to do so to make sure layout animations can work properly.
 
