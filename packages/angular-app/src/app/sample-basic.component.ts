@@ -4,14 +4,11 @@ import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-sample-basic',
   template: `
-    <ng-container
-      lpjAnimationScope
-      *ngIf="{ flag: flag$ | async } as viewModel"
-    >
+    <ng-container lpjAnimationScope>
       <div
         class="container"
-        [class.flag]="viewModel.flag"
-        (click)="flag$.next(!viewModel.flag)"
+        [class.flag]="flag$ | async"
+        (click)="flag$.next(!flag$.value)"
       >
         <div class="box" lpjNode lpjAnimation [lpjAnimationTrigger]="flag$">
           <div class="circle" lpjNode></div>
