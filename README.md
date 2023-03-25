@@ -2,12 +2,13 @@
 
 **_Beautify the Web with awesome layout animations_**
 
-Framework-agnostic Layout Projection implementation with various framework wrappers.
+Framework-agnostic **Layout Projection** and **Layout-Projection-powered** layout animation implementations with exquisite adapters for various frameworks.
 
 # Getting Started
 
 - [Getting started with Vanilla JavaScript](./packages/core/README.md)
 - [Getting started with Angular](./packages/angular/README.md)
+- ... (contribute for more framework adapters)
 
 # What Is Layout Projection?
 
@@ -23,7 +24,7 @@ Layout Projection is a Web animation technique invented by [Matt Perry](https://
 
 Matt Perry, as a member of Framer, applied Layout Projection heavily in their awesome React animation library [Framer Motion](https://www.framer.com/motion/), but unfortunately all Web developers not using React have been left over.
 
-Therefore, in this project, we offer you a **framework-agnostic** Layout Projection implementation with various framework wrappers to allow all Web developers to enhance their Web applications with Layout Projection!
+Therefore, in this project, we offer you a **framework-agnostic** Layout Projection implementation with various framework adapters to allow all Web developers to enhance their Web applications with Layout Projection!
 
 # Special Thanks
 
