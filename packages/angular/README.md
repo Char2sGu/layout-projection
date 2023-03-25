@@ -10,11 +10,15 @@ npm i \
 
 # Examples
 
-TODO: Online sandbox IDE links
+TODO: online IDE links
 
 # Tutorial
 
-The power of Layout Projection comes from the `LayoutProjectionModule`. Make sure this module is imported in order to leverage the power.
+In this tutorial, we will build one of the simplest and the most commonly used layout animation, which is to animate the items of a list when the items changes.
+
+## Preparation
+
+The power of Layout Projection comes from the `LayoutProjectionModule`. Make sure this module is imported before getting started.
 
 ```ts
 @NgModule({
@@ -25,45 +29,40 @@ export class AppModule {}
 
 ## Constructing the Projection Tree
 
+Before starting to configure our animations, we need to first set up the infrastructure.
+
 The Layout Projection technique require a Projection Tree that is constructed based on the DOM structure to function properly.
 
-Applying the `[lpjNode]` directive to an element would mark the element as a node of the Projection Tree. Only non-inline elements are required to be marked as nodes:
+Apply the `[lpjNode]` directive to an element to mark the element as a node of the Projection Tree. Only non-inline elements are required to be marked as nodes:
 
 ```html
-<div class="card" lpjNode>
-  <div class="card-title" lpjNode>
-    <span>Bonjour</span>
-  </div>
-  <div class="card-content" lpjNode>
-    <p>Hello World</p>
-  </div>
-  <div class="card-actions" lpjNode>
-    <button class="card-action-button" lpjNode>Star</button>
-    <button class="card-action-button" lpjNode>Remove</button>
-  </div>
-</div>
+<mat-list lpjNode>
+  <mat-list-item *ngFor="let item of items$ | async" lpjNode>
+    <span>{{ item.title }}</span>
+  </mat-list-item>
+</mat-list>
 ```
 
-In the above example, `<span>` and `<p>` are not marked as nodes because they are inline elements, but marking them is completely ok and would do no harm. If you are not sure whether or not a node should be marked as a node, just mark it.
+In this example above, `<span>` elements are not marked as nodes because they are inline elements, but marking them is completely ok and would do no harm. If you are not sure whether or not a node should be marked as a node, just mark it.
 
 Actually, not all the non-inline elements in a component are required to be marked as nodes, and in some cases all elements in certain components do not need to be marked as nodes, but it's **strongly** recommended for beginners to do so to make sure layout animations can work properly.
 
-We have managed to setup the infrastructure for Layout-Projection-powered layout animations. In the following chapters we'll figure out how fancy layout animations can be implemented.
-
 ## Declaring the Animation Scope
 
-In this Angular adapter, layout animations must be scoped to avoid exceptional behaviors and make the application easier to maintain.
+In this Angular adapter, layout animations are designed to be scoped to avoid exceptional behaviors and make the application easier to maintain.
 
-Before we can start configuring layout animations, we first need to declare a animation scope via the `[lpjAnimationScope]` directive:
+To declare a animation scope, attach the `[lpjAnimationScope]` directive to an element:
 
 <!-- prettier-ignore -->
 ```html
-<div class="container" lpjAnimationScope>
+<mat-list lpjNode lpjAnimationScope>
   ...
-</div>
+</mat-list>
 ```
 
-If there is no container/wrapper elements available to attach the directive, we can simply attach it to a `<ng-container>`:
+Now animations declared on `<mat-list>` and any elements under `<mat-list>` will be scoped to the animation scope we just declared. Note that animation scopes declared in an component are also scoped to the component, which means that we are not allowed to use animation scopes declared in parent components.
+
+We can also choose to attach the directive on an `<ng-container>` if there is no existing container elements:
 
 <!-- prettier-ignore -->
 ```html
@@ -76,21 +75,23 @@ The animation scope provides necessary dependencies animation directives within 
 
 ## Configuring the Animation Entry
 
-Layout-Projection-powered layout animations involves a tree of nodes of the Projection Tree. Thus we need to specify the entry for a layout animation, which would be the root node of the layout animation.
+Layout-Projection-powered layout animations animates a sub-tree of nodes from their previous bounding boxes (location + size) to their current bounding boxes. Thus we need to specify the entry for a layout animation, which would be the root node of tree of nodes that would be animated.
 
-To specify the entry, attach the `[lpjAnimation]` directive to a node within an animation scope:
+In our case, the entry can be the list element so that all the list items will be included in the sub-tree that would be animated. To specify the entry, attach the `[lpjAnimation]` directive to a node within an animation scope:
 
 ```html
-<div class="actions" lpjAnimationScope>
-  <div class="button" lpjNode lpjAnimation>
-    <span>Click Me</span>
-  </div>
-</div>
+<ng-container lpjAnimationScope>
+  <mat-list lpjNode lpjAnimation>
+    <mat-list-item *ngFor="let item of items$ | async" lpjNode>
+      <span>{{ item.title }}</span>
+    </mat-list-item>
+  </mat-list>
+</ng-container>
 ```
 
 ### Animation Customization
 
-Layout animations for the entry can be customized by providing a configuration object to the `[lpjAnimation]` directive:
+Layout animations for the entry can be customized by providing a configuration object to the `[lpjAnimation]` directive. The default configuration is:
 
 `[lpjAnimation]="{ duration: 225, easing: 'cubic-bezier(0.4,0.0,0.2,1)' }"`
 
@@ -109,7 +110,87 @@ The `easing` property accepts:
 
 ## Specifying the Animation Trigger
 
-TODO
+As mentioned, Layout-Projection-powered layout animation animates the nodes from their previous bounding boxes (location + size) to their current bounding boxes, which means that we need to snapshot the old layout before the layout changes in order to animate it.
+
+In Angular, there is no way for us to execute some certain code automatically before a layout change, thus we need to specify the animation trigger to snapshot and animate the layout based on the input.
+
+Attach the `[lpjAnimationTrigger]` directive to an animation entry to specify the animation trigger for that specific animation entry:
+
+<!-- prettier-ignore -->
+```html
+<ng-container lpjAnimationScope>
+  <mat-list lpjNode lpjAnimation [lpjAnimationTrigger]="?">
+    ...
+  </mat-list>
+</ng-container>
+```
+
+### Animation Trigger Input
+
+The input for `[lpjAnimationTrigger]` is usually something consumed by the animation entry node or inner nodes, which is the `items` variable in our case. The input can be either a stream or an arbitrary expression.
+
+#### Stream as Input
+
+Using a stream (`Observable`) as input is the most stable way to trigger an layout animation.
+
+When the input is a stream, the layout snapshot will be created when a new value is emitted from the stream, and then the layout will be animated after the layout is updated:
+
+```html
+<ng-container lpjAnimationScope>
+  <mat-list lpjNode lpjAnimation [lpjAnimationTrigger]="items$">
+    <mat-list-item *ngFor="let item of items$ | async" lpjNode>
+      {{ item.title }}
+    </mat-list-item>
+  </mat-list>
+</ng-container>
+```
+
+#### Arbitrary Expression as Input
+
+Using an arbitrary expression as input is available only when the node the animation trigger directive attached on is an ancestor node of the nodes that would be animated (the attached node itself does not participate in the animation).
+
+The layout snapshot will be created when the expression's value has changed, and then the layout will be also animated after the layout is updated:
+
+```html
+<ng-container *ngIf="items$ | async as items" lpjAnimationScope>
+  <mat-list lpjNode lpjAnimation [lpjAnimationTrigger]="items">
+    <mat-list-item *ngFor="let item of items" lpjNode>
+      <span>{{ item.title }}</span>
+    </mat-list-item>
+  </mat-list>
+</ng-container>
+```
+
+## Final Implementation
+
+With a few more refinements, this is how a basic list item layout animation would be implemented:
+
+```ts
+@Component(...)
+export class AppComponent {
+  items$ = new BehaviorSubject([
+    { title: 'Item 1' },
+    { title: 'Item 2' },
+    { title: 'Item 3' },
+    { title: 'Item 4' },
+  ]);
+
+  removeFirst(): void {
+    this.items$.next(this.items$.value.splice(1));
+  }
+}
+```
+
+```html
+<ng-container *ngIf="items$ | async as items" lpjAnimationScope>
+  <button mat-button lpjNode (click)="removeFirst()">Remove</button>
+  <mat-list lpjNode lpjAnimation [lpjAnimationTrigger]="items">
+    <mat-list-item *ngFor="let item of items" lpjNode>
+      <span>{{ item.title }}</span>
+    </mat-list-item>
+  </mat-list>
+</ng-container>
+```
 
 # Advanced
 
