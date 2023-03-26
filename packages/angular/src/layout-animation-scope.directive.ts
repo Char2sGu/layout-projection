@@ -8,6 +8,7 @@ export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntryD
 
 @Directive({
   selector: '[lpjAnimationScope]',
+  exportAs: 'lpjAnimationScope',
   providers: [
     {
       provide: LayoutAnimationScopeNodeRegistry,
