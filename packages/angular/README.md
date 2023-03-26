@@ -235,3 +235,48 @@ A standalone animation trigger can be extremely useful in cases of
 - different `Node` instance for the same node as the animation entry (e.g. [shared-element animations](#shared-element-animation))
 
 ## Shared-element Animation
+
+Shared-element animations are special layout animations where a single node might be represented by two different `Node` instances.
+
+A shared-element animation creates a smooth transition between two views by animating some common elements and make them appear to be shared elements between the views.
+
+A common use case can be to animate the underline of a tab which indicates that the tab is active. With shared-element animation, the underline would smoothly move from tab to tab although they are actually different element instances that appear the same:
+
+```html
+<div class="tabs" lpjAnimationScope>
+  <ng-container
+    *lpjAnimationTrigger="tabActive; for: 'underline'"
+  ></ng-container>
+  <div
+    class="tab"
+    [class.active]="tabActive === tab"
+    *ngFor="let tab of tabs"
+    (click)="tabActive = tab"
+  >
+    <span class="tab-title">{{ tab.title }}</span>
+    <div
+      *ngIf="tabActive === tab"
+      class="tab-underline"
+      lpjNode="underline"
+      lpjAnimation
+    ></div>
+  </div>
+</div>
+```
+
+To implement a shared-element animation, simply assign a ID to all the `Node` instances of the shared element by providing a string to the `lpjNode` input of the `[lpjNode]` directive:
+
+```html
+<div
+  *ngIf="tabActive === tab"
+  class="tab-underline"
+  lpjNode="underline"
+  lpjAnimation
+></div>
+```
+
+...and use a [standalone animation trigger](#standalone-animation-trigger) to dynamically look for the animation entry by node ID:
+
+```html
+<ng-container *lpjAnimationTrigger="tabActive; for: 'underline'"></ng-container>
+```
