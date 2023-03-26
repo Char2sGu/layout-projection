@@ -19,7 +19,7 @@ export class LayoutAnimationEntryDirective {
     this.config = v;
   }
 
-  config: Partial<Pick<LayoutAnimationConfig, 'duration' | 'easing'>> = {};
+  config: Pick<LayoutAnimationConfig, 'duration' | 'easing'> = {};
 
   constructor(
     @Self() public node: Node,
@@ -36,7 +36,7 @@ export class LayoutAnimationEntryDirective {
 
   async animate(): Promise<void> {
     if (!this.snapshots) throw new Error('Missing snapshots');
-    const { duration = 225, easing = 'ease-in-out' } = this.config;
+    const { duration, easing } = this.config;
     await this.animator.animate({
       root: this.node,
       from: this.snapshots,

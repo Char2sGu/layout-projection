@@ -28,7 +28,8 @@ export class LayoutAnimator {
 
   async animate(config: LayoutAnimationConfig): Promise<void> {
     return new Promise((resolve) => {
-      const { root, from: snapshots, duration, easing } = config;
+      const { root, from: snapshots } = config;
+      const { duration = 225, easing = easeInOut } = config;
 
       this.animationStoppers.get(root)?.();
 
@@ -196,8 +197,8 @@ export class LayoutAnimator {
 export interface LayoutAnimationConfig {
   root: Node;
   from: NodeSnapshotMap;
-  duration: number;
-  easing: string | Easing;
+  duration?: number;
+  easing?: string | Easing;
 }
 
 export class LayoutAnimationEasingParser {
