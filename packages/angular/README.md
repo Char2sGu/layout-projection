@@ -211,14 +211,14 @@ When an animation trigger is a standalone animation trigger, the `lpjAnimationTr
 
 The `lpjAnimationTriggerFor` input accepts:
 
-- A `Node` instance in the animation scope
+- The `Node` instance of a node serving as an animation entry in the current animation scope
   ```html
   <ng-container lpjAnimationScope>
     <ng-container *lpjAnimationTrigger="items$; for: listNode"></ng-container>
-    <mat-list lpjNode #listNode="lpjNode"><mat-list>
+    <mat-list lpjNode lpjAnimation #listNode="lpjNode"><mat-list>
   </ng-container>
   ```
-- A `string` indicating the ID of a `Node` instance in the animation scope
+- The ID of a node serving as an animation entry in the current animation scope
   ```html
   <ng-container lpjAnimationScope>
     <ng-container *lpjAnimationTrigger="expanded; for: 'list'"></ng-container>
@@ -232,6 +232,6 @@ A standalone animation trigger can be extremely useful in cases of
 
 - many animation triggers for one animation entry
 - one animation trigger for many animation entries
-- [shared-element animations](#shared-element-animation) where the node instance of the animation entry varies.
+- different `Node` instance for the same node as the animation entry (e.g. [shared-element animations](#shared-element-animation))
 
 ## Shared-element Animation
