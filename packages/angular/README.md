@@ -60,9 +60,9 @@ To declare a animation scope, attach the `[lpjAnimationScope]` directive to an e
 </mat-list>
 ```
 
-Now animations declared on `<mat-list>` and any elements under `<mat-list>` will be scoped to the animation scope we just declared. Note that animation scopes declared in an component are also scoped to the component, which means that we are not allowed to use animation scopes declared in parent components.
+Now animations declared on `<mat-list>` and any elements under `<mat-list>` will be scoped to the animation scope we just declared. Note that animation scopes declared in an component are also scoped to the component, thus we cannot use animation scopes declared in parent components.
 
-We can also choose to attach the directive on an `<ng-container>` if there is no existing container elements:
+We can also choose to attach the directive to an `<ng-container>` if there is no container elements available to attach to:
 
 <!-- prettier-ignore -->
 ```html
@@ -71,7 +71,7 @@ We can also choose to attach the directive on an `<ng-container>` if there is no
 </ng-container>
 ```
 
-The animation scope provides necessary dependencies animation directives within it. Missing a scope could cause runtime Dependency Injection errors.
+The animation scope provides necessary dependencies for animation directives in it. Missing a scope could cause runtime Dependency Injection errors.
 
 ## Configuring the Animation Entry
 
