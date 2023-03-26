@@ -93,7 +93,7 @@ In our case, the entry can be the list element so that all the list items will b
 
 Layout animations for the entry can be customized by providing a configuration object to the `[lpjAnimation]` directive. The default configuration is:
 
-`[lpjAnimation]="{ duration: 225, easing: 'cubic-bezier(0.4,0.0,0.2,1)' }"`
+`[lpjAnimation]="{ duration: 225, easing: 'ease-in-out' }"`
 
 The `duration` property accepts:
 
