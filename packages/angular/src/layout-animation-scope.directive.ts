@@ -26,8 +26,8 @@ export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntryD
 })
 export class LayoutAnimationScopeDirective {
   constructor(
-    @Self() public nodeRegistry: LayoutAnimationScopeNodeRegistry,
-    @Self() public entryRegistry: LayoutAnimationScopeEntryRegistry,
-    @Self() public snapshots: NodeSnapshotMap,
+    @Self() readonly nodeRegistry: LayoutAnimationScopeNodeRegistry,
+    @Self() readonly entryRegistry: LayoutAnimationScopeEntryRegistry,
+    @Self() readonly snapshots: NodeSnapshotMap,
   ) {}
 }
