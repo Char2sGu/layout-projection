@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'app-sample-basic',
   template: `
-    <ng-container lpjAnimationScope>
+    <ng-container *lpjAnimationScope>
       <div
         class="container"
         [class.flag]="flag$ | async"

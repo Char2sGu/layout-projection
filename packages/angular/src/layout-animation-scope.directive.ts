@@ -1,33 +1,69 @@
-import { Directive, Self } from '@angular/core';
+import {
+  Directive,
+  Injectable,
+  Injector,
+  OnInit,
+  TemplateRef,
+  ViewContainerRef,
+} from '@angular/core';
 import { Node, NodeSnapshotMap } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 
-export class LayoutAnimationScopeNodeRegistry extends Set<Node> {}
-export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntryDirective> {}
-
 @Directive({
   selector: '[lpjAnimationScope]',
-  exportAs: 'lpjAnimationScope',
-  providers: [
-    {
-      provide: LayoutAnimationScopeNodeRegistry,
-      useFactory: () => new LayoutAnimationScopeNodeRegistry(),
-    },
-    {
-      provide: LayoutAnimationScopeEntryRegistry,
-      useFactory: () => new LayoutAnimationScopeEntryRegistry(),
-    },
-    {
-      provide: NodeSnapshotMap,
-      useFactory: () => new NodeSnapshotMap(),
-    },
-  ],
 })
-export class LayoutAnimationScopeDirective {
+export class LayoutAnimationScopeDirective implements OnInit {
   constructor(
-    @Self() readonly nodeRegistry: LayoutAnimationScopeNodeRegistry,
-    @Self() readonly entryRegistry: LayoutAnimationScopeEntryRegistry,
-    @Self() readonly snapshots: NodeSnapshotMap,
+    private templateRef: TemplateRef<LayoutAnimationScopeTemplateContext>,
+    private viewContainer: ViewContainerRef,
+    private injector: Injector,
+  ) {}
+
+  ngOnInit(): void {
+    const injector = this.createInjector();
+    const ref = injector.get(LayoutAnimationScopeRef);
+    this.viewContainer.createEmbeddedView(
+      this.templateRef,
+      { $implicit: ref },
+      { injector },
+    );
+  }
+
+  private createInjector(): Injector {
+    return Injector.create({
+      parent: this.injector,
+      providers: [
+        { provide: LayoutAnimationScopeRef },
+        {
+          provide: LayoutAnimationScopeNodeRegistry,
+          useValue: new LayoutAnimationScopeNodeRegistry(),
+        },
+        {
+          provide: LayoutAnimationScopeEntryRegistry,
+          useValue: new LayoutAnimationScopeEntryRegistry(),
+        },
+        {
+          provide: NodeSnapshotMap,
+          useValue: new NodeSnapshotMap(),
+        },
+      ],
+    });
+  }
+}
+
+@Injectable()
+export class LayoutAnimationScopeRef {
+  constructor(
+    readonly nodeRegistry: LayoutAnimationScopeNodeRegistry,
+    readonly entryRegistry: LayoutAnimationScopeEntryRegistry,
+    readonly snapshots: NodeSnapshotMap,
   ) {}
 }
+
+export interface LayoutAnimationScopeTemplateContext {
+  $implicit: LayoutAnimationScopeRef;
+}
+
+export class LayoutAnimationScopeNodeRegistry extends Set<Node> {}
+export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntryDirective> {}

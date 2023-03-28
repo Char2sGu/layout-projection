@@ -51,11 +51,11 @@ Actually, not all the non-inline elements in a component are required to be mark
 
 In this Angular adapter, layout animations are designed to be scoped to avoid exceptional behaviors and make the application easier to maintain.
 
-To declare a animation scope, attach the `[lpjAnimationScope]` directive to an element:
+To declare a animation scope, attach the `[lpjAnimationScope]` structural directive to an element:
 
 <!-- prettier-ignore -->
 ```html
-<mat-list lpjNode lpjAnimationScope>
+<mat-list *lpjAnimationScope lpjNode>
   ...
 </mat-list>
 ```
@@ -66,7 +66,7 @@ We can also choose to attach the directive to an `<ng-container>` if there is no
 
 <!-- prettier-ignore -->
 ```html
-<ng-container lpjAnimationScope>
+<ng-container *lpjAnimationScope>
   ...
 </ng-container>
 ```
@@ -80,7 +80,7 @@ Layout-Projection-powered layout animations animates a sub-tree of nodes from th
 In our case, the entry can be the list element so that all the list items will be included in the sub-tree that would be animated. To specify the entry, attach the `[lpjAnimation]` directive to a node within an animation scope:
 
 ```html
-<ng-container lpjAnimationScope>
+<ng-container *lpjAnimationScope>
   <mat-list lpjNode lpjAnimation>
     <mat-list-item *ngFor="let item of items$ | async" lpjNode>
       <span>{{ item.title }}</span>
@@ -118,7 +118,7 @@ Attach the `[lpjAnimationTrigger]` directive to an animation entry to specify th
 
 <!-- prettier-ignore -->
 ```html
-<ng-container lpjAnimationScope>
+<ng-container *lpjAnimationScope>
   <mat-list lpjNode lpjAnimation [lpjAnimationTrigger]="?">
     ...
   </mat-list>
@@ -136,7 +136,7 @@ Using a stream (`Observable`) as input is the most stable way to trigger an layo
 When the input is a stream, the layout snapshot will be created when a new value is emitted from the stream, and then the layout will be animated after the layout is updated:
 
 ```html
-<ng-container lpjAnimationScope>
+<ng-container *lpjAnimationScope>
   <mat-list lpjNode lpjAnimation [lpjAnimationTrigger]="items$">
     <mat-list-item *ngFor="let item of items$ | async" lpjNode>
       {{ item.title }}
@@ -152,8 +152,13 @@ Using an arbitrary expression as input is available only when the node the anima
 The layout snapshot will be created when the expression's value has changed, and then the layout will be also animated after the layout is updated:
 
 ```html
-<ng-container *ngIf="items$ | async as items" lpjAnimationScope>
-  <mat-list lpjNode lpjAnimation [lpjAnimationTrigger]="items">
+<ng-container *lpjAnimationScope>
+  <mat-list
+    *ngIf="items$ | async as items"
+    lpjNode
+    lpjAnimation
+    [lpjAnimationTrigger]="items"
+  >
     <mat-list-item *ngFor="let item of items" lpjNode>
       <span>{{ item.title }}</span>
     </mat-list-item>
@@ -182,8 +187,15 @@ export class AppComponent {
 ```
 
 ```html
-<ng-container *ngIf="items$ | async as items" lpjAnimationScope>
-  <button mat-button lpjNode (click)="removeFirst()">Remove</button>
+<ng-container *lpjAnimationScope>
+  <button
+    mat-button
+    *ngIf="items$ | async as items"
+    lpjNode
+    (click)="removeFirst()"
+  >
+    Remove
+  </button>
   <mat-list lpjNode lpjAnimation [lpjAnimationTrigger]="items">
     <mat-list-item *ngFor="let item of items" lpjNode>
       <span>{{ item.title }}</span>
@@ -213,14 +225,14 @@ The `lpjAnimationTriggerFor` input accepts:
 
 - The `Node` instance of a node serving as an animation entry in the current animation scope
   ```html
-  <ng-container lpjAnimationScope>
+  <ng-container *lpjAnimationScope>
     <ng-container *lpjAnimationTrigger="items$; for: listNode"></ng-container>
     <mat-list lpjNode lpjAnimation #listNode="lpjNode"><mat-list>
   </ng-container>
   ```
 - The ID of a node serving as an animation entry in the current animation scope
   ```html
-  <ng-container lpjAnimationScope>
+  <ng-container *lpjAnimationScope>
     <ng-container *lpjAnimationTrigger="expanded; for: 'list'"></ng-container>
     <mat-list *ngIf="!expanded" lpjNode="list">...<mat-list>
     <mat-list *ngIf="expanded" lpjNode="list">...<mat-list>
@@ -243,7 +255,7 @@ A shared-element animation creates a smooth transition between two views by anim
 A common use case can be to animate the underline of a tab which indicates that the tab is active. With shared-element animation, the underline would smoothly move from tab to tab although they are actually different element instances that appear the same:
 
 ```html
-<div class="tabs" lpjAnimationScope>
+<div class="tabs" *lpjAnimationScope>
   <ng-container
     *lpjAnimationTrigger="tabActive; for: 'underline'"
   ></ng-container>

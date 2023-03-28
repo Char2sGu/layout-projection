@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-sample-tabs',
   template: `
     <div class="container">
-      <div class="tabs" lpjAnimationScope>
+      <div class="tabs" *lpjAnimationScope>
         <ng-container
           *lpjAnimationTrigger="tabActive; for: ['overlay', 'underline']"
         ></ng-container>
