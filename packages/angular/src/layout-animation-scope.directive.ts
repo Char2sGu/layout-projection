@@ -2,6 +2,7 @@ import {
   Directive,
   Injectable,
   Injector,
+  Input,
   OnInit,
   TemplateRef,
   ViewContainerRef,
@@ -14,10 +15,16 @@ import { LayoutAnimationEntryDirective } from './layout-animation-entry.directiv
   selector: '[lpjAnimationScope]',
 })
 export class LayoutAnimationScopeDirective implements OnInit {
+  @Input() set lpjAnimationScope(v: '' | this['source']) {
+    if (v === '') return;
+    this.source = v;
+  }
+
+  source?: LayoutAnimationScopeRef;
+
   constructor(
     private templateRef: TemplateRef<LayoutAnimationScopeTemplateContext>,
     private viewContainer: ViewContainerRef,
-    private injector: Injector,
   ) {}
 
   ngOnInit(): void {
@@ -31,22 +38,18 @@ export class LayoutAnimationScopeDirective implements OnInit {
   }
 
   private createInjector(): Injector {
+    const {
+      nodeRegistry = new LayoutAnimationScopeNodeRegistry(),
+      entryRegistry = new LayoutAnimationScopeEntryRegistry(),
+      snapshots = new NodeSnapshotMap(),
+    } = this.source ?? {};
     return Injector.create({
-      parent: this.injector,
+      parent: this.viewContainer.injector,
       providers: [
         { provide: LayoutAnimationScopeRef },
-        {
-          provide: LayoutAnimationScopeNodeRegistry,
-          useValue: new LayoutAnimationScopeNodeRegistry(),
-        },
-        {
-          provide: LayoutAnimationScopeEntryRegistry,
-          useValue: new LayoutAnimationScopeEntryRegistry(),
-        },
-        {
-          provide: NodeSnapshotMap,
-          useValue: new NodeSnapshotMap(),
-        },
+        { provide: LayoutAnimationScopeNodeRegistry, useValue: nodeRegistry },
+        { provide: LayoutAnimationScopeEntryRegistry, useValue: entryRegistry },
+        { provide: NodeSnapshotMap, useValue: snapshots },
       ],
     });
   }
