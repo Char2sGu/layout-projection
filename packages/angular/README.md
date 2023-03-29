@@ -188,15 +188,13 @@ export class AppComponent {
 
 ```html
 <ng-container *lpjAnimationScope>
-  <button
-    mat-button
+  <button mat-button lpjNode (click)="removeFirst()">Remove</button>
+  <mat-list
     *ngIf="items$ | async as items"
     lpjNode
-    (click)="removeFirst()"
+    lpjAnimation
+    [lpjAnimationTrigger]="items"
   >
-    Remove
-  </button>
-  <mat-list lpjNode lpjAnimation [lpjAnimationTrigger]="items">
     <mat-list-item *ngFor="let item of items" lpjNode>
       <span>{{ item.title }}</span>
     </mat-list-item>
