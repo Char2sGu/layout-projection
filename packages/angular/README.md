@@ -60,7 +60,7 @@ To declare a animation scope, attach the `[lpjAnimationScope]` structural direct
 </mat-list>
 ```
 
-Now animations declared on `<mat-list>` and any elements under `<mat-list>` will be scoped to the animation scope we just declared. Note that animation scopes declared in an component are also scoped to the component, thus we cannot use animation scopes declared in parent components.
+Now animations declared on `<mat-list>` and any elements under `<mat-list>` will be scoped to the animation scope we just declared. Note that animation scopes declared in an component are also scoped to the component, thus we should not be able to use animation scopes declared in parent components without [sharing the animation scope](#shared-animation-scope).
 
 We can also choose to attach the directive to an `<ng-container>` if there is no container elements available to attach to:
 
@@ -291,4 +291,35 @@ To implement a shared-element animation, simply assign a ID to all the `Node` in
 
 ```html
 <ng-container *lpjAnimationTrigger="tabActive; for: 'underline'"></ng-container>
+```
+
+## Shared Animation Scope
+
+Sometimes we might want to share an animation scope between components so that we can animate items in a child component from the parent component.
+
+The `[lpjAnimationScope]` directive exports a reference to the animation scope to the `$implicit` template context property so that we can assign the reference to a template variable:
+
+```html
+<ng-container *lpjAnimationScope="let animationScope"></ng-container>
+```
+
+..., and also accepts an animation scope reference as input so that we can use an existing animation scope instead of create a new one:
+
+```html
+<ng-container *lpjAnimationScope="let animationScope">
+  <ng-container *lpjAnimationScope="animationScope"></ng-container>
+</ng-container>
+```
+
+In order to share an animation scope between the parent component and a child component, we can simply pass the animation scope reference to the child component as an input:
+
+```html
+<ng-container *lpjAnimationScope="let animationScope">
+  <app-child [animationScope]="animationScope"></app-child>
+</ng-container>
+```
+
+```ts
+import { LayoutAnimationScopeRef } from "@layout-projection/angular";
+@Input() animationScope?: LayoutAnimationScopeRef;
 ```
