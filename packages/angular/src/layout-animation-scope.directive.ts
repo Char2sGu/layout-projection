@@ -10,6 +10,7 @@ import {
 import { Node, NodeSnapshotMap } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
+import { NodeDirective } from './node.directive';
 
 @Directive({
   selector: '[lpjAnimationScope]',
@@ -43,7 +44,8 @@ export class LayoutAnimationScopeDirective implements OnInit {
       entryRegistry = new LayoutAnimationScopeEntryRegistry(),
       snapshots = new NodeSnapshotMap(),
     } = this.source ?? {};
-    return Injector.create({
+
+    const raw = Injector.create({
       parent: this.viewContainer.injector,
       providers: [
         { provide: LayoutAnimationScopeRef },
@@ -52,6 +54,20 @@ export class LayoutAnimationScopeDirective implements OnInit {
         { provide: NodeSnapshotMap, useValue: snapshots },
       ],
     });
+
+    // TODO: Remove this wrapper once https://github.com/angular/angular/issues/49621
+    // is solved.
+    // Currently, the custom injector specified for an embedded view would be
+    // checked before node injectors, thus we need to forbid certain tokens
+    // from being resolved from the custom injector so that these tokens would
+    // be resolved from the node injectors.
+    const tokens = [Node, NodeDirective];
+    return {
+      get(token: any, ...args: any[]): any {
+        if (tokens.includes(token)) token = Symbol('not-found');
+        return raw.get(token, ...args);
+      },
+    };
   }
 }
 
