@@ -14,7 +14,7 @@ TODO: online IDE links
 
 # Tutorial
 
-In this tutorial, we will build one of the simplest and the most commonly used layout animation, which is to animate the items of a list when the items changes.
+Through this tutorial, we will build one of the simplest and the most commonly used layout animation, which is to animate the items of a list when the items changes.
 
 ## Preparation
 
@@ -45,7 +45,7 @@ Apply the `[lpjNode]` directive to an element to mark the element as a node of t
 
 In this example above, `<span>` elements are not marked as nodes because they are inline elements, but marking them is completely ok and would do no harm. If you are not sure whether or not a node should be marked as a node, just mark it.
 
-Actually, not all the non-inline elements in a component are required to be marked as nodes, and in some cases all elements in certain components do not need to be marked as nodes, but it's **strongly** recommended for beginners to do so to make sure layout animations can work properly.
+Actually, not all the non-inline elements in a component are required to be marked as nodes, and in many cases all elements in certain components do not need to be marked as nodes, but it's **strongly** recommended for beginners to do so to make sure layout animations can work properly.
 
 ## Declaring the Animation Scope
 
