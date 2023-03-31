@@ -1,7 +1,7 @@
 import { inject, NgModule } from '@angular/core';
 import {
   BorderRadiusStyleParser,
-  LayoutAnimationEasingParser,
+  CssEasingParser,
   LayoutAnimator,
   NodeMeasurer,
   NodeSnapper,
@@ -40,14 +40,11 @@ import { NodeDirective } from './node.directive';
     {
       provide: LayoutAnimator,
       useFactory: () =>
-        new LayoutAnimator(
-          inject(NodeMeasurer),
-          inject(LayoutAnimationEasingParser),
-        ),
+        new LayoutAnimator(inject(NodeMeasurer), inject(CssEasingParser)),
     },
     {
-      provide: LayoutAnimationEasingParser,
-      useFactory: () => new LayoutAnimationEasingParser(),
+      provide: CssEasingParser,
+      useFactory: () => new CssEasingParser(),
     },
     {
       provide: NodeMeasurer,

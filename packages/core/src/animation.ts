@@ -23,12 +23,15 @@ export class LayoutAnimator {
 
   constructor(
     protected measurer: NodeMeasurer,
-    protected easingParser: LayoutAnimationEasingParser,
+    protected easingParser: CssEasingParser,
   ) {}
 
   async animate(config: LayoutAnimationConfig): Promise<void> {
     return new Promise((resolve) => {
       const { root, from: snapshots } = config;
+
+      if (typeof config.easing === 'string')
+        config.easing = this.easingParser.parse(config.easing);
       const { duration = 225, easing = easeInOut } = config;
 
       this.animationStoppers.get(root)?.();
@@ -47,7 +50,7 @@ export class LayoutAnimator {
         from: 0,
         to: 1,
         duration,
-        ease: this.easingParser.coerceEasing(easing),
+        ease: easing,
         onUpdate: projectFrame,
         onComplete: () => {
           root.traverse((node) => node.reset(), { includeSelf: true });
@@ -201,12 +204,17 @@ export interface LayoutAnimationConfig {
   easing?: string | Easing;
 }
 
-export class LayoutAnimationEasingParser {
-  coerceEasing(raw: string | Easing): Easing {
-    return typeof raw === 'string' ? this.parseEasing(raw) : raw;
-  }
+class NodeAnimationConfigMap extends Map<Node['id'], NodeAnimationConfig> {}
 
-  parseEasing(easing: string): Easing {
+interface NodeAnimationConfig {
+  boundingBoxFrom: BoundingBox;
+  boundingBoxTo: BoundingBox;
+  borderRadiusesFrom: BorderRadiusConfig;
+  borderRadiusesTo: BorderRadiusConfig;
+}
+
+export class CssEasingParser {
+  parse(easing: string): Easing {
     if (easing === 'linear') {
       return linear;
     } else if (easing === 'ease') {
@@ -227,13 +235,4 @@ export class LayoutAnimationEasingParser {
     }
     throw new Error(`Unsupported easing string: ${easing}`);
   }
-}
-
-class NodeAnimationConfigMap extends Map<Node['id'], NodeAnimationConfig> {}
-
-interface NodeAnimationConfig {
-  boundingBoxFrom: BoundingBox;
-  boundingBoxTo: BoundingBox;
-  borderRadiusesFrom: BorderRadiusConfig;
-  borderRadiusesTo: BorderRadiusConfig;
 }
