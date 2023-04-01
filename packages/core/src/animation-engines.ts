@@ -129,6 +129,7 @@ export interface NodeAnimationPlan {
 
 export class NodeAnimationPlanMap extends Map<Node['id'], NodeAnimationPlan> {}
 
+// TODO: save more context info
 export class AnimationRef extends Promise<void> {
   stopFn?: () => void;
   stop(): void {

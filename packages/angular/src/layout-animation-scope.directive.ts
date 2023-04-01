@@ -11,6 +11,8 @@ import { Node, NodeSnapshotMap } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 
+// TODO: snapshot memory leak
+
 @Directive({
   selector: '[lpjAnimationScope]',
 })
