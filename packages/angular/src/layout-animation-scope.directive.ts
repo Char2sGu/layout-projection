@@ -50,6 +50,13 @@ export class LayoutAnimationScopeDirective implements OnInit {
       ],
     });
   }
+
+  static ngTemplateContextGuard(
+    instance: LayoutAnimationScopeDirective,
+    context: unknown,
+  ): context is LayoutAnimationScopeTemplateContext {
+    return true;
+  }
 }
 
 @Injectable()
