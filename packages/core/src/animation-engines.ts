@@ -89,6 +89,35 @@ export class NodeAnimationEngine {
   }
 }
 
+export class TreeAnimationEngine {
+  protected pendingAnimations = new WeakMap<Node, AnimationRef>();
+
+  constructor(protected engine: NodeAnimationEngine) {}
+
+  animate(root: Node, plans: NodeAnimationPlanMap): AnimationRef {
+    this.pendingAnimations.get(root)?.stop();
+
+    const animations: AnimationRef[] = [];
+    root.traverse(
+      (node) => {
+        const plan = plans.get(node.id);
+        if (!plan) throw new Error('Unknown node');
+        const animation = this.engine.animate(node, plan);
+        animations.push(animation);
+      },
+      { includeSelf: true },
+    );
+
+    const ref = new AnimationRef((resolve) => {
+      Promise.allSettled(animations).then(() => resolve);
+    });
+    ref.stopFn = () => animations.forEach((ref) => ref.stop());
+
+    this.pendingAnimations.set(root, ref);
+    return ref;
+  }
+}
+
 export interface NodeAnimationPlan {
   duration: number;
   easing: Easing;
@@ -98,7 +127,8 @@ export interface NodeAnimationPlan {
   borderRadiusesTo: BorderRadiusConfig;
 }
 
-// TODO: move
+export class NodeAnimationPlanMap extends Map<Node['id'], NodeAnimationPlan> {}
+
 export class AnimationRef extends Promise<void> {
   stopFn?: () => void;
   stop(): void {

@@ -3,10 +3,11 @@ import {
   BorderRadiusStyleParser,
   CssEasingParser,
   LayoutAnimator,
+  NodeAnimationEngine,
   NodeMeasurer,
   NodeSnapper,
+  TreeAnimationEngine,
 } from '@layout-projection/core';
-import { NodeAnimationEngine } from '@layout-projection/core/dist/node-animation';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 import { LayoutAnimationScopeDirective } from './layout-animation-scope.directive';
@@ -42,7 +43,7 @@ import { NodeDirective } from './node.directive';
       provide: LayoutAnimator,
       useFactory: () =>
         new LayoutAnimator(
-          inject(NodeAnimationEngine),
+          inject(TreeAnimationEngine),
           inject(NodeMeasurer),
           inject(CssEasingParser),
         ),
@@ -50,6 +51,10 @@ import { NodeDirective } from './node.directive';
     {
       provide: NodeAnimationEngine,
       useFactory: () => new NodeAnimationEngine(),
+    },
+    {
+      provide: TreeAnimationEngine,
+      useFactory: () => new TreeAnimationEngine(inject(NodeAnimationEngine)),
     },
     {
       provide: NodeMeasurer,

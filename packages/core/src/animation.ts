@@ -7,48 +7,27 @@ import {
   linear,
 } from 'popmotion';
 
+import {
+  AnimationRef,
+  NodeAnimationPlanMap,
+  TreeAnimationEngine,
+} from './animation-engines.js';
 import { BoundingBox } from './core.js';
 import { NodeMeasurer } from './measure.js';
 import { Node } from './node.js';
-import {
-  AnimationRef,
-  NodeAnimationEngine,
-  NodeAnimationPlan,
-} from './node-animation.js';
 import { NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
 
 export class LayoutAnimator {
-  protected pendingAnimations = new WeakMap<Node, AnimationRef>();
-
   constructor(
-    protected engine: NodeAnimationEngine,
+    protected engine: TreeAnimationEngine,
     protected measurer: NodeMeasurer,
     protected easingParser: CssEasingParser,
   ) {}
 
   animate(config: LayoutAnimationConfig): AnimationRef {
-    const { root } = config;
-    this.pendingAnimations.get(root)?.stop();
-    this.initialize(root);
-
+    this.initialize(config.root);
     const plans = this.getAnimationPlanMap(config);
-    const animations: AnimationRef[] = [];
-    root.traverse(
-      (node) => {
-        const plan = plans.get(node.id);
-        if (!plan) throw new Error('Unknown node');
-        const animation = this.engine.animate(node, plan);
-        animations.push(animation);
-      },
-      { includeSelf: true },
-    );
-
-    const ref = new AnimationRef((resolve) => {
-      Promise.allSettled(animations).then(() => resolve);
-    });
-    ref.stopFn = () => animations.forEach((ref) => ref.stop());
-    this.pendingAnimations.set(root, ref);
-    return ref;
+    return this.engine.animate(config.root, plans);
   }
 
   protected initialize(root: Node): void {
@@ -171,5 +150,3 @@ export class CssEasingParser {
     throw new Error(`Unsupported easing string: ${easing}`);
   }
 }
-
-class NodeAnimationPlanMap extends Map<Node['id'], NodeAnimationPlan> {}
