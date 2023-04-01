@@ -1,11 +1,4 @@
-import {
-  cubicBezier,
-  easeIn,
-  easeInOut,
-  easeOut,
-  Easing,
-  linear,
-} from 'popmotion';
+import { easeInOut, Easing } from 'popmotion';
 
 import {
   AnimationRef,
@@ -13,6 +6,7 @@ import {
   TreeAnimationEngine,
 } from './animation-engines.js';
 import { BoundingBox } from './core.js';
+import { CssEasingParser } from './css.js';
 import { NodeMeasurer } from './measure.js';
 import { Node } from './node.js';
 import { NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
@@ -124,29 +118,4 @@ export interface LayoutAnimationConfig {
   from: NodeSnapshotMap;
   duration?: number;
   easing?: string | Easing;
-}
-
-// TODO: move
-export class CssEasingParser {
-  parse(easing: string): Easing {
-    if (easing === 'linear') {
-      return linear;
-    } else if (easing === 'ease') {
-      return easeInOut;
-    } else if (easing === 'ease-in') {
-      return easeIn;
-    } else if (easing === 'ease-out') {
-      return easeOut;
-    } else if (easing === 'ease-in-out') {
-      return easeInOut;
-    } else if (easing.startsWith('cubic-bezier')) {
-      const [a, b, c, d] = easing
-        .replace('cubic-bezier(', '')
-        .replace(')', '')
-        .split(',')
-        .map((v) => parseFloat(v));
-      return cubicBezier(a, b, c, d);
-    }
-    throw new Error(`Unsupported easing string: ${easing}`);
-  }
 }

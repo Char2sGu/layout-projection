@@ -1,6 +1,6 @@
 import { inject, NgModule } from '@angular/core';
 import {
-  BorderRadiusStyleParser,
+  CssBorderRadiusParser,
   CssEasingParser,
   LayoutAnimator,
   NodeAnimationEngine,
@@ -58,15 +58,15 @@ import { NodeDirective } from './node.directive';
     },
     {
       provide: NodeMeasurer,
-      useFactory: () => new NodeMeasurer(inject(BorderRadiusStyleParser)),
+      useFactory: () => new NodeMeasurer(inject(CssBorderRadiusParser)),
     },
     {
       provide: NodeSnapper,
       useFactory: () => new NodeSnapper(inject(NodeMeasurer)),
     },
     {
-      provide: BorderRadiusStyleParser,
-      useFactory: () => new BorderRadiusStyleParser(),
+      provide: CssBorderRadiusParser,
+      useFactory: () => new CssBorderRadiusParser(),
     },
     {
       provide: CssEasingParser,
