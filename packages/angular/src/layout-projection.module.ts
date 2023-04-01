@@ -6,6 +6,7 @@ import {
   NodeMeasurer,
   NodeSnapper,
 } from '@layout-projection/core';
+import { NodeAnimationEngine } from '@layout-projection/core/dist/node-animation';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 import { LayoutAnimationScopeDirective } from './layout-animation-scope.directive';
@@ -40,11 +41,15 @@ import { NodeDirective } from './node.directive';
     {
       provide: LayoutAnimator,
       useFactory: () =>
-        new LayoutAnimator(inject(NodeMeasurer), inject(CssEasingParser)),
+        new LayoutAnimator(
+          inject(NodeAnimationEngine),
+          inject(NodeMeasurer),
+          inject(CssEasingParser),
+        ),
     },
     {
-      provide: CssEasingParser,
-      useFactory: () => new CssEasingParser(),
+      provide: NodeAnimationEngine,
+      useFactory: () => new NodeAnimationEngine(),
     },
     {
       provide: NodeMeasurer,
@@ -57,6 +62,10 @@ import { NodeDirective } from './node.directive';
     {
       provide: BorderRadiusStyleParser,
       useFactory: () => new BorderRadiusStyleParser(),
+    },
+    {
+      provide: CssEasingParser,
+      useFactory: () => new CssEasingParser(),
     },
   ],
 })

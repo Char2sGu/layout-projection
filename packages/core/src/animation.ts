@@ -1,66 +1,54 @@
 import {
-  animate,
   cubicBezier,
   easeIn,
   easeInOut,
   easeOut,
   Easing,
   linear,
-  mix,
 } from 'popmotion';
 
-import {
-  BorderRadiusConfig,
-  BorderRadiusCornerConfig,
-  BoundingBox,
-} from './core.js';
+import { BoundingBox } from './core.js';
 import { NodeMeasurer } from './measure.js';
 import { Node } from './node.js';
+import {
+  AnimationRef,
+  NodeAnimationEngine,
+  NodeAnimationPlan,
+} from './node-animation.js';
 import { NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
 
 export class LayoutAnimator {
-  protected animationStoppers = new WeakMap<Node, () => void>();
+  protected pendingAnimations = new WeakMap<Node, AnimationRef>();
 
   constructor(
+    protected engine: NodeAnimationEngine,
     protected measurer: NodeMeasurer,
     protected easingParser: CssEasingParser,
   ) {}
 
-  async animate(config: LayoutAnimationConfig): Promise<void> {
-    return new Promise((resolve) => {
-      const { root, from: snapshots } = config;
+  animate(config: LayoutAnimationConfig): AnimationRef {
+    const { root } = config;
+    this.pendingAnimations.get(root)?.stop();
+    this.initialize(root);
 
-      if (typeof config.easing === 'string')
-        config.easing = this.easingParser.parse(config.easing);
-      const { duration = 225, easing = easeInOut } = config;
+    const plans = this.getAnimationPlanMap(config);
+    const animations: AnimationRef[] = [];
+    root.traverse(
+      (node) => {
+        const plan = plans.get(node.id);
+        if (!plan) throw new Error('Unknown node');
+        const animation = this.engine.animate(node, plan);
+        animations.push(animation);
+      },
+      { includeSelf: true },
+    );
 
-      this.animationStoppers.get(root)?.();
-
-      this.initialize(root);
-      const configs = this.getAnimationConfigMap(root, snapshots);
-
-      const projectFrame = (progress: number) =>
-        root.traverse(
-          (node) => this.projectNodeForFrame(node, configs, progress),
-          { includeSelf: true },
-        );
-
-      projectFrame(0);
-      const { stop } = animate({
-        from: 0,
-        to: 1,
-        duration,
-        ease: easing,
-        onUpdate: projectFrame,
-        onComplete: () => {
-          root.traverse((node) => node.reset(), { includeSelf: true });
-          resolve();
-        },
-        onStop: resolve,
-      });
-
-      this.animationStoppers.set(root, stop);
+    const ref = new AnimationRef((resolve) => {
+      Promise.allSettled(animations).then(() => resolve);
     });
+    ref.stopFn = () => animations.forEach((ref) => ref.stop());
+    this.pendingAnimations.set(root, ref);
+    return ref;
   }
 
   protected initialize(root: Node): void {
@@ -71,11 +59,15 @@ export class LayoutAnimator {
     root.traverse((node) => node.measure(), { includeSelf: true });
   }
 
-  protected getAnimationConfigMap(
-    root: Node,
-    snapshots: NodeSnapshotMap,
-  ): NodeAnimationConfigMap {
-    const map = new NodeAnimationConfigMap();
+  protected getAnimationPlanMap(
+    config: LayoutAnimationConfig,
+  ): NodeAnimationPlanMap {
+    const { root, from: snapshots } = config;
+    if (typeof config.easing === 'string')
+      config.easing = this.easingParser.parse(config.easing);
+    const { duration = 225, easing = easeInOut } = config;
+
+    const map = new NodeAnimationPlanMap();
 
     root.traverse(
       (node) => {
@@ -98,6 +90,8 @@ export class LayoutAnimator {
         const borderRadiusesTo = node.borderRadiuses;
 
         map.set(node.id, {
+          duration,
+          easing,
           boundingBoxFrom,
           boundingBoxTo,
           borderRadiusesFrom,
@@ -144,57 +138,6 @@ export class LayoutAnimator {
         (ancestor.boundingBox.top - node.boundingBox.bottom) * scale,
     });
   }
-
-  protected projectNodeForFrame(
-    node: Node,
-    configMap: NodeAnimationConfigMap,
-    progress: number,
-  ): void {
-    const config = configMap.get(node.id);
-    if (!config) throw new Error('Unknown node');
-    const boundingBox = this.getNodeBoundingBoxForFrame(config, progress);
-    const borderRadiuses = this.getNodeBorderRadiusesForFrame(config, progress);
-    node.borderRadiuses = borderRadiuses;
-    node.project(boundingBox);
-  }
-
-  protected getNodeBoundingBoxForFrame(
-    config: NodeAnimationConfig,
-    progress: number,
-  ): BoundingBox {
-    const from = config.boundingBoxFrom;
-    const to = config.boundingBoxTo;
-    return new BoundingBox({
-      top: mix(from.top, to.top, progress),
-      left: mix(from.left, to.left, progress),
-      right: mix(from.right, to.right, progress),
-      bottom: mix(from.bottom, to.bottom, progress),
-    });
-  }
-
-  protected getNodeBorderRadiusesForFrame(
-    config: NodeAnimationConfig,
-    progress: number,
-  ): BorderRadiusConfig {
-    const from = config.borderRadiusesFrom;
-    const to = config.borderRadiusesTo;
-
-    const mixRadius = (
-      from: BorderRadiusCornerConfig,
-      to: BorderRadiusCornerConfig,
-      progress: number,
-    ): BorderRadiusCornerConfig => ({
-      x: mix(from.x, to.x, progress),
-      y: mix(from.y, to.y, progress),
-    });
-
-    return {
-      topLeft: mixRadius(from.topLeft, to.topLeft, progress),
-      topRight: mixRadius(from.topRight, to.topRight, progress),
-      bottomLeft: mixRadius(from.bottomLeft, to.bottomLeft, progress),
-      bottomRight: mixRadius(from.bottomRight, to.bottomRight, progress),
-    };
-  }
 }
 
 export interface LayoutAnimationConfig {
@@ -204,15 +147,7 @@ export interface LayoutAnimationConfig {
   easing?: string | Easing;
 }
 
-class NodeAnimationConfigMap extends Map<Node['id'], NodeAnimationConfig> {}
-
-interface NodeAnimationConfig {
-  boundingBoxFrom: BoundingBox;
-  boundingBoxTo: BoundingBox;
-  borderRadiusesFrom: BorderRadiusConfig;
-  borderRadiusesTo: BorderRadiusConfig;
-}
-
+// TODO: move
 export class CssEasingParser {
   parse(easing: string): Easing {
     if (easing === 'linear') {
@@ -236,3 +171,5 @@ export class CssEasingParser {
     throw new Error(`Unsupported easing string: ${easing}`);
   }
 }
+
+class NodeAnimationPlanMap extends Map<Node['id'], NodeAnimationPlan> {}
