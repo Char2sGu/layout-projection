@@ -20,17 +20,16 @@ export class LayoutAnimationEntryDirective {
   }
 
   config: Pick<LayoutAnimationConfig, 'duration' | 'easing'> = {};
-  snapshots = new NodeSnapshotMap();
 
   constructor(
     @Self() public node: Node,
     private animator: LayoutAnimator,
     private snapper: NodeSnapper,
+    @Host() private snapshots: NodeSnapshotMap,
     @Host() @Optional() private nodeRegistry?: LayoutAnimationScopeNodeRegistry,
   ) {}
 
   snapshot(): void {
-    this.snapshots.clear();
     const filter = this.nodeRegistry?.has.bind(this.nodeRegistry);
     this.snapper.snapshotTree(this.node, this.snapshots, filter);
   }
