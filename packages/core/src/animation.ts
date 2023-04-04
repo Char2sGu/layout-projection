@@ -19,13 +19,13 @@ export class LayoutAnimator {
   ) {}
 
   animate(config: LayoutAnimationConfig): AnimationRef {
-    const { root, from: snapshots } = config;
+    const { root, from: snapshots, estimation = false } = config;
     if (typeof config.easing === 'string')
       config.easing = this.easingParser.parse(config.easing);
     const { duration = 225, easing = easeInOut } = config;
 
     this.initialize(root);
-    const routes = this.getAnimationRouteMap(root, snapshots);
+    const routes = this.getAnimationRouteMap(root, snapshots, estimation);
     return this.engine.animate(root, { duration, easing, routes });
   }
 
@@ -40,6 +40,7 @@ export class LayoutAnimator {
   protected getAnimationRouteMap(
     root: Node,
     snapshots: NodeSnapshotMap,
+    estimation: boolean,
   ): NodeAnimationRouteMap {
     const map = new NodeAnimationRouteMap();
 
@@ -53,8 +54,9 @@ export class LayoutAnimator {
         if (map.has(node.id) && node.element === snapshot?.element) return;
 
         const boundingBoxFrom =
-          snapshot?.boundingBox ??
-          this.estimateStartingBoundingBox(root, node, snapshots) ??
+          snapshot?.boundingBox ||
+          (estimation &&
+            this.estimateStartingBoundingBox(root, node, snapshots)) ||
           node.boundingBox;
         const boundingBoxTo = node.boundingBox;
 
@@ -117,4 +119,5 @@ export interface LayoutAnimationConfig {
   from: NodeSnapshotMap;
   duration?: number;
   easing?: string | Easing;
+  estimation?: boolean;
 }
