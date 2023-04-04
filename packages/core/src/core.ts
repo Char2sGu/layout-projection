@@ -6,7 +6,7 @@ export class BoundingBox {
   right: number;
   bottom: number;
 
-  constructor(data: Omit<BoundingBox, 'width' | 'height' | 'midpoint'>) {
+  constructor(data: Pick<BoundingBox, BorderName>) {
     this.top = data.top;
     this.left = data.left;
     this.right = data.right;
@@ -27,6 +27,8 @@ export class BoundingBox {
     };
   }
 }
+
+export type BorderName = 'top' | 'left' | 'right' | 'bottom';
 
 export interface TransformConfig {
   x: TransformAxisConfig;
