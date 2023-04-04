@@ -61,8 +61,7 @@ export class LayoutAnimator {
         const boundingBoxTo = node.boundingBox;
 
         const borderRadiusesFrom =
-          snapshot?.borderRadiuses ??
-          this.measurer.measureBorderRadiuses(node.element, node.boundingBox);
+          snapshot?.borderRadiuses ?? node.borderRadiuses;
         const borderRadiusesTo = node.borderRadiuses;
 
         map.set(node.id, {
