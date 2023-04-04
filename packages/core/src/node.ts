@@ -84,8 +84,7 @@ export class Node {
       this.boundingBox,
     );
   }
-  measured(): this is Node &
-    Required<Pick<Node, 'boundingBox' | 'borderRadiuses'>> {
+  measured(): this is MeasuredNode {
     return !!this.boundingBox && !!this.borderRadiuses;
   }
 
@@ -167,6 +166,9 @@ export class Node {
     return boundingBox;
   }
 }
+
+export type MeasuredNode = Node &
+  Required<Pick<Node, 'boundingBox' | 'borderRadiuses'>>;
 
 export interface NodeTraverseOptions {
   includeSelf?: boolean;
