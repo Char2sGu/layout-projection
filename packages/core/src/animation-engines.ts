@@ -13,14 +13,17 @@ export class NodeAnimationEngine {
   animate(node: Node, config: NodeAnimationConfig): AnimationRef {
     this.pendingAnimations.get(node)?.stop();
 
-    const ref = new AnimationRef((resolve) => {
+    let stopper: () => void;
+
+    const promise = new Promise<void>((resolve) => {
       const { duration, easing, route } = config;
 
       const animateFrame = (progress: number) =>
         this.animateFrame(node, route, progress);
 
       animateFrame(0);
-      const { stop } = animate({
+
+      stopper = animate({
         from: 0,
         to: 1,
         duration,
@@ -31,10 +34,10 @@ export class NodeAnimationEngine {
           resolve();
         },
         onStop: resolve,
-      });
-      ref.stopFn = stop;
+      }).stop;
     });
 
+    const ref = new AnimationRef(promise, () => stopper());
     this.pendingAnimations.set(node, ref);
     return ref;
   }
@@ -110,11 +113,10 @@ export class TreeAnimationEngine {
       { includeSelf: true },
     );
 
-    const ref = new AnimationRef((resolve) => {
-      Promise.allSettled(animations).then(() => resolve);
-    });
-    ref.stopFn = () => animations.forEach((ref) => ref.stop());
-
+    const ref = new AnimationRef(
+      Promise.all(animations), //
+      () => animations.forEach((ref) => ref.stop()),
+    );
     this.pendingAnimations.set(root, ref);
     return ref;
   }
@@ -145,10 +147,23 @@ export class NodeAnimationRouteMap extends Map<
   NodeAnimationRoute
 > {}
 
-// TODO: save more context info
-export class AnimationRef extends Promise<void> {
-  stopFn?: () => void;
+export class AnimationRef implements PromiseLike<void> {
+  constructor(private promise: Promise<any>, private stopper: () => void) {}
+
+  then<TResult1 = void, TResult2 = never>(
+    onfulfilled?:
+      | ((value: void) => TResult1 | PromiseLike<TResult1>)
+      | null
+      | undefined,
+    onrejected?:
+      | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+      | null
+      | undefined,
+  ): PromiseLike<TResult1 | TResult2> {
+    return this.promise.then(onfulfilled, onrejected);
+  }
+
   stop(): void {
-    this.stopFn?.();
+    this.stopper();
   }
 }
