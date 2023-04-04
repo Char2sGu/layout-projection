@@ -8,10 +8,10 @@ import {
 import { Node } from './node.js';
 
 export class NodeAnimationEngine {
-  protected pendingAnimations = new WeakMap<Node, AnimationRef>();
+  protected records = new WeakMap<Node, AnimationRef>();
 
-  animate(node: Node, config: NodeAnimationConfig): AnimationRef {
-    this.pendingAnimations.get(node)?.stop();
+  animate(node: Node, config: NodeAnimationConfig): NodeAnimationRef {
+    this.records.get(node)?.stop();
 
     let stopper: () => void;
 
@@ -37,8 +37,8 @@ export class NodeAnimationEngine {
       }).stop;
     });
 
-    const ref = new AnimationRef(promise, () => stopper());
-    this.pendingAnimations.set(node, ref);
+    const ref = new NodeAnimationRef(node, promise, () => stopper());
+    this.records.set(node, ref);
     return ref;
   }
 
@@ -93,15 +93,15 @@ export class NodeAnimationEngine {
 }
 
 export class TreeAnimationEngine {
-  protected pendingAnimations = new WeakMap<Node, AnimationRef>();
+  protected records = new WeakMap<Node, AnimationRef>();
 
   constructor(protected engine: NodeAnimationEngine) {}
 
-  animate(root: Node, config: TreeAnimationConfig): AnimationRef {
-    this.pendingAnimations.get(root)?.stop();
+  animate(root: Node, config: TreeAnimationConfig): TreeAnimationRef {
+    this.records.get(root)?.stop();
     const { duration, easing, routes } = config;
 
-    const animations: AnimationRef[] = [];
+    const animations: NodeAnimationRef[] = [];
     root.traverse(
       (node) => {
         const route = routes.get(node.id);
@@ -113,11 +113,8 @@ export class TreeAnimationEngine {
       { includeSelf: true },
     );
 
-    const ref = new AnimationRef(
-      Promise.all(animations), //
-      () => animations.forEach((ref) => ref.stop()),
-    );
-    this.pendingAnimations.set(root, ref);
+    const ref = new TreeAnimationRef(root, animations);
+    this.records.set(root, ref);
     return ref;
   }
 }
@@ -165,5 +162,20 @@ export class AnimationRef implements PromiseLike<void> {
 
   stop(): void {
     this.stopper();
+  }
+}
+
+export class NodeAnimationRef extends AnimationRef {
+  constructor(public node: Node, promise: Promise<any>, stopper: () => void) {
+    super(promise, stopper);
+  }
+}
+
+export class TreeAnimationRef extends AnimationRef {
+  constructor(public root: Node, animations: NodeAnimationRef[]) {
+    super(
+      Promise.all(animations), //
+      () => animations.forEach((ref) => ref.stop()),
+    );
   }
 }
