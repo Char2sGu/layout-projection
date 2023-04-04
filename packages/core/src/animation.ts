@@ -2,7 +2,7 @@ import { easeInOut, Easing } from 'popmotion';
 
 import {
   AnimationRef,
-  NodeAnimationPlanMap,
+  NodeAnimationRouteMap,
   TreeAnimationEngine,
 } from './animation-engines.js';
 import { BoundingBox } from './core.js';
@@ -19,9 +19,14 @@ export class LayoutAnimator {
   ) {}
 
   animate(config: LayoutAnimationConfig): AnimationRef {
-    this.initialize(config.root);
-    const plans = this.getAnimationPlanMap(config);
-    return this.engine.animate(config.root, plans);
+    const { root, from: snapshots } = config;
+    if (typeof config.easing === 'string')
+      config.easing = this.easingParser.parse(config.easing);
+    const { duration = 225, easing = easeInOut } = config;
+
+    this.initialize(root);
+    const routes = this.getAnimationRouteMap(root, snapshots);
+    return this.engine.animate(root, { duration, easing, routes });
   }
 
   protected initialize(root: Node): void {
@@ -32,15 +37,11 @@ export class LayoutAnimator {
     root.traverse((node) => node.measure(), { includeSelf: true });
   }
 
-  protected getAnimationPlanMap(
-    config: LayoutAnimationConfig,
-  ): NodeAnimationPlanMap {
-    const { root, from: snapshots } = config;
-    if (typeof config.easing === 'string')
-      config.easing = this.easingParser.parse(config.easing);
-    const { duration = 225, easing = easeInOut } = config;
-
-    const map = new NodeAnimationPlanMap();
+  protected getAnimationRouteMap(
+    root: Node,
+    snapshots: NodeSnapshotMap,
+  ): NodeAnimationRouteMap {
+    const map = new NodeAnimationRouteMap();
 
     root.traverse(
       (node) => {
@@ -63,8 +64,6 @@ export class LayoutAnimator {
         const borderRadiusesTo = node.borderRadiuses;
 
         map.set(node.id, {
-          duration,
-          easing,
           boundingBoxFrom,
           boundingBoxTo,
           borderRadiusesFrom,

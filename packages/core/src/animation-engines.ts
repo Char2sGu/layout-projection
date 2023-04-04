@@ -10,14 +10,14 @@ import { Node } from './node.js';
 export class NodeAnimationEngine {
   protected pendingAnimations = new WeakMap<Node, AnimationRef>();
 
-  animate(node: Node, plan: NodeAnimationPlan): AnimationRef {
+  animate(node: Node, config: NodeAnimationConfig): AnimationRef {
     this.pendingAnimations.get(node)?.stop();
 
     const ref = new AnimationRef((resolve) => {
-      const { duration, easing } = plan;
+      const { duration, easing, route } = config;
 
       const animateFrame = (progress: number) =>
-        this.animateFrame(node, plan, progress);
+        this.animateFrame(node, route, progress);
 
       animateFrame(0);
       const { stop } = animate({
@@ -41,21 +41,21 @@ export class NodeAnimationEngine {
 
   protected animateFrame(
     node: Node,
-    plan: NodeAnimationPlan,
+    route: NodeAnimationRoute,
     progress: number,
   ): void {
-    const boundingBox = this.calculateBoundingBox(plan, progress);
-    const borderRadiuses = this.calculateBorderRadiuses(plan, progress);
+    const boundingBox = this.calculateBoundingBox(route, progress);
+    const borderRadiuses = this.calculateBorderRadiuses(route, progress);
     node.borderRadiuses = borderRadiuses;
     node.project(boundingBox);
   }
 
   protected calculateBoundingBox(
-    plan: NodeAnimationPlan,
+    route: NodeAnimationRoute,
     progress: number,
   ): BoundingBox {
-    const from = plan.boundingBoxFrom;
-    const to = plan.boundingBoxTo;
+    const from = route.boundingBoxFrom;
+    const to = route.boundingBoxTo;
     return new BoundingBox({
       top: mix(from.top, to.top, progress),
       left: mix(from.left, to.left, progress),
@@ -65,11 +65,11 @@ export class NodeAnimationEngine {
   }
 
   protected calculateBorderRadiuses(
-    plan: NodeAnimationPlan,
+    route: NodeAnimationRoute,
     progress: number,
   ): BorderRadiusConfig {
-    const from = plan.borderRadiusesFrom;
-    const to = plan.borderRadiusesTo;
+    const from = route.borderRadiusesFrom;
+    const to = route.borderRadiusesTo;
 
     const mixRadius = (
       from: BorderRadiusCornerConfig,
@@ -94,15 +94,17 @@ export class TreeAnimationEngine {
 
   constructor(protected engine: NodeAnimationEngine) {}
 
-  animate(root: Node, plans: NodeAnimationPlanMap): AnimationRef {
+  animate(root: Node, config: TreeAnimationConfig): AnimationRef {
     this.pendingAnimations.get(root)?.stop();
+    const { duration, easing, routes } = config;
 
     const animations: AnimationRef[] = [];
     root.traverse(
       (node) => {
-        const plan = plans.get(node.id);
-        if (!plan) throw new Error('Unknown node');
-        const animation = this.engine.animate(node, plan);
+        const route = routes.get(node.id);
+        if (!route) throw new Error('Unknown node');
+        const config: NodeAnimationConfig = { duration, easing, route };
+        const animation = this.engine.animate(node, config);
         animations.push(animation);
       },
       { includeSelf: true },
@@ -118,16 +120,30 @@ export class TreeAnimationEngine {
   }
 }
 
-export interface NodeAnimationPlan {
+export interface AnimationConfig {
   duration: number;
   easing: Easing;
+}
+
+export interface NodeAnimationConfig extends AnimationConfig {
+  route: NodeAnimationRoute;
+}
+
+export interface TreeAnimationConfig extends AnimationConfig {
+  routes: NodeAnimationRouteMap;
+}
+
+export interface NodeAnimationRoute {
   boundingBoxFrom: BoundingBox;
   boundingBoxTo: BoundingBox;
   borderRadiusesFrom: BorderRadiusConfig;
   borderRadiusesTo: BorderRadiusConfig;
 }
 
-export class NodeAnimationPlanMap extends Map<Node['id'], NodeAnimationPlan> {}
+export class NodeAnimationRouteMap extends Map<
+  Node['id'],
+  NodeAnimationRoute
+> {}
 
 // TODO: save more context info
 export class AnimationRef extends Promise<void> {
