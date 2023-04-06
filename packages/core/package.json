@@ -6,7 +6,9 @@
   "type": "module",
   "author": "Char2s <char2s@outlook.com>",
   "license": "Apache-2.0",
-  "scripts": {},
+  "scripts": {
+    "test": "jest"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TheNightmareX/layout-projection.git"
