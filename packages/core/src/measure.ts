@@ -1,5 +1,5 @@
-import { BorderRadiusConfig, BoundingBox } from './core.js';
 import { CssBorderRadiusParser } from './css.js';
+import { BorderRadiusConfig, BoundingBox } from './shared.js';
 
 export class NodeMeasurer {
   constructor(protected borderRadiusParser: CssBorderRadiusParser) {}

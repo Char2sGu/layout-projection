@@ -5,10 +5,10 @@ import {
   NodeAnimationRouteMap,
   TreeAnimationEngine,
 } from './animation-engines.js';
-import { BoundingBox } from './core.js';
 import { CssEasingParser } from './css.js';
 import { NodeMeasurer } from './measure.js';
 import { Node } from './node.js';
+import { BoundingBox } from './shared.js';
 import { NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
 
 export class LayoutAnimator {

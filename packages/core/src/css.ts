@@ -8,7 +8,7 @@ import {
 } from 'popmotion';
 import * as styleUnits from 'style-value-types';
 
-import { BorderRadiusCornerConfig } from './core.js';
+import { BorderRadiusCornerConfig } from './shared.js';
 
 export class CssBorderRadiusParser {
   parse(

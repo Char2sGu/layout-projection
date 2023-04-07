@@ -1,11 +1,11 @@
 import { animate, Easing, mix } from 'popmotion';
 
+import { Node } from './node.js';
 import {
   BorderRadiusConfig,
   BorderRadiusCornerConfig,
   BoundingBox,
-} from './core.js';
-import { Node } from './node.js';
+} from './shared.js';
 
 export class NodeAnimationEngine {
   protected records = new WeakMap<Node, AnimationRef>();

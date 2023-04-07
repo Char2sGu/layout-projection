@@ -1,6 +1,6 @@
-import { BorderRadiusConfig, BoundingBox } from './core.js';
 import { NodeMeasurer } from './measure.js';
 import { Node } from './node.js';
+import { BorderRadiusConfig, BoundingBox } from './shared.js';
 
 export class NodeSnapper {
   constructor(protected measurer: NodeMeasurer) {}

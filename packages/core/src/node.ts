@@ -1,11 +1,11 @@
+import { NodeMeasurer } from './measure.js';
 import {
   BorderRadiusConfig,
   BorderRadiusCornerConfig,
   BoundingBox,
   TransformAxisConfig,
   TransformConfig,
-} from './core.js';
-import { NodeMeasurer } from './measure.js';
+} from './shared.js';
 
 /**
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
