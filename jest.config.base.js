@@ -1,5 +1,6 @@
+/**@type {import('jest').Config} */
 module.exports = {
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   clearMocks: true,
   restoreMocks: true,
   transform: {
