@@ -19,7 +19,7 @@ export class LayoutAnimationEntryDirective {
     this.config = v;
   }
 
-  config: Pick<LayoutAnimationConfig, 'duration' | 'easing'> = {};
+  config: Omit<LayoutAnimationConfig, 'root' | 'from'> = {};
 
   constructor(
     @Self() public node: Node,
