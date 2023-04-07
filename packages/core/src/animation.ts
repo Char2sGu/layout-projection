@@ -2,19 +2,22 @@ import { easeInOut, Easing } from 'popmotion';
 
 import {
   AnimationRef,
-  NodeAnimationRouteMap,
-  TreeAnimationEngine,
+  ProjectionNodeAnimationRouteMap,
+  ProjectionTreeAnimationEngine,
 } from './animation-engines.js';
 import { CssEasingParser } from './css.js';
-import { NodeMeasurer } from './measure.js';
-import { Node } from './node.js';
+import { ElementMeasurer } from './measure.js';
+import { ProjectionNode } from './projection.js';
 import { BoundingBox } from './shared.js';
-import { NodeSnapshot, NodeSnapshotMap } from './snapshot.js';
+import {
+  ProjectionNodeSnapshot,
+  ProjectionNodeSnapshotMap,
+} from './snapshot.js';
 
 export class LayoutAnimator {
   constructor(
-    protected engine: TreeAnimationEngine,
-    protected measurer: NodeMeasurer,
+    protected engine: ProjectionTreeAnimationEngine,
+    protected measurer: ElementMeasurer,
     protected easingParser: CssEasingParser,
   ) {}
 
@@ -29,7 +32,7 @@ export class LayoutAnimator {
     return this.engine.animate(root, { duration, easing, routes });
   }
 
-  protected initialize(root: Node): void {
+  protected initialize(root: ProjectionNode): void {
     // We have to perform the dom-write actions and dom-read actions separately
     // to avoid layout thrashing.
     // https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing
@@ -38,11 +41,11 @@ export class LayoutAnimator {
   }
 
   protected getAnimationRouteMap(
-    root: Node,
-    snapshots: NodeSnapshotMap,
+    root: ProjectionNode,
+    snapshots: ProjectionNodeSnapshotMap,
     estimation: boolean,
-  ): NodeAnimationRouteMap {
-    const map = new NodeAnimationRouteMap();
+  ): ProjectionNodeAnimationRouteMap {
+    const map = new ProjectionNodeAnimationRouteMap();
 
     root.traverse(
       (node) => {
@@ -78,14 +81,14 @@ export class LayoutAnimator {
   }
 
   protected estimateStartingBoundingBox(
-    root: Node,
-    node: Node,
-    snapshots: NodeSnapshotMap,
+    root: ProjectionNode,
+    node: ProjectionNode,
+    snapshots: ProjectionNodeSnapshotMap,
   ): BoundingBox | undefined {
     if (!node.measured()) throw new Error('Unknown node');
 
-    let ancestor: Node = node;
-    let ancestorSnapshot: NodeSnapshot | undefined = undefined;
+    let ancestor: ProjectionNode = node;
+    let ancestorSnapshot: ProjectionNodeSnapshot | undefined = undefined;
     while ((ancestorSnapshot = snapshots.get(ancestor.id)) === undefined) {
       if (!ancestor.parent) return;
       ancestor = ancestor.parent;
@@ -114,8 +117,8 @@ export class LayoutAnimator {
 }
 
 export interface LayoutAnimationConfig {
-  root: Node;
-  from: NodeSnapshotMap;
+  root: ProjectionNode;
+  from: ProjectionNodeSnapshotMap;
   duration?: number;
   easing?: string | Easing;
   estimation?: boolean;

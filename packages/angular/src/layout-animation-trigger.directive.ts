@@ -1,5 +1,5 @@
 import { Directive, Host, Input, OnInit } from '@angular/core';
-import { Node } from '@layout-projection/core';
+import { ProjectionNode } from '@layout-projection/core';
 import {
   animationFrames,
   BehaviorSubject,
@@ -46,7 +46,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
       | LayoutAnimationTriggerTargetInput[],
   ) {
     const normalize = (input: LayoutAnimationTriggerTargetInput) =>
-      input instanceof Node ? input.id : input;
+      input instanceof ProjectionNode ? input.id : input;
     this.targetIds =
       value instanceof Array ? value.map(normalize) : [normalize(value)];
   }
@@ -85,4 +85,4 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
 }
 
-export type LayoutAnimationTriggerTargetInput = Node | string;
+export type LayoutAnimationTriggerTargetInput = ProjectionNode | string;

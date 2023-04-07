@@ -2,9 +2,9 @@ import { Directive, Host, Input, Optional, Self } from '@angular/core';
 import {
   LayoutAnimationConfig,
   LayoutAnimator,
-  Node,
-  NodeSnapper,
-  NodeSnapshotMap,
+  ProjectionNode,
+  ProjectionNodeSnapper,
+  ProjectionNodeSnapshotMap,
 } from '@layout-projection/core';
 
 import { LayoutAnimationScopeNodeRegistry } from './layout-animation-scope.directive';
@@ -22,10 +22,10 @@ export class LayoutAnimationEntryDirective {
   config: Pick<LayoutAnimationConfig, 'duration' | 'easing'> = {};
 
   constructor(
-    @Self() public node: Node,
+    @Self() public node: ProjectionNode,
     private animator: LayoutAnimator,
-    private snapper: NodeSnapper,
-    @Host() private snapshots: NodeSnapshotMap,
+    private snapper: ProjectionNodeSnapper,
+    @Host() private snapshots: ProjectionNodeSnapshotMap,
     @Host() @Optional() private nodeRegistry?: LayoutAnimationScopeNodeRegistry,
   ) {}
 

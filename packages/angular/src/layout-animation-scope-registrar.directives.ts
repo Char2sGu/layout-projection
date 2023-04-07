@@ -6,7 +6,7 @@ import {
   Optional,
   Self,
 } from '@angular/core';
-import { Node } from '@layout-projection/core';
+import { ProjectionNode } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 import {
@@ -24,7 +24,7 @@ export class LayoutAnimationScopeNodeRegistrarDirective
   implements OnInit, OnDestroy
 {
   constructor(
-    @Self() private node: Node,
+    @Self() private node: ProjectionNode,
     @Host() @Optional() private registry?: LayoutAnimationScopeNodeRegistry,
   ) {}
   ngOnInit(): void {

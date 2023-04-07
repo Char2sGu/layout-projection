@@ -1,16 +1,19 @@
 import { animate, Easing, mix } from 'popmotion';
 
-import { Node } from './node.js';
+import { ProjectionNode } from './projection.js';
 import {
   BorderRadiusConfig,
   BorderRadiusCornerConfig,
   BoundingBox,
 } from './shared.js';
 
-export class NodeAnimationEngine {
-  protected records = new WeakMap<Node, AnimationRef>();
+export class ProjectionNodeAnimationEngine {
+  protected records = new WeakMap<ProjectionNode, AnimationRef>();
 
-  animate(node: Node, config: NodeAnimationConfig): NodeAnimationRef {
+  animate(
+    node: ProjectionNode,
+    config: ProjectionNodeAnimationConfig,
+  ): ProjectionNodeAnimationRef {
     this.records.get(node)?.stop();
 
     let stopper: () => void;
@@ -37,14 +40,14 @@ export class NodeAnimationEngine {
       }).stop;
     });
 
-    const ref = new NodeAnimationRef(node, promise, () => stopper());
+    const ref = new ProjectionNodeAnimationRef(node, promise, () => stopper());
     this.records.set(node, ref);
     return ref;
   }
 
   protected animateFrame(
-    node: Node,
-    route: NodeAnimationRoute,
+    node: ProjectionNode,
+    route: ProjectionNodeAnimationRoute,
     progress: number,
   ): void {
     const boundingBox = this.calculateBoundingBox(route, progress);
@@ -54,7 +57,7 @@ export class NodeAnimationEngine {
   }
 
   protected calculateBoundingBox(
-    route: NodeAnimationRoute,
+    route: ProjectionNodeAnimationRoute,
     progress: number,
   ): BoundingBox {
     const from = route.boundingBoxFrom;
@@ -68,7 +71,7 @@ export class NodeAnimationEngine {
   }
 
   protected calculateBorderRadiuses(
-    route: NodeAnimationRoute,
+    route: ProjectionNodeAnimationRoute,
     progress: number,
   ): BorderRadiusConfig {
     const from = route.borderRadiusesFrom;
@@ -92,28 +95,35 @@ export class NodeAnimationEngine {
   }
 }
 
-export class TreeAnimationEngine {
-  protected records = new WeakMap<Node, AnimationRef>();
+export class ProjectionTreeAnimationEngine {
+  protected records = new WeakMap<ProjectionNode, AnimationRef>();
 
-  constructor(protected engine: NodeAnimationEngine) {}
+  constructor(protected engine: ProjectionNodeAnimationEngine) {}
 
-  animate(root: Node, config: TreeAnimationConfig): TreeAnimationRef {
+  animate(
+    root: ProjectionNode,
+    config: ProjectionTreeAnimationConfig,
+  ): ProjectionTreeAnimationRef {
     this.records.get(root)?.stop();
     const { duration, easing, routes } = config;
 
-    const animations: NodeAnimationRef[] = [];
+    const animations: ProjectionNodeAnimationRef[] = [];
     root.traverse(
       (node) => {
         const route = routes.get(node.id);
         if (!route) throw new Error('Unknown node');
-        const config: NodeAnimationConfig = { duration, easing, route };
+        const config: ProjectionNodeAnimationConfig = {
+          duration,
+          easing,
+          route,
+        };
         const animation = this.engine.animate(node, config);
         animations.push(animation);
       },
       { includeSelf: true },
     );
 
-    const ref = new TreeAnimationRef(root, animations);
+    const ref = new ProjectionTreeAnimationRef(root, animations);
     this.records.set(root, ref);
     return ref;
   }
@@ -124,24 +134,24 @@ export interface AnimationConfig {
   easing: Easing;
 }
 
-export interface NodeAnimationConfig extends AnimationConfig {
-  route: NodeAnimationRoute;
+export interface ProjectionNodeAnimationConfig extends AnimationConfig {
+  route: ProjectionNodeAnimationRoute;
 }
 
-export interface TreeAnimationConfig extends AnimationConfig {
-  routes: NodeAnimationRouteMap;
+export interface ProjectionTreeAnimationConfig extends AnimationConfig {
+  routes: ProjectionNodeAnimationRouteMap;
 }
 
-export interface NodeAnimationRoute {
+export interface ProjectionNodeAnimationRoute {
   boundingBoxFrom: BoundingBox;
   boundingBoxTo: BoundingBox;
   borderRadiusesFrom: BorderRadiusConfig;
   borderRadiusesTo: BorderRadiusConfig;
 }
 
-export class NodeAnimationRouteMap extends Map<
-  Node['id'],
-  NodeAnimationRoute
+export class ProjectionNodeAnimationRouteMap extends Map<
+  ProjectionNode['id'],
+  ProjectionNodeAnimationRoute
 > {}
 
 export class AnimationRef implements PromiseLike<void> {
@@ -165,14 +175,21 @@ export class AnimationRef implements PromiseLike<void> {
   }
 }
 
-export class NodeAnimationRef extends AnimationRef {
-  constructor(public node: Node, promise: Promise<any>, stopper: () => void) {
+export class ProjectionNodeAnimationRef extends AnimationRef {
+  constructor(
+    public node: ProjectionNode,
+    promise: Promise<any>,
+    stopper: () => void,
+  ) {
     super(promise, stopper);
   }
 }
 
-export class TreeAnimationRef extends AnimationRef {
-  constructor(public root: Node, animations: NodeAnimationRef[]) {
+export class ProjectionTreeAnimationRef extends AnimationRef {
+  constructor(
+    public root: ProjectionNode,
+    animations: ProjectionNodeAnimationRef[],
+  ) {
     super(
       Promise.all(animations), //
       () => animations.forEach((ref) => ref.stop()),

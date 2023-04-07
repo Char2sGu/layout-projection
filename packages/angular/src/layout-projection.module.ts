@@ -2,11 +2,11 @@ import { inject, NgModule } from '@angular/core';
 import {
   CssBorderRadiusParser,
   CssEasingParser,
+  ElementMeasurer,
   LayoutAnimator,
-  NodeAnimationEngine,
-  NodeMeasurer,
-  NodeSnapper,
-  TreeAnimationEngine,
+  ProjectionNodeAnimationEngine,
+  ProjectionNodeSnapper,
+  ProjectionTreeAnimationEngine,
 } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
@@ -17,11 +17,11 @@ import {
 } from './layout-animation-scope-registrar.directives';
 import { LayoutAnimationSelfTriggerDirective } from './layout-animation-self-trigger.directive';
 import { LayoutAnimationTriggerDirective } from './layout-animation-trigger.directive';
-import { NodeDirective } from './node.directive';
+import { ProjectionNodeDirective } from './projection-node.directive';
 
 @NgModule({
   declarations: [
-    NodeDirective,
+    ProjectionNodeDirective,
     LayoutAnimationEntryDirective,
     LayoutAnimationScopeDirective,
     LayoutAnimationScopeNodeRegistrarDirective,
@@ -30,7 +30,7 @@ import { NodeDirective } from './node.directive';
     LayoutAnimationSelfTriggerDirective,
   ],
   exports: [
-    NodeDirective,
+    ProjectionNodeDirective,
     LayoutAnimationEntryDirective,
     LayoutAnimationScopeDirective,
     LayoutAnimationScopeNodeRegistrarDirective,
@@ -43,26 +43,29 @@ import { NodeDirective } from './node.directive';
       provide: LayoutAnimator,
       useFactory: () =>
         new LayoutAnimator(
-          inject(TreeAnimationEngine),
-          inject(NodeMeasurer),
+          inject(ProjectionTreeAnimationEngine),
+          inject(ElementMeasurer),
           inject(CssEasingParser),
         ),
     },
     {
-      provide: NodeAnimationEngine,
-      useFactory: () => new NodeAnimationEngine(),
+      provide: ProjectionNodeAnimationEngine,
+      useFactory: () => new ProjectionNodeAnimationEngine(),
     },
     {
-      provide: TreeAnimationEngine,
-      useFactory: () => new TreeAnimationEngine(inject(NodeAnimationEngine)),
+      provide: ProjectionTreeAnimationEngine,
+      useFactory: () =>
+        new ProjectionTreeAnimationEngine(
+          inject(ProjectionNodeAnimationEngine),
+        ),
     },
     {
-      provide: NodeMeasurer,
-      useFactory: () => new NodeMeasurer(inject(CssBorderRadiusParser)),
+      provide: ElementMeasurer,
+      useFactory: () => new ElementMeasurer(inject(CssBorderRadiusParser)),
     },
     {
-      provide: NodeSnapper,
-      useFactory: () => new NodeSnapper(inject(NodeMeasurer)),
+      provide: ProjectionNodeSnapper,
+      useFactory: () => new ProjectionNodeSnapper(inject(ElementMeasurer)),
     },
     {
       provide: CssBorderRadiusParser,

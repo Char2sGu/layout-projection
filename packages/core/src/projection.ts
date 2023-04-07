@@ -1,4 +1,4 @@
-import { NodeMeasurer } from './measure.js';
+import { ElementMeasurer } from './measure.js';
 import {
   BorderRadiusConfig,
   BorderRadiusCornerConfig,
@@ -11,20 +11,23 @@ import {
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
  * @see https://gist.github.com/TheNightmareX/f5bf72e81d2667f6036e91cf81270ef7 Layout Projection - Matt Perry
  */
-export class Node {
+export class ProjectionNode {
   static idNext = 1;
 
-  id = `anonymous-${Node.idNext++}`;
+  id = `anonymous-${ProjectionNode.idNext++}`;
   activated = false;
 
-  parent?: Node;
-  children = new Set<Node>();
+  parent?: ProjectionNode;
+  children = new Set<ProjectionNode>();
 
   boundingBox?: BoundingBox;
   borderRadiuses?: BorderRadiusConfig;
   transform?: TransformConfig;
 
-  constructor(public element: HTMLElement, protected measurer: NodeMeasurer) {}
+  constructor(
+    public element: HTMLElement,
+    protected measurer: ElementMeasurer,
+  ) {}
 
   identifyAs(id: string): void {
     this.id = id;
@@ -37,7 +40,7 @@ export class Node {
     this.activated = false;
   }
 
-  attach(parent: Node): void {
+  attach(parent: ProjectionNode): void {
     this.parent = parent;
     parent.children.add(this);
   }
@@ -48,8 +51,8 @@ export class Node {
   }
 
   traverse(
-    callback: (node: Node) => void,
-    options: NodeTraverseOptions = {},
+    callback: (node: ProjectionNode) => void,
+    options: ProjectionNodeTraverseOptions = {},
   ): void {
     options.includeSelf ??= false;
     options.includeDeactivated ??= false;
@@ -61,7 +64,7 @@ export class Node {
       child.traverse(callback, { ...options, includeSelf: true });
     });
   }
-  track(): NodeTreePath {
+  track(): ProjectionNode[] {
     const path = [];
     let ancestor = this.parent;
     while (ancestor) {
@@ -84,7 +87,7 @@ export class Node {
       this.boundingBox,
     );
   }
-  measured(): this is MeasuredNode {
+  measured(): this is MeasuredProjectionNode {
     return !!this.boundingBox && !!this.borderRadiuses;
   }
 
@@ -167,12 +170,10 @@ export class Node {
   }
 }
 
-export type MeasuredNode = Node &
-  Required<Pick<Node, 'boundingBox' | 'borderRadiuses'>>;
+export type MeasuredProjectionNode = ProjectionNode &
+  Required<Pick<ProjectionNode, 'boundingBox' | 'borderRadiuses'>>;
 
-export interface NodeTraverseOptions {
+export interface ProjectionNodeTraverseOptions {
   includeSelf?: boolean;
   includeDeactivated?: boolean;
 }
-
-export class NodeTreePath extends Array<Node> {}

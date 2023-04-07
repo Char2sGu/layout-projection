@@ -6,14 +6,19 @@ import {
   Optional,
   SkipSelf,
 } from '@angular/core';
-import { Node, NodeMeasurer } from '@layout-projection/core';
+import { ElementMeasurer, ProjectionNode } from '@layout-projection/core';
 
 @Directive({
   selector: '[lpjNode]',
   exportAs: 'lpjNode',
-  providers: [{ provide: Node, useExisting: NodeDirective }],
+  providers: [
+    { provide: ProjectionNode, useExisting: ProjectionNodeDirective },
+  ],
 })
-export class NodeDirective extends Node implements OnDestroy {
+export class ProjectionNodeDirective
+  extends ProjectionNode
+  implements OnDestroy
+{
   @Input() set lpjNode(v: string | false) {
     if (typeof v === 'string') {
       if (v) this.identifyAs(v);
@@ -25,8 +30,8 @@ export class NodeDirective extends Node implements OnDestroy {
 
   constructor(
     elementRef: ElementRef<HTMLElement>,
-    measurer: NodeMeasurer,
-    @SkipSelf() @Optional() parent?: Node,
+    measurer: ElementMeasurer,
+    @SkipSelf() @Optional() parent?: ProjectionNode,
   ) {
     super(elementRef.nativeElement, measurer);
     if (parent) this.attach(parent);

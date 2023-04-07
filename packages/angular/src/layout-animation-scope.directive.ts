@@ -7,7 +7,10 @@ import {
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
-import { Node, NodeSnapshotMap } from '@layout-projection/core';
+import {
+  ProjectionNode,
+  ProjectionNodeSnapshotMap,
+} from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 
@@ -43,14 +46,14 @@ export class LayoutAnimationScopeDirective implements OnInit {
     const {
       nodeRegistry = new LayoutAnimationScopeNodeRegistry(),
       entryRegistry = new LayoutAnimationScopeEntryRegistry(),
-      snapshots = new NodeSnapshotMap(),
+      snapshots = new ProjectionNodeSnapshotMap(),
     } = this.source ?? {};
     return Injector.create({
       providers: [
         { provide: LayoutAnimationScopeRef },
         { provide: LayoutAnimationScopeNodeRegistry, useValue: nodeRegistry },
         { provide: LayoutAnimationScopeEntryRegistry, useValue: entryRegistry },
-        { provide: NodeSnapshotMap, useValue: snapshots },
+        { provide: ProjectionNodeSnapshotMap, useValue: snapshots },
       ],
     });
   }
@@ -68,7 +71,7 @@ export class LayoutAnimationScopeRef {
   constructor(
     readonly nodeRegistry: LayoutAnimationScopeNodeRegistry,
     readonly entryRegistry: LayoutAnimationScopeEntryRegistry,
-    readonly snapshots: NodeSnapshotMap,
+    readonly snapshots: ProjectionNodeSnapshotMap,
   ) {}
 }
 
@@ -76,5 +79,5 @@ export interface LayoutAnimationScopeTemplateContext {
   $implicit: LayoutAnimationScopeRef;
 }
 
-export class LayoutAnimationScopeNodeRegistry extends Set<Node> {}
+export class LayoutAnimationScopeNodeRegistry extends Set<ProjectionNode> {}
 export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntryDirective> {}
