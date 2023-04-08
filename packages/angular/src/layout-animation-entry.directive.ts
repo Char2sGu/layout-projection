@@ -36,12 +36,10 @@ export class LayoutAnimationEntryDirective {
 
   async animate(): Promise<void> {
     if (!this.snapshots) throw new Error('Missing snapshots');
-    const { duration, easing } = this.config;
     await this.animator.animate({
       root: this.node,
       from: this.snapshots,
-      duration,
-      easing,
+      ...this.config,
     });
   }
 }
