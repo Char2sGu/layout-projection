@@ -12,10 +12,8 @@ import { LayoutAnimationEntryDirective } from './layout-animation-entry.directiv
 import {
   LayoutAnimationScopeEntryRegistry,
   LayoutAnimationScopeNodeRegistry,
+  ProjectionNodeSnapshotMapExpirer,
 } from './layout-animation-scope.directive';
-
-// Register instances in `ngOnInit` instead of `constructor` to register the
-// updated IDs of nodes.
 
 @Directive({
   selector: '[lpjNode]',
@@ -26,12 +24,15 @@ export class LayoutAnimationScopeNodeRegistrarDirective
   constructor(
     @Self() private node: ProjectionNode,
     @Host() @Optional() private registry?: LayoutAnimationScopeNodeRegistry,
+    @Host() @Optional() private snapshots?: ProjectionNodeSnapshotMapExpirer,
   ) {}
   ngOnInit(): void {
     this.registry?.add(this.node);
+    this.snapshots?.refresh(this.node.id);
   }
   ngOnDestroy(): void {
     this.registry?.delete(this.node);
+    this.snapshots?.stale(this.node.id);
   }
 }
 

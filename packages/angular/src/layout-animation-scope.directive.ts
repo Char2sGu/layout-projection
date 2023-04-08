@@ -13,8 +13,7 @@ import {
 } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
-
-// TODO: snapshot memory leak
+import { MapExpirer } from './shared/map';
 
 @Directive({
   selector: '[lpjAnimationScope]',
@@ -54,6 +53,7 @@ export class LayoutAnimationScopeDirective implements OnInit {
         { provide: LayoutAnimationScopeNodeRegistry, useValue: nodeRegistry },
         { provide: LayoutAnimationScopeEntryRegistry, useValue: entryRegistry },
         { provide: ProjectionNodeSnapshotMap, useValue: snapshots },
+        { provide: ProjectionNodeSnapshotMapExpirer },
       ],
     });
   }
@@ -66,6 +66,10 @@ export class LayoutAnimationScopeDirective implements OnInit {
   }
 }
 
+export interface LayoutAnimationScopeTemplateContext {
+  $implicit: LayoutAnimationScopeRef;
+}
+
 @Injectable()
 export class LayoutAnimationScopeRef {
   constructor(
@@ -75,9 +79,14 @@ export class LayoutAnimationScopeRef {
   ) {}
 }
 
-export interface LayoutAnimationScopeTemplateContext {
-  $implicit: LayoutAnimationScopeRef;
-}
-
 export class LayoutAnimationScopeNodeRegistry extends Set<ProjectionNode> {}
 export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntryDirective> {}
+
+@Injectable()
+export class ProjectionNodeSnapshotMapExpirer extends MapExpirer<
+  ProjectionNode['id']
+> {
+  constructor(map: ProjectionNodeSnapshotMap) {
+    super(map, 10);
+  }
+}
