@@ -1,5 +1,5 @@
 import { Directive, Host, Input, OnInit } from '@angular/core';
-import { ProjectionNode } from '@layout-projection/core';
+import { AnimationRef, ProjectionNode } from '@layout-projection/core';
 import {
   animationFrames,
   BehaviorSubject,
@@ -72,8 +72,12 @@ export class LayoutAnimationTriggerDirective implements OnInit {
     this.findTargets().forEach((entry) => entry.snapshot());
   }
 
-  animate(): void {
-    this.findTargets().forEach((entry) => entry.animate());
+  animate(): AnimationRef {
+    const animations = this.findTargets().map((entry) => entry.animate());
+    return new AnimationRef(
+      Promise.all(animations), //
+      () => animations.forEach((ref) => ref.stop()),
+    );
   }
 
   findTargets(): LayoutAnimationEntryDirective[] {

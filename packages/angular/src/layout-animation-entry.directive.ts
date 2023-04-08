@@ -1,5 +1,6 @@
 import { Directive, Host, Input, Optional, Self } from '@angular/core';
 import {
+  AnimationRef,
   LayoutAnimationConfig,
   LayoutAnimator,
   ProjectionNode,
@@ -34,9 +35,9 @@ export class LayoutAnimationEntryDirective {
     this.snapper.snapshotTree(this.node, this.snapshots, filter);
   }
 
-  async animate(): Promise<void> {
+  animate(): AnimationRef {
     if (!this.snapshots) throw new Error('Missing snapshots');
-    await this.animator.animate({
+    return this.animator.animate({
       root: this.node,
       from: this.snapshots,
       ...this.config,
