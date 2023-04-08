@@ -1,4 +1,11 @@
-import { Directive, Host, Input, OnInit } from '@angular/core';
+import {
+  Directive,
+  EventEmitter,
+  Host,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { AnimationRef, ProjectionNode } from '@layout-projection/core';
 import {
   animationFrames,
@@ -6,6 +13,7 @@ import {
   EMPTY,
   exhaustAll,
   first,
+  map,
   Observable,
   of,
   skip,
@@ -52,6 +60,9 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
   private targetIds: string[] = [];
 
+  @Output() animationTrigger = new EventEmitter();
+  @Output() animationSettle = new EventEmitter();
+
   constructor(
     @Host() private entryRegistry: LayoutAnimationScopeEntryRegistry,
   ) {}
@@ -61,9 +72,11 @@ export class LayoutAnimationTriggerDirective implements OnInit {
       .pipe(
         exhaustAll(),
         skip(1),
+        tap(() => this.animationTrigger.emit()),
         tap(() => this.snapshot()),
         switchMap(() => animationFrames().pipe(first())),
-        tap(() => this.animate()),
+        map(() => this.animate()),
+        tap((ref) => ref.then(() => this.animationSettle.emit())),
       )
       .subscribe();
   }
