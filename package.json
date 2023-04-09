@@ -39,7 +39,6 @@
     "typescript": "^5.0.2"
   },
   "workspaces": [
-    "packages/core",
-    "packages/angular"
+    "packages/*"
   ]
 }
