@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LayoutProjectionModule } from '@layout-projection/angular';
 
 @Component({
-  selector: 'lpj-tabs-example',
+  selector: 'ex-tabs',
   standalone: true,
   template: `
     <div class="container">

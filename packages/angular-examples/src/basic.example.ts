@@ -4,7 +4,7 @@ import { LayoutProjectionModule } from '@layout-projection/angular';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'lpj-basic-example',
+  selector: 'ex-basic',
   standalone: true,
   template: `
     <ng-container *lpjAnimationScope>
