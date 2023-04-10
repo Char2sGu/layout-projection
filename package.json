@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "dev": "npm -w packages/angular-examples start",
-    "build": "tsc -b tsconfig.build.json && npm run -w packages/angular build",
+    "build": "tsc -b && npm run -w packages/angular build",
     "lint": "concurrently npm:lint:*",
     "lint:eslint": "eslint \"packages/*/src/*.ts\" --cache --fix",
     "lint:prettier": "prettier --write \"{packages/*/src/*,*}.{html,css,less,scss,sass,js,json,md}\"",
