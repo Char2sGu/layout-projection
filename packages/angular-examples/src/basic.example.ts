@@ -1,8 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { LayoutProjectionModule } from '@layout-projection/angular';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'app-basic-example',
+  selector: 'lpj-basic-example',
+  standalone: true,
   template: `
     <ng-container *lpjAnimationScope>
       <div
@@ -56,6 +59,7 @@ import { BehaviorSubject } from 'rxjs';
       }
     `,
   ],
+  imports: [CommonModule, LayoutProjectionModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BasicExample {

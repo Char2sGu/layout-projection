@@ -1,7 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { LayoutProjectionModule } from '@layout-projection/angular';
 
 @Component({
-  selector: 'app-tabs-example',
+  selector: 'lpj-tabs-example',
+  standalone: true,
   template: `
     <div class="container">
       <div class="tabs" *lpjAnimationScope>
@@ -87,6 +90,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       }
     `,
   ],
+  imports: [CommonModule, LayoutProjectionModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabsExample {

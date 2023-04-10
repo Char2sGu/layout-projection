@@ -2,22 +2,26 @@
   "name": "@layout-projection/angular-examples",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "ng serve"
+    "build": "ng-packagr"
   },
   "dependencies": {
-    "@angular/common": "^15.2.0",
-    "@angular/compiler": "^15.2.0",
-    "@angular/core": "^15.2.0",
-    "@angular/platform-browser": "^15.2.0",
-    "@angular/platform-browser-dynamic": "^15.2.0",
-    "@layout-projection/angular": "file:../angular/dist",
-    "rxjs": "~7.8.0",
-    "tslib": "^2.3.0",
-    "zone.js": "~0.12.0"
+    "tslib": "^2.5.0"
+  },
+  "peerDependencies": {
+    "@angular/common": "15.x",
+    "@angular/core": "15.x",
+    "@layout-projection/angular": "*",
+    "@layout-projection/core": "*",
+    "rxjs": "7.x"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^15.2.4",
-    "@angular/cli": "^15.2.4"
+    "@angular/common": "^15.2.6",
+    "@angular/core": "^15.2.6",
+    "@layout-projection/angular": "file:../angular/dist",
+    "@layout-projection/core": "file:../core",
+    "ng-packagr": "^15.2.2",
+    "rxjs": "^7.8.0"
   }
 }
