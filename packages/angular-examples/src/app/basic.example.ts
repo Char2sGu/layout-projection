@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'app-sample-basic',
+  selector: 'app-basic-example',
   template: `
     <ng-container *lpjAnimationScope>
       <div
@@ -58,6 +58,6 @@ import { BehaviorSubject } from 'rxjs';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SampleBasicComponent {
+export class BasicExample {
   flag$ = new BehaviorSubject(false);
 }

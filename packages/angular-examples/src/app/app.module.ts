@@ -3,11 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { LayoutProjectionModule } from '@layout-projection/angular';
 
 import { AppComponent } from './app.component';
-import { SampleBasicComponent } from './sample-basic.component';
-import { SampleTabsComponent } from './sample-tabs.component';
+import { BasicExample } from './basic.example';
+import { TabsExample } from './tabs.example';
 
 @NgModule({
-  declarations: [AppComponent, SampleBasicComponent, SampleTabsComponent],
+  declarations: [AppComponent, BasicExample, TabsExample],
   imports: [BrowserModule, LayoutProjectionModule],
   providers: [],
   bootstrap: [AppComponent],

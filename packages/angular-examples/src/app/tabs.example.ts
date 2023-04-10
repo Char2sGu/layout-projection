@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-sample-tabs',
+  selector: 'app-tabs-example',
   template: `
     <div class="container">
       <div class="tabs" *lpjAnimationScope>
@@ -89,7 +89,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SampleTabsComponent {
+export class TabsExample {
   tabs: Tab[] = [{ title: 'Apple' }, { title: 'Banana' }, { title: 'Orange' }];
   tabActive = this.tabs[0];
 }
