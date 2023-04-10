@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/TheNightmareX/layout-projection#readme",
   "devDependencies": {
+    "@angular/common": "^15.2.6",
+    "@angular/core": "^15.2.6",
     "@types/jest": "^29.5.0",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",

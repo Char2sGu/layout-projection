@@ -10,6 +10,7 @@
     "@angular/core": "^15.2.6",
     "@angular/platform-browser": "^15.2.6",
     "@angular/platform-browser-dynamic": "^15.2.6",
+    "@layout-projection/angular-examples": "file:../angular-examples/dist",
     "rxjs": "^7.8.0",
     "tslib": "^2.5.0",
     "zone.js": "^0.13.0"
