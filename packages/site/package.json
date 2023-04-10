@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "ng serve"
+    "start": "ng serve",
+    "build": "ng build"
   },
   "dependencies": {
     "@angular/common": "^15.2.6",

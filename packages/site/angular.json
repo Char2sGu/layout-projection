@@ -34,32 +34,58 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "lpj",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/test",
+            "outputPath": "dist/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.json",
             "assets": [],
             "styles": ["src/styles.css"],
-            "scripts": [],
-            "buildOptimizer": false,
-            "optimization": false,
-            "vendorChunk": true,
-            "extractLicenses": false,
-            "sourceMap": true,
-            "namedChunks": true
-          }
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "12kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "site:build"
-          }
+          "configurations": {
+            "production": {
+              "browserTarget": "site:build:production"
+            },
+            "development": {
+              "browserTarget": "site:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
         }
       }
     }
