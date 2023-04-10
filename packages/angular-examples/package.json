@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "ng-packagr"
+    "build": "ng-packagr",
+    "build:watch": "ng-packagr -w"
   },
   "dependencies": {
     "tslib": "^2.5.0"
