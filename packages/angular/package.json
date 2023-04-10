@@ -6,7 +6,8 @@
   "author": "Char2s <char2s@outlook.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "ng-packagr"
+    "build": "ng-packagr",
+    "build:watch": "ng-packagr -w"
   },
   "repository": {
     "type": "git",

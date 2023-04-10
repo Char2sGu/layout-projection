@@ -8,6 +8,9 @@
   "scripts": {
     "dev": "npm -w packages/angular-examples start",
     "build": "tsc -b && npm run -w packages/angular build",
+    "build:watch": "concurrently npm:build:watch:*",
+    "build:watch:tsc": "tsc -b -w",
+    "build:watch:angular": "npm run build:watch -w packages/angular",
     "lint": "concurrently npm:lint:*",
     "lint:eslint": "eslint \"packages/*/src/*.ts\" --cache --fix",
     "lint:prettier": "prettier --write \"{packages/*/src/*,*}.{html,css,less,scss,sass,js,json,md}\"",
