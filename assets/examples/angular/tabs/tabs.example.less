@@ -1,0 +1,52 @@
+:host {
+  display: flex;
+  height: 400px;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(136, 85, 255);
+}
+
+.container {
+  width: 400px;
+  height: 300px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.tabs {
+  display: flex;
+  padding: 4px;
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  height: 50px;
+  padding: 0 30px;
+  justify-content: center;
+  align-items: center;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.tab-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 5%);
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.tab-underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid rgb(136, 85, 255);
+  z-index: 1;
+}
