@@ -6,11 +6,11 @@ Framework-agnostic **Layout Projection** and **Layout-Projection-powered** layou
 
 # Getting Started
 
-Checkout our [website](https://thenightmarex.github.io/layout-projection) (WIP) to get started!
-
 - [Getting started with Vanilla JavaScript](./packages/core/README.md)
 - [Getting started with Angular](./packages/angular/README.md)
 - ... (contribute for more framework adapters)
+
+Checkout the [website](https://thenightmarex.github.io/layout-projection) for live demos!
 
 # What Is Layout Projection?
 
