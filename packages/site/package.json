@@ -11,6 +11,7 @@
     "@angular/core": "^15.2.6",
     "@angular/platform-browser": "^15.2.6",
     "@angular/platform-browser-dynamic": "^15.2.6",
+    "@angular/router": "^15.2.6",
     "@layout-projection/angular-examples": "file:../angular-examples/dist",
     "@taiga-ui/addon-doc": "^3.24.0",
     "@taiga-ui/cdk": "^3.24.0",
@@ -20,6 +21,7 @@
     "@taiga-ui/styles": "^3.24.0",
     "@tinkoff/ng-dompurify": "3.0.0",
     "dompurify": "2.2.9",
+    "highlightjs-line-numbers.js": "^2.8.0",
     "rxjs": "^7.8.0",
     "tslib": "^2.5.0",
     "zone.js": "^0.13.0"
