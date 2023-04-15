@@ -3,13 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'doc',
-    loadChildren: () => import('./doc/doc.module').then((m) => m.DocModule),
+    path: 'docs',
+    loadChildren: () => import('./docs/docs.module').then((m) => m.DocsModule),
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
