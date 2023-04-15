@@ -1,0 +1,11 @@
+<ng-container *lpjAnimationScope>
+  <div
+    class="container"
+    [class.flag]="flag$ | async"
+    (click)="flag$.next(!flag$.value)"
+  >
+    <div class="box" lpjNode lpjAnimation [lpjAnimationTrigger]="flag$">
+      <div class="circle" lpjNode></div>
+    </div>
+  </div>
+</ng-container>
