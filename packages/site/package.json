@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "ng serve -o",
-    "build": "ng build"
+    "build": "ng build",
+    "deploy": "ng deploy --base-href=/layout-projection/"
   },
   "dependencies": {
     "@angular/common": "^15.2.6",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.5",
     "@angular/cli": "^15.2.5",
-    "@types/dompurify": "2.2.3"
+    "@types/dompurify": "2.2.3",
+    "angular-cli-ghpages": "^1.0.5"
   }
 }
