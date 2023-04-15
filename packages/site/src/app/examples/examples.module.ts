@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { TuiAddonDocModule } from '@taiga-ui/addon-doc';
 
 import { ExampleBasicComponent } from './example-basic/example-basic.component';
+import { ExampleContainerComponent } from './example-container/example-container.component';
 import { ExampleTabsComponent } from './example-tabs/example-tabs.component';
 import { ExamplesComponent } from './examples.component';
 import { ExamplesRoutingModule } from './examples-routing.module';
@@ -12,6 +13,7 @@ import { ExamplesRoutingModule } from './examples-routing.module';
     ExamplesComponent,
     ExampleTabsComponent,
     ExampleBasicComponent,
+    ExampleContainerComponent,
   ],
   imports: [CommonModule, ExamplesRoutingModule, TuiAddonDocModule],
 })
