@@ -1,12 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  Type,
-} from '@angular/core';
-import { TuiDocExample } from '@taiga-ui/addon-doc';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
+import { ExampleComponent } from '../shared/example.component';
+import { ExampleLoaderOptions } from '../shared/example-loader.service';
 
 @Component({
   selector: 'lpj-example-basic',
@@ -14,26 +9,11 @@ import { TuiDocExample } from '@taiga-ui/addon-doc';
   styleUrls: ['./example-basic.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExampleBasicComponent implements OnInit {
-  example?: TuiDocExample;
-  component?: Type<unknown>;
-
-  constructor(
-    private httpClient: HttpClient,
-    private changeDetector: ChangeDetectorRef,
-  ) {}
-
-  async ngOnInit(): Promise<void> {
-    const code = await this.httpClient
-      .get(
-        'assets/examples/angular/basic/basic.example.ts', //
-        { responseType: 'text' },
-      )
-      .toPromise();
-    this.example = { ['TypeScript']: code };
-    this.component = await import(
-      '@layout-projection/angular-examples/basic'
-    ).then((m) => m.entry);
-    this.changeDetector.markForCheck();
-  }
+export class ExampleBasicComponent extends ExampleComponent {
+  protected override loaderOptions: ExampleLoaderOptions = {
+    typescriptUrl: 'assets/examples/angular/basic/basic.example.ts',
+    templateUrl: 'assets/examples/angular/basic/basic.example.html',
+    stylesheetUrl: 'assets/examples/angular/basic/basic.example.less',
+    moduleLoader: () => import('@layout-projection/angular-examples/basic'),
+  };
 }

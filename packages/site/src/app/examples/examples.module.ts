@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { TuiAddonDocModule } from '@taiga-ui/addon-doc';
 
@@ -14,11 +13,6 @@ import { ExamplesRoutingModule } from './examples-routing.module';
     ExampleTabsComponent,
     ExampleBasicComponent,
   ],
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    ExamplesRoutingModule,
-    TuiAddonDocModule,
-  ],
+  imports: [CommonModule, ExamplesRoutingModule, TuiAddonDocModule],
 })
 export class ExamplesModule {}

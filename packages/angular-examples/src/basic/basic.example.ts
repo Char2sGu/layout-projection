@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LayoutProjectionModule } from '@layout-projection/angular';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, skip } from 'rxjs';
 
 @Component({
   selector: 'ex-basic',
@@ -13,4 +13,5 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class BasicExample {
   flag$ = new BehaviorSubject(false);
+  flagChange$ = this.flag$.pipe(skip(1));
 }
