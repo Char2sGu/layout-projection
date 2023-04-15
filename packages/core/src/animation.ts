@@ -90,9 +90,8 @@ export class LayoutAnimator {
     let ancestor: ProjectionNode = node;
     let ancestorSnapshot: ProjectionNodeSnapshot | undefined = undefined;
     while ((ancestorSnapshot = snapshots.get(ancestor.id)) === undefined) {
-      if (!ancestor.parent) return;
+      if (ancestor === root || !ancestor.parent) return;
       ancestor = ancestor.parent;
-      if (ancestor === root) return;
     }
     if (!ancestor.measured()) throw new Error('Unknown ancestor');
 
