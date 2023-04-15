@@ -1,5 +1,5 @@
 {
-  "$schema": "../../../../node_modules/@angular/cli/lib/config/schema.json",
+  "$schema": "../../node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -8,7 +8,8 @@
       "schematics": {
         "@schematics/angular:component": {
           "skipTests": true,
-          "changeDetection": "OnPush"
+          "changeDetection": "OnPush",
+          "style": "less"
         },
         "@schematics/angular:class": {
           "skipTests": true
@@ -60,7 +61,7 @@
               "../../node_modules/@taiga-ui/core/styles/taiga-ui-theme.less",
               "../../node_modules/@taiga-ui/core/styles/taiga-ui-fonts.less",
               "../../node_modules/@taiga-ui/styles/taiga-ui-global.less",
-              "src/styles.css"
+              "src/styles.less"
             ],
             "scripts": []
           },

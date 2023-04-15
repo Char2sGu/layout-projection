@@ -4,7 +4,7 @@ import { TuiDocExample } from '@taiga-ui/addon-doc';
 @Component({
   selector: 'lpj-docs',
   templateUrl: './docs.component.html',
-  styleUrls: ['./docs.component.css'],
+  styleUrls: ['./docs.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocsComponent {
