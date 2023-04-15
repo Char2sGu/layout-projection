@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { ExampleContainerComponent } from './example-container/example-container.component';
+import { ExampleListComponent } from './example-list/example-list.component';
 import { ExampleTabsComponent } from './example-tabs/example-tabs.component';
 import { ExamplesComponent } from './examples.component';
 
@@ -15,6 +16,11 @@ const routes: Routes = [
         path: 'container',
         title: 'Container Example',
         component: ExampleContainerComponent,
+      },
+      {
+        path: 'list',
+        title: 'List Example',
+        component: ExampleListComponent,
       },
       {
         path: 'tabs',

@@ -1,0 +1,32 @@
+:host {
+  display: flex;
+  height: 500px;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  width: 400px;
+  height: 60px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+
+  .title {
+    font-size: large;
+    font-weight: bold;
+  }
+}
