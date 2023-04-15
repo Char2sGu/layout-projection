@@ -8,8 +8,6 @@ import {
   TUI_DOC_PAGES,
   TuiDocMainModule,
 } from '@taiga-ui/addon-doc';
-import { TUI_SANITIZER } from '@taiga-ui/core';
-import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
 import { HIGHLIGHT_OPTIONS, HighlightOptions } from 'ngx-highlightjs';
 
 import { AppComponent } from './app.component';
@@ -30,7 +28,6 @@ import { LOGO_COMPONENT } from './core/logo/logo.polymorphic';
   ],
   providers: [
     { provide: TitleStrategy, useClass: AppTitleStrategy },
-    { provide: TUI_SANITIZER, useClass: NgDompurifySanitizer },
     {
       provide: HIGHLIGHT_OPTIONS,
       useValue: {
