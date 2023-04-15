@@ -3,7 +3,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TitleStrategy } from '@angular/router';
-import { TUI_DOC_PAGES, TuiDocMainModule } from '@taiga-ui/addon-doc';
+import {
+  TUI_DOC_LOGO,
+  TUI_DOC_PAGES,
+  TuiDocMainModule,
+} from '@taiga-ui/addon-doc';
 import { TUI_SANITIZER } from '@taiga-ui/core';
 import { NgDompurifySanitizer } from '@tinkoff/ng-dompurify';
 import { HIGHLIGHT_OPTIONS, HighlightOptions } from 'ngx-highlightjs';
@@ -12,9 +16,11 @@ import { AppComponent } from './app.component';
 import { APP_PAGES } from './app.pages';
 import { AppTitleStrategy } from './app.title-strategy';
 import { AppRoutingModule } from './app-routing.module';
+import { LogoComponent } from './core/logo/logo.component';
+import { LOGO_COMPONENT } from './core/logo/logo.polymorphic';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, LogoComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -41,6 +47,7 @@ import { AppRoutingModule } from './app-routing.module';
       provide: TUI_DOC_PAGES,
       useValue: APP_PAGES,
     },
+    { provide: TUI_DOC_LOGO, useValue: LOGO_COMPONENT },
   ],
   bootstrap: [AppComponent],
 })
