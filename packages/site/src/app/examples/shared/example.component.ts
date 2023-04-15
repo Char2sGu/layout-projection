@@ -22,7 +22,7 @@ export abstract class ExampleComponent implements OnInit {
     this.content = {
       ['TypeScript']: typescript,
       ['Template']: template,
-      ['Style']: stylesheet,
+      ['Stylesheet']: stylesheet,
     };
     this.component = component;
 
