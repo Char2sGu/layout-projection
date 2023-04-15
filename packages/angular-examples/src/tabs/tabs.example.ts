@@ -1,5 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewEncapsulation,
+} from '@angular/core';
 import { LayoutProjectionModule } from '@layout-projection/angular';
 
 @Component({
@@ -8,6 +12,7 @@ import { LayoutProjectionModule } from '@layout-projection/angular';
   templateUrl: './tabs.example.html',
   styleUrls: ['./tabs.example.less'],
   imports: [CommonModule, LayoutProjectionModule],
+  encapsulation: ViewEncapsulation.ShadowDom,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabsExample {
