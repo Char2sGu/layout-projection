@@ -164,6 +164,13 @@ The layout snapshot will be created when the expression's value has changed, and
 </ng-container>
 ```
 
+### Animation Trigger Events
+
+The animation trigger also exposes some events reflecting the state of the animation triggered by this specific trigger:
+
+- `(animationTrigger)` emits after the animation starts
+- `(animationSettled)` emits after the animation completes or being canceled
+
 ## Final Implementation
 
 With a few more refinements, this is how a basic list item layout animation would be implemented:
@@ -320,6 +327,32 @@ import { LayoutAnimationScopeRef } from "@layout-projection/angular";
 @Input() animationScope?: LayoutAnimationScopeRef;
 ```
 
-## Estimation
+## Container Transform and Estimation
 
-## Animation Trigger Events
+A Layout-Projection-powered layout animation involves two steps:
+
+- creating a snapshot of the old layout
+- animate the nodes from their old layout to their current layout
+
+So what if there are some new nodes attached to the tree after the snapshot is created?
+
+This is a very usual case in a shared-element animation such as the [Container Transform animation of the Material Design spec](https://m2.material.io/design/motion/the-motion-system.html#container-transform) where the container is the shared element and the content nodes changes. By default, the new nodes will be not be animated at all and will stay in their browser-computed layout.
+
+This might not fit some cases such as the Container Transform animation we mentioned before. For such cases, we have to enable `estimation` in order to estimate an route for the new nodes to animate based on the nearest common ancestor of the new node:
+
+```html
+<div
+  class="basic-view"
+  *ngIf="!expanded"
+  lpjNode="container"
+  [lpjAnimation]="{ estimation: true }"
+></div>
+<div
+  class="expanded-view"
+  *ngIf="!expanded"
+  lpjNode="container"
+  [lpjAnimation]="{ estimation: true }"
+></div>
+```
+
+Checkout the [website](https://thenightmarex.github.io/layout-projection/examples/container) for a live-demo.
