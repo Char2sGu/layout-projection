@@ -58,8 +58,13 @@
               },
               {
                 "glob": "**/*",
-                "input": "node_modules/@layout-projection/angular-examples/src",
+                "input": "../angular-examples/src",
                 "output": "assets/examples/angular"
+              },
+              {
+                "glob": "**/*",
+                "input": "../angular/docs",
+                "output": "assets/docs/angular"
               }
             ],
             "styles": ["src/styles.less"],

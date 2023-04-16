@@ -1,5 +1,5 @@
-import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TitleStrategy } from '@angular/router';
@@ -9,6 +9,7 @@ import {
   TuiDocMainModule,
 } from '@taiga-ui/addon-doc';
 import { HIGHLIGHT_OPTIONS, HighlightOptions } from 'ngx-highlightjs';
+import { MarkdownModule } from 'ngx-markdown';
 
 import { AppComponent } from './app.component';
 import { APP_PAGES } from './app.pages';
@@ -24,6 +25,10 @@ import { LOGO_COMPONENT } from './core/logo/logo.polymorphic';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
+    MarkdownModule.forRoot({
+      loader: HttpClient,
+      sanitize: SecurityContext.NONE,
+    }),
     TuiDocMainModule,
   ],
   providers: [
