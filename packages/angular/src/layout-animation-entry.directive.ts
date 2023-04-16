@@ -1,4 +1,4 @@
-import { Directive, Host, Input, Optional, Self } from '@angular/core';
+import { Directive, Input, Optional, Self } from '@angular/core';
 import {
   AnimationRef,
   LayoutAnimationConfig,
@@ -26,8 +26,8 @@ export class LayoutAnimationEntryDirective {
     @Self() public node: ProjectionNode,
     private animator: LayoutAnimator,
     private snapper: ProjectionNodeSnapper,
-    @Host() private snapshots: ProjectionNodeSnapshotMap,
-    @Host() @Optional() private nodeRegistry?: LayoutAnimationScopeNodeRegistry,
+    private snapshots: ProjectionNodeSnapshotMap,
+    @Optional() private nodeRegistry?: LayoutAnimationScopeNodeRegistry,
   ) {}
 
   snapshot(): void {

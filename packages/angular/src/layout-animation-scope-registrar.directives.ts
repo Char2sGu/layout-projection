@@ -1,11 +1,4 @@
-import {
-  Directive,
-  Host,
-  OnDestroy,
-  OnInit,
-  Optional,
-  Self,
-} from '@angular/core';
+import { Directive, OnDestroy, OnInit, Optional, Self } from '@angular/core';
 import { ProjectionNode } from '@layout-projection/core';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
@@ -23,8 +16,8 @@ export class LayoutAnimationScopeNodeRegistrarDirective
 {
   constructor(
     @Self() private node: ProjectionNode,
-    @Host() @Optional() private registry?: LayoutAnimationScopeNodeRegistry,
-    @Host() @Optional() private snapshots?: ProjectionNodeSnapshotMapExpirer,
+    @Optional() private registry?: LayoutAnimationScopeNodeRegistry,
+    @Optional() private snapshots?: ProjectionNodeSnapshotMapExpirer,
   ) {}
   ngOnInit(): void {
     this.registry?.add(this.node);
@@ -44,7 +37,7 @@ export class LayoutAnimationScopeEntryRegistrarDirective
 {
   constructor(
     @Self() private entry: LayoutAnimationEntryDirective,
-    @Host() @Optional() private registry?: LayoutAnimationScopeEntryRegistry,
+    @Optional() private registry?: LayoutAnimationScopeEntryRegistry,
   ) {}
   ngOnInit(): void {
     this.registry?.add(this.entry);

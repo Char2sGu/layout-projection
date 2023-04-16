@@ -8,10 +8,6 @@ npm i \
  @layout-projection/angular
 ```
 
-# Examples
-
-TODO: online IDE links
-
 # Tutorial
 
 Through this tutorial, we will build one of the simplest and the most commonly used layout animation, which is to animate the items of a list when the items changes.
@@ -60,7 +56,9 @@ To declare a animation scope, attach the `[lpjAnimationScope]` structural direct
 </mat-list>
 ```
 
-Now animations declared on `<mat-list>` and any elements under `<mat-list>` will be scoped to the animation scope we just declared. Note that animation scopes declared in an component are also scoped to the component, thus we should not be able to use animation scopes declared in parent components without [sharing the animation scope](#shared-animation-scope).
+Now animations declared on `<mat-list>` and any elements under `<mat-list>` will be scoped to the animation scope we just declared.
+
+Note that due to Angular injection mechanism limitations, animations in child components will also share the scope if a new scope is not declared. Therefore, it is strongly recommended to always declare a scope before defining any animations. Use a [shared animation scope](#shared-animation-scope) if there is a need to share an animation scope between multiple components.
 
 We can also choose to attach the directive to an `<ng-container>` if there is no container elements available to attach to:
 
@@ -321,3 +319,7 @@ In order to share an animation scope between the parent component and a child co
 import { LayoutAnimationScopeRef } from "@layout-projection/angular";
 @Input() animationScope?: LayoutAnimationScopeRef;
 ```
+
+## Estimation
+
+## Animation Trigger Events

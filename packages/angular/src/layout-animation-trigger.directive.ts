@@ -1,11 +1,4 @@
-import {
-  Directive,
-  EventEmitter,
-  Host,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Directive, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AnimationRef, ProjectionNode } from '@layout-projection/core';
 import {
   animationFrames,
@@ -63,9 +56,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   @Output() animationTrigger = new EventEmitter();
   @Output() animationSettle = new EventEmitter();
 
-  constructor(
-    @Host() private entryRegistry: LayoutAnimationScopeEntryRegistry,
-  ) {}
+  constructor(private entryRegistry: LayoutAnimationScopeEntryRegistry) {}
 
   ngOnInit(): void {
     this.trigger$
