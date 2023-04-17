@@ -26,4 +26,17 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
     element.innerText = text;
     return element.outerHTML;
   }
+
+  override paragraph(text: string): string {
+    return `<p class="tui-text_body-m">${text}</p>`;
+  }
+
+  override list(body: string, ordered: boolean): string {
+    const tag = ordered ? 'ol' : 'ul';
+    return `<${tag} class="tui-list tui-list_small">\n${body}\n</${tag}>`;
+  }
+
+  override listitem(text: string): string {
+    return `<li class="tui-list__item">${text}</li>`;
+  }
 }
