@@ -30,6 +30,12 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
     return element.outerHTML;
   }
 
+  override heading(text: string, level: 1 | 2 | 3 | 4 | 5 | 6): string {
+    if (level <= 4) return `<h1 class="tui-text_h${level + 2}">${text}</h1>`;
+    if (level === 5) return `<h1 class="tui-text_body-xl"><b>${text}</b></h1>`;
+    return `<h1 class="tui-text_body-l"><b>${text}</b></h1>`;
+  }
+
   override paragraph(text: string): string {
     return `<p class="tui-text_body-m">${text}</p>`;
   }
