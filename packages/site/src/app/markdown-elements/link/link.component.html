@@ -1,0 +1,13 @@
+<ng-container *ngIf="link">
+  <a tuiLink *ngIf="isString(link)" [href]="link" target="_blank">
+    <ng-content></ng-content>
+  </a>
+  <a
+    tuiLink
+    *ngIf="!isString(link)"
+    [routerLink]="link.path || []"
+    [fragment]="link.fragment"
+  >
+    <ng-content></ng-content>
+  </a>
+</ng-container>
