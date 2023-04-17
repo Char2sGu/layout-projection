@@ -36,7 +36,7 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
 
   override list(body: string, ordered: boolean): string {
     const tag = ordered ? 'ol' : 'ul';
-    return `<${tag} class="tui-list tui-list_small">\n${body}\n</${tag}>`;
+    return `<${tag} class="tui-list">\n${body}\n</${tag}>`;
   }
 
   override listitem(text: string): string {
