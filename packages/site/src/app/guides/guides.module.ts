@@ -3,12 +3,12 @@ import { NgModule } from '@angular/core';
 import { TuiAddonDocModule } from '@taiga-ui/addon-doc';
 import { MarkdownModule } from 'ngx-markdown';
 
-import { GuideOverviewComponent } from './guide-overview/guide-overview.component';
+import { GuideDetailComponent } from './guide-detail/guide-detail.component';
 import { GuidesComponent } from './guides.component';
 import { GuidesRoutingModule } from './guides-routing.module';
 
 @NgModule({
-  declarations: [GuidesComponent, GuideOverviewComponent],
+  declarations: [GuidesComponent, GuideDetailComponent],
   imports: [
     CommonModule,
     GuidesRoutingModule,

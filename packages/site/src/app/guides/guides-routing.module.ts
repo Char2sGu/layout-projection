@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { GuideOverviewComponent } from './guide-overview/guide-overview.component';
+import { GuideDetailComponent } from './guide-detail/guide-detail.component';
 import { GuidesComponent } from './guides.component';
 
 const routes: Routes = [
@@ -10,11 +10,7 @@ const routes: Routes = [
     component: GuidesComponent,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'overview' },
-      {
-        path: 'overview',
-        title: 'Overview',
-        component: GuideOverviewComponent,
-      },
+      { path: ':name', component: GuideDetailComponent },
     ],
   },
 ];
