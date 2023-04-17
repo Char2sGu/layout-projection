@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
+import { marked } from 'marked';
 import { MarkedRenderer } from 'ngx-markdown';
 
 import { CodeblockComponent } from './codeblock/codeblock.component';
+import { LinkComponent } from './link/link.component';
+import { NotificationComponent } from './notification/notification.component';
 
 @Injectable()
 export class MarkdownElementsRenderer extends MarkedRenderer {
@@ -21,7 +24,7 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
     title: string | null,
     text: string,
   ): string {
-    const element = document.createElement('md-link');
+    const element = LinkComponent.create();
     element.setAttribute('href', href ?? '');
     element.innerText = text;
     return element.outerHTML;
@@ -38,5 +41,14 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
 
   override listitem(text: string): string {
     return `<li class="tui-list__item">${text}</li>`;
+  }
+
+  override blockquote(
+    this: marked.Renderer<never> | marked.RendererThis,
+    quote: string,
+  ): string {
+    const element = NotificationComponent.create();
+    element.innerHTML = quote;
+    return element.outerHTML;
   }
 }
