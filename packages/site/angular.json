@@ -53,18 +53,13 @@
               },
               {
                 "glob": "**/*",
-                "input": "../../node_modules/@taiga-ui/icons/src",
-                "output": "assets/taiga-ui/icons"
-              },
-              {
-                "glob": "**/*",
-                "input": "../angular-examples/src",
-                "output": "assets/examples/angular"
-              },
-              {
-                "glob": "**/*",
                 "input": "../angular/docs",
                 "output": "assets/docs/angular"
+              },
+              {
+                "glob": "**/*.example.*",
+                "input": "../angular-examples/src",
+                "output": "assets/examples/angular"
               }
             ],
             "styles": ["src/styles.less"],
