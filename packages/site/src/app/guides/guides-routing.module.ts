@@ -1,8 +1,15 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { ResolveFn, RouterModule, Routes } from '@angular/router';
 
 import { GuideDetailComponent } from './guide-detail/guide-detail.component';
 import { GuidesComponent } from './guides.component';
+import { GUIDES_PAGES } from './guides.pages';
+
+const guidePageTitleResolver: ResolveFn<string> = (route) => {
+  const path = route.params['path'];
+  const page = GUIDES_PAGES.find((page) => page.route.endsWith(path));
+  return page?.title ?? '';
+};
 
 const routes: Routes = [
   {
@@ -10,7 +17,12 @@ const routes: Routes = [
     component: GuidesComponent,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'overview' },
-      { path: ':name', component: GuideDetailComponent },
+      {
+        path: ':path',
+        component: GuideDetailComponent,
+        title: guidePageTitleResolver,
+        resolve: { title: guidePageTitleResolver },
+      },
     ],
   },
 ];
