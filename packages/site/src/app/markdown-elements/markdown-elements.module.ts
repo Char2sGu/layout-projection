@@ -5,11 +5,23 @@ import { TuiDocCodeModule } from '@taiga-ui/addon-doc';
 import { TuiLinkModule, TuiNotificationModule } from '@taiga-ui/core';
 
 import { CodeblockComponent } from './codeblock/codeblock.component';
+import { HeadingComponent } from './heading/heading.component';
 import { LinkComponent } from './link/link.component';
+import { ListComponent } from './list/list.component';
+import { ListItemComponent } from './list-item/list-item.component';
 import { MarkdownElementsRenderer } from './markdown-elements.renderer';
 import { NotificationComponent } from './notification/notification.component';
+import { ParagraphComponent } from './paragraph/paragraph.component';
 
-const COMPONENTS = [CodeblockComponent, LinkComponent, NotificationComponent];
+const COMPONENTS = [
+  CodeblockComponent,
+  LinkComponent,
+  NotificationComponent,
+  HeadingComponent,
+  ListComponent,
+  ListItemComponent,
+  ParagraphComponent,
+];
 
 @NgModule({
   declarations: [...COMPONENTS],

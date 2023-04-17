@@ -3,8 +3,12 @@ import { marked } from 'marked';
 import { MarkedRenderer } from 'ngx-markdown';
 
 import { CodeblockComponent } from './codeblock/codeblock.component';
+import { HeadingComponent } from './heading/heading.component';
 import { LinkComponent } from './link/link.component';
+import { ListComponent } from './list/list.component';
+import { ListItemComponent } from './list-item/list-item.component';
 import { NotificationComponent } from './notification/notification.component';
+import { ParagraphComponent } from './paragraph/paragraph.component';
 
 @Injectable()
 export class MarkdownElementsRenderer extends MarkedRenderer {
@@ -26,27 +30,34 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
   ): string {
     const element = LinkComponent.create();
     element.setAttribute('href', href ?? '');
-    element.innerText = text;
+    element.innerHTML = text;
     return element.outerHTML;
   }
 
   override heading(text: string, level: 1 | 2 | 3 | 4 | 5 | 6): string {
-    if (level <= 4) return `<h1 class="tui-text_h${level + 2}">${text}</h1>`;
-    if (level === 5) return `<h1 class="tui-text_body-xl"><b>${text}</b></h1>`;
-    return `<h1 class="tui-text_body-l"><b>${text}</b></h1>`;
+    const element = HeadingComponent.create();
+    element.setAttribute('level', level + '');
+    element.innerHTML = text;
+    return element.outerHTML;
   }
 
   override paragraph(text: string): string {
-    return `<p class="tui-text_body-m">${text}</p>`;
+    const element = ParagraphComponent.create();
+    element.innerHTML = text;
+    return element.outerHTML;
   }
 
   override list(body: string, ordered: boolean): string {
-    const tag = ordered ? 'ol' : 'ul';
-    return `<${tag} class="tui-list">\n${body}\n</${tag}>`;
+    const element = ListComponent.create();
+    element.setAttribute('ordered', ordered + '');
+    element.innerHTML = body;
+    return element.outerHTML;
   }
 
   override listitem(text: string): string {
-    return `<li class="tui-list__item">${text}</li>`;
+    const element = ListItemComponent.create();
+    element.innerHTML = text;
+    return element.outerHTML;
   }
 
   override blockquote(
