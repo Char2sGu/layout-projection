@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 
 import { CustomElementComponent } from '../shared/custom-element-component';
+import { parseBooleanStringInput } from '../shared/input';
 
 @Component({
   selector: 'lpj-list',
@@ -24,10 +25,4 @@ export class ListComponent extends CustomElementComponent {
   @HostBinding('class') get class(): string {
     return this.ordered ? 'tui-list tui-list_ordered' : 'tui-list';
   }
-}
-
-function parseBooleanStringInput(value: string): boolean {
-  if (value === 'true') return true;
-  if (value === 'false') return false;
-  throw new Error(`Invalid boolean string input: ${value}`);
 }

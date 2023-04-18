@@ -15,9 +15,12 @@ import { CustomElementComponent } from '../shared/custom-element-component';
 export class HeadingComponent extends CustomElementComponent {
   static override readonly selector = 'md-heading';
 
-  @Input() level = 1;
+  @Input('level') set levelInput(v: string) {
+    this.level = Number(v);
+  }
+  level = 1;
 
-  @HostBinding() get className(): string {
-    return `tui-text_h${this.level}`;
+  @HostBinding('class') get class(): string {
+    return `level-${this.level}`;
   }
 }

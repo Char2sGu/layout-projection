@@ -1,3 +1,31 @@
 :host {
   display: block;
+  margin: 1rem 0;
+
+  &.level-1 {
+    margin: 4rem 0;
+    font: var(--tui-font-heading-3);
+  }
+  &.level-2 {
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--tui-base-03);
+    font: var(--tui-font-heading-4);
+  }
+  &.level-3 {
+    margin-top: 2rem;
+    font: var(--tui-font-heading-5);
+  }
+  &.level-4 {
+    margin-top: 1.5rem;
+    font: var(--tui-font-heading-6);
+  }
+  &.level-5 {
+    font: var(--tui-font-text-xl);
+    font-weight: bold;
+  }
+  &.level-6 {
+    font: var(--tui-font-text-l);
+    font-weight: bold;
+  }
 }
