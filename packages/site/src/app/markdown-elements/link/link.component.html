@@ -1,6 +1,6 @@
 <ng-container *ngIf="link">
   <a tuiLink *ngIf="isString(link)" [href]="link" target="_blank">
-    <ng-content></ng-content>
+    <ng-container *ngTemplateOutlet="content"></ng-container>
   </a>
   <a
     tuiLink
@@ -8,6 +8,10 @@
     [routerLink]="link.path || []"
     [fragment]="link.fragment"
   >
-    <ng-content></ng-content>
+    <ng-container *ngTemplateOutlet="content"></ng-container>
   </a>
 </ng-container>
+
+<ng-template #content>
+  <ng-content></ng-content>
+</ng-template>
