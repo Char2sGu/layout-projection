@@ -1,5 +1,6 @@
+/* eslint-disable max-params */
 import { Injectable } from '@angular/core';
-import { marked } from 'marked';
+import { Slugger } from 'marked';
 import { MarkedRenderer } from 'ngx-markdown';
 
 import { BlockquoteComponent } from './blockquote/blockquote.component';
@@ -35,11 +36,10 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
   }
 
   override heading(
-    this: marked.Renderer<never> | marked.RendererThis,
     text: string,
     level: 1 | 2 | 3 | 4 | 5 | 6,
     raw: string,
-    slugger: marked.Slugger,
+    slugger: Slugger,
   ): string {
     const element = HeadingComponent.create();
     element.id = slugger.slug(text);
@@ -67,10 +67,7 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
     return element.outerHTML;
   }
 
-  override blockquote(
-    this: marked.Renderer<never> | marked.RendererThis,
-    quote: string,
-  ): string {
+  override blockquote(quote: string): string {
     const element = BlockquoteComponent.create();
     element.innerHTML = quote;
     return element.outerHTML;
