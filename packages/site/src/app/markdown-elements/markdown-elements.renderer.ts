@@ -34,8 +34,15 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
     return element.outerHTML;
   }
 
-  override heading(text: string, level: 1 | 2 | 3 | 4 | 5 | 6): string {
+  override heading(
+    this: marked.Renderer<never> | marked.RendererThis,
+    text: string,
+    level: 1 | 2 | 3 | 4 | 5 | 6,
+    raw: string,
+    slugger: marked.Slugger,
+  ): string {
     const element = HeadingComponent.create();
+    element.id = slugger.slug(text);
     element.setAttribute('level', level + '');
     element.innerHTML = text;
     return element.outerHTML;
