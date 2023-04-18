@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { marked } from 'marked';
 import { MarkedRenderer } from 'ngx-markdown';
 
+import { BlockquoteComponent } from './blockquote/blockquote.component';
 import { CodeblockComponent } from './codeblock/codeblock.component';
 import { HeadingComponent } from './heading/heading.component';
 import { LinkComponent } from './link/link.component';
 import { ListComponent } from './list/list.component';
 import { ListItemComponent } from './list-item/list-item.component';
-import { NotificationComponent } from './notification/notification.component';
 import { ParagraphComponent } from './paragraph/paragraph.component';
 
 @Injectable()
@@ -64,7 +64,7 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
     this: marked.Renderer<never> | marked.RendererThis,
     quote: string,
   ): string {
-    const element = NotificationComponent.create();
+    const element = BlockquoteComponent.create();
     element.innerHTML = quote;
     return element.outerHTML;
   }
