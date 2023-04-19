@@ -7,7 +7,6 @@ import {
   OnInit,
 } from '@angular/core';
 import { createCustomElement, NgElement } from '@angular/elements';
-import { debounceTime } from 'rxjs';
 
 @Injectable()
 export class CustomElementComponent implements OnInit, OnDestroy {
@@ -37,18 +36,17 @@ export class CustomElementComponent implements OnInit, OnDestroy {
 
 @Injectable({ providedIn: 'root' })
 export class CustomElementComponentRegistry extends Set<CustomElementComponent> {
-  protected update = new EventEmitter();
-  readonly update$ = this.update.pipe(debounceTime(50));
+  update$ = new EventEmitter();
 
   override add(value: CustomElementComponent): this {
     super.add(value);
-    this.update.emit();
+    this.update$.emit();
     return this;
   }
 
   override delete(value: CustomElementComponent): boolean {
     const result = super.delete(value);
-    this.update.emit();
+    this.update$.emit();
     return result;
   }
 }

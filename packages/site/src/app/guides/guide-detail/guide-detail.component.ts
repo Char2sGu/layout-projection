@@ -2,11 +2,21 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  Inject,
   OnDestroy,
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { combineLatest, map, Observable, switchMap, takeUntil } from 'rxjs';
+import { HISTORY, LOCATION } from '@ng-web-apis/common';
+import {
+  combineLatest,
+  debounceTime,
+  filter,
+  map,
+  Observable,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 
 import { HeadingComponent } from '../../markdown-elements/heading/heading.component';
 import { CustomElementComponentRegistry } from '../../markdown-elements/shared/custom-element';
@@ -25,6 +35,8 @@ export class GuideDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    @Inject(LOCATION) private location: Location,
+    @Inject(HISTORY) private history: History,
     private customElementComponentRegistry: CustomElementComponentRegistry,
   ) {}
 
@@ -34,7 +46,7 @@ export class GuideDetailComponent implements OnInit, OnDestroy {
     );
 
     this.currentHeaderId$ = this.customElementComponentRegistry.update$.pipe(
-      takeUntil(this.destroy),
+      debounceTime(500),
       map(() => this.customElementComponentRegistry),
       map((set) =>
         [...set]
@@ -45,7 +57,11 @@ export class GuideDetailComponent implements OnInit, OnDestroy {
       map((visibilities) => visibilities.find(({ v }) => v)?.id),
     );
 
-    // TODO: update url hash
+    this.currentHeaderId$
+      .pipe(takeUntil(this.destroy), filter(Boolean))
+      .subscribe((id) => {
+        this.history.pushState(null, '', `${this.location.pathname}#${id}`);
+      });
   }
 
   ngOnDestroy(): void {
