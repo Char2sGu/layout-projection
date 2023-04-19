@@ -9,11 +9,13 @@ import { map, Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuideDetailComponent implements OnInit {
-  title$!: Observable<string>;
+  filename$!: Observable<string>;
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.title$ = this.route.data.pipe(map((data) => data['title']));
+    this.filename$ = this.route.params.pipe(
+      map((params) => params['filename']),
+    );
   }
 }

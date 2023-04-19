@@ -1,27 +1,34 @@
 import { NgModule } from '@angular/core';
-import { ResolveFn, RouterModule, Routes } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  ResolveFn,
+  RouterModule,
+  Routes,
+} from '@angular/router';
+import { TuiDocPage } from '@taiga-ui/addon-doc';
 
 import { GuideDetailComponent } from './guide-detail/guide-detail.component';
 import { GuidesComponent } from './guides.component';
 import { GUIDES_PAGES } from './guides.pages';
 
-const guidePageTitleResolver: ResolveFn<string> = (route) => {
-  const path = route.params['path'];
-  const page = GUIDES_PAGES.find((page) => page.route.endsWith(path));
-  return page?.title ?? '';
-};
+const guidePageResolver = ((route: ActivatedRouteSnapshot) => {
+  const filename = route.params['filename'];
+  const page = GUIDES_PAGES.find((page) => page.route.endsWith(filename));
+  if (!page) throw new Error(`Page ${filename} not found`);
+  return page;
+}) satisfies ResolveFn<TuiDocPage>;
 
 const routes: Routes = [
   {
     path: '',
     component: GuidesComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'overview' },
+      { path: '', pathMatch: 'full', redirectTo: 'getting-started' },
       {
-        path: ':path',
+        path: ':filename',
         component: GuideDetailComponent,
-        title: guidePageTitleResolver,
-        resolve: { title: guidePageTitleResolver },
+        title: (route) => guidePageResolver(route).title,
+        resolve: { page: guidePageResolver },
       },
     ],
   },

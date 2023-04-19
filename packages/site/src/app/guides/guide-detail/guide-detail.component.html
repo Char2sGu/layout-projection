@@ -1,5 +1,7 @@
-<tui-doc-page *ngIf="title$ | async as title" [header]="title">
-  <ng-container *pageTab="'Angular'">
-    <markdown src="assets/docs/angular/guides/{{ title }}.md"></markdown>
-  </ng-container>
-</tui-doc-page>
+<article
+  markdown
+  class="content"
+  *ngIf="filename$ | async as filename"
+  src="assets/docs/angular/guides/{{ filename }}.md"
+></article>
+<div class="toc"></div>
