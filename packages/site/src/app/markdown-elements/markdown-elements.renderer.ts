@@ -42,7 +42,7 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
     slugger: Slugger,
   ): string {
     const element = HeadingComponent.create();
-    element.id = slugger.slug(text);
+    element.setAttribute('id', slugger.slug(raw));
     element.setAttribute('level', level + '');
     element.innerHTML = text;
     return element.outerHTML;

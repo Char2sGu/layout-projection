@@ -2,7 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Injector, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TuiDocCodeModule } from '@taiga-ui/addon-doc';
-import { TuiLinkModule, TuiNotificationModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiLinkModule,
+  TuiNotificationModule,
+} from '@taiga-ui/core';
 
 import { BlockquoteComponent } from './blockquote/blockquote.component';
 import { CodeblockComponent } from './codeblock/codeblock.component';
@@ -30,6 +34,7 @@ const COMPONENTS = [
     RouterModule,
     TuiDocCodeModule,
     TuiNotificationModule,
+    TuiButtonModule,
     TuiLinkModule,
   ],
   providers: [MarkdownElementsRenderer],

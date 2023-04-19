@@ -1,6 +1,8 @@
 :host {
-  display: block;
+  display: flex;
   margin: 1rem 0;
+  align-items: center;
+  gap: 8px;
 
   &.level-1 {
     margin: 3rem 0;
@@ -27,5 +29,11 @@
   &.level-6 {
     font: var(--tui-font-text-l);
     font-weight: bold;
+  }
+}
+
+a {
+  :host:not(:hover) & {
+    opacity: 0;
   }
 }
