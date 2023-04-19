@@ -5,7 +5,7 @@ import {
   Input,
 } from '@angular/core';
 
-import { CustomElementComponent } from '../shared/custom-element-component';
+import { CustomElementComponent } from '../shared/custom-element';
 import { parseBooleanStringInput } from '../shared/input';
 
 @Component({
@@ -17,12 +17,10 @@ import { parseBooleanStringInput } from '../shared/input';
 export class ListComponent extends CustomElementComponent {
   static override readonly selector = 'md-list';
 
-  @Input('ordered') set orderInput(v: string) {
-    this.ordered = parseBooleanStringInput(v);
+  @HostBinding() get class(): string {
+    const ordered = parseBooleanStringInput(this.ordered);
+    return ordered ? 'tui-list tui-list_ordered' : 'tui-list';
   }
-  ordered = false;
 
-  @HostBinding('class') get class(): string {
-    return this.ordered ? 'tui-list tui-list_ordered' : 'tui-list';
-  }
+  @Input() ordered = '';
 }

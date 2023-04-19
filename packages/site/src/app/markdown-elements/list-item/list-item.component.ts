@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 
-import { CustomElementComponent } from '../shared/custom-element-component';
+import { CustomElementComponent } from '../shared/custom-element';
 
 @Component({
   selector: 'lpj-list-item',
@@ -11,5 +11,5 @@ import { CustomElementComponent } from '../shared/custom-element-component';
 export class ListItemComponent extends CustomElementComponent {
   static override readonly selector = 'md-list-item';
 
-  @HostBinding('class') class = 'tui-list__item';
+  @HostBinding() class = 'tui-list__item';
 }

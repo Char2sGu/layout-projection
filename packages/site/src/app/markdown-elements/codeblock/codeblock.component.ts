@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
-import { CustomElementComponent } from '../shared/custom-element-component';
+import { CustomElementComponent } from '../shared/custom-element';
 
 @Component({
   templateUrl: './codeblock.component.html',

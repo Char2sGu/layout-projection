@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 
-import { CustomElementComponent } from '../shared/custom-element-component';
+import { CustomElementComponent } from '../shared/custom-element';
 
 @Component({
   selector: 'lpj-paragraph',
@@ -11,5 +11,5 @@ import { CustomElementComponent } from '../shared/custom-element-component';
 export class ParagraphComponent extends CustomElementComponent {
   static override readonly selector = 'md-paragraph';
 
-  @HostBinding('class') class = 'tui-text_body-m';
+  @HostBinding() class = 'tui-text_body-m';
 }

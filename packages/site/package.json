@@ -15,6 +15,8 @@
     "@angular/platform-browser-dynamic": "^15.2.6",
     "@angular/router": "^15.2.6",
     "@layout-projection/angular-examples": "file:../angular-examples/dist",
+    "@ng-web-apis/common": "^2.1.0",
+    "@ng-web-apis/intersection-observer": "^3.0.0",
     "@taiga-ui/addon-doc": "^3.24.0",
     "@taiga-ui/cdk": "^3.24.0",
     "@taiga-ui/core": "^3.24.0",

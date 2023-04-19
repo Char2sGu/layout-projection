@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { CustomElementComponent } from '../shared/custom-element-component';
+import { CustomElementComponent } from '../shared/custom-element';
 
 @Component({
   templateUrl: './link.component.html',
