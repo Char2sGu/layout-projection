@@ -60,7 +60,7 @@ const dest = new BoundingBox({ top: 0, left: 0, right: 100, bottom: 100 });
 node.project(dest);
 ```
 
-## What can I do with this?
+## What's Next
 
 You have now acquired the power to project any element to any arbitrary layout with GPU accelerations!
 
@@ -80,7 +80,6 @@ animate({
       },
       { includeSelf: true },
     ),
-  onStop: resolve,
 });
 ```
 
