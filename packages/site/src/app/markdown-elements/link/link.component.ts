@@ -3,6 +3,12 @@ import { Router } from '@angular/router';
 
 import { CustomElementComponent } from '../shared/custom-element';
 
+/**
+ * Accepts:
+ * - `"http://example.com"`
+ * - `"./filename.md"`
+ * - `"#fragment"`
+ */
 @Component({
   templateUrl: './link.component.html',
   styleUrls: ['./link.component.less'],
@@ -20,10 +26,12 @@ export class LinkComponent extends CustomElementComponent {
       this.link = value;
       return;
     }
-    const urlTree = this.router.parseUrl(value);
-    const fragment = urlTree.fragment ?? undefined;
-    const path = fragment ? value.replace(`#${fragment}`, '') : value;
-    this.link = { path, fragment };
+    const fragment = this.router.parseUrl(value).fragment ?? undefined;
+    const pathRaw = fragment ? value.replace(`#${fragment}`, '') : value;
+    const filenameMatch = pathRaw.match(/^(?<path>.*)\/(?<filename>.*)\.md$/u);
+    if (!filenameMatch) throw new Error(`Invalid link: ${pathRaw}`);
+    const filename = filenameMatch?.groups?.['filename'];
+    this.link = { path: `../${filename}`, fragment };
   }
 
   link?: string | { path: string; fragment?: string };

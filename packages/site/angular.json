@@ -53,8 +53,13 @@
               },
               {
                 "glob": "**/*",
-                "input": "../angular/docs",
-                "output": "assets/docs/angular"
+                "input": "../core/guides",
+                "output": "assets/guides/core"
+              },
+              {
+                "glob": "**/*",
+                "input": "../angular/guides",
+                "output": "assets/guides/angular"
               },
               {
                 "glob": "**/*.example.*",

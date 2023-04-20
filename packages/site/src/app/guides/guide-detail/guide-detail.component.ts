@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,6 +15,7 @@ import {
   filter,
   map,
   Observable,
+  skip,
   switchMap,
   takeUntil,
 } from 'rxjs';
@@ -28,25 +30,25 @@ import { CustomElementComponentRegistry } from '../../markdown-elements/shared/c
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuideDetailComponent implements OnInit, OnDestroy {
-  filename$!: Observable<string>;
+  filepath$!: Observable<string>;
   currentHeaderId$!: Observable<string | undefined>;
+  ready = new EventEmitter();
 
   protected destroy = new EventEmitter();
 
   constructor(
     private route: ActivatedRoute,
+    @Inject(DOCUMENT) private document: Document,
     @Inject(LOCATION) private location: Location,
     @Inject(HISTORY) private history: History,
     private customElementComponentRegistry: CustomElementComponentRegistry,
   ) {}
 
   ngOnInit(): void {
-    this.filename$ = this.route.params.pipe(
-      map((params) => params['filename']),
-    );
+    this.filepath$ = this.route.url.pipe(map((url) => url.join('/')));
 
     this.currentHeaderId$ = this.customElementComponentRegistry.update$.pipe(
-      debounceTime(500),
+      debounceTime(50),
       map(() => this.customElementComponentRegistry),
       map((set) =>
         [...set]
@@ -54,6 +56,7 @@ export class GuideDetailComponent implements OnInit, OnDestroy {
           .map((c) => c.visibility$.pipe(map((v) => ({ id: c.id, v })))),
       ),
       switchMap((entries) => combineLatest(entries)),
+      debounceTime(500),
       map((visibilities) => visibilities.find(({ v }) => v)?.id),
     );
 
@@ -62,6 +65,10 @@ export class GuideDetailComponent implements OnInit, OnDestroy {
       .subscribe((id) => {
         this.history.pushState(null, '', `${this.location.pathname}#${id}`);
       });
+
+    this.ready.pipe(skip(1)).subscribe(() => {
+      this.document.documentElement.scrollTop = 0;
+    });
   }
 
   ngOnDestroy(): void {

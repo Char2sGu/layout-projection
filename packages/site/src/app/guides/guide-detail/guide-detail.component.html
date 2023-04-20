@@ -1,7 +1,8 @@
 <article
-  markdown
+  lpj-markdown
   class="content"
-  *ngIf="filename$ | async as filename"
-  src="assets/docs/angular/guides/{{ filename }}.md"
+  *ngIf="filepath$ | async as filepath"
+  src="assets/guides/{{ filepath }}.md"
+  (ready)="ready.emit()"
 ></article>
 <div class="toc"></div>

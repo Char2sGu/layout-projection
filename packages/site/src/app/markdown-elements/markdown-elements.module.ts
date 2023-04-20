@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Injector, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TuiDocCodeModule } from '@taiga-ui/addon-doc';
 import {
@@ -16,6 +16,7 @@ import { ListComponent } from './list/list.component';
 import { ListItemComponent } from './list-item/list-item.component';
 import { MarkdownElementsRenderer } from './markdown-elements.renderer';
 import { ParagraphComponent } from './paragraph/paragraph.component';
+import { CustomElementComponentInjector } from './shared/custom-element';
 
 const COMPONENTS = [
   CodeblockComponent,
@@ -37,10 +38,10 @@ const COMPONENTS = [
     TuiButtonModule,
     TuiLinkModule,
   ],
-  providers: [MarkdownElementsRenderer],
+  providers: [MarkdownElementsRenderer, CustomElementComponentInjector],
 })
 export class MarkdownElementsModule {
-  constructor(injector: Injector) {
+  constructor(injector: CustomElementComponentInjector) {
     COMPONENTS.forEach((c) => c.initialize(injector));
   }
 }

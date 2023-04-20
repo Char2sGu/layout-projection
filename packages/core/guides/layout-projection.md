@@ -1,6 +1,6 @@
 # Layout Projection
 
-A Layout Projection project an element from it's browser-computed layout (size + position) to an arbitrary destination bounding box by applying CSS `transform`s, while ensuring that the element is not distorted because of the effect of CSS `transform`s applied on parent elements, enabling nested Layout Projections.
+A Layout Projection project an element from it's browser-computed layout (size + position) to an arbitrary destination layout by applying CSS `transform`s, while ensuring that the element is not distorted because of the effect of CSS `transform`s applied on parent elements, enabling nested Layout Projections.
 
 Based on this technique, developers can implement **GPU accelerated** high frame rate animations by continuously projecting an element from one layout to another in each frame.
 

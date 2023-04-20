@@ -50,3 +50,20 @@ export class CustomElementComponentRegistry extends Set<CustomElementComponent> 
     return result;
   }
 }
+
+@Injectable({ providedIn: 'root' })
+export class CustomElementComponentInjector implements Injector {
+  private underlying?: Injector;
+
+  constructor(private root: Injector) {}
+
+  use(injector?: Injector): void {
+    if (injector && this.underlying) throw new Error('Injector already set');
+    this.underlying = injector;
+  }
+
+  get(...args: any[]): any {
+    const injector = this.underlying ?? this.root;
+    return injector.get.bind(injector, ...args)();
+  }
+}

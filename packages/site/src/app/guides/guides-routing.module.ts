@@ -12,9 +12,9 @@ import { GuidesComponent } from './guides.component';
 import { GUIDES_PAGES } from './guides.pages';
 
 const guidePageResolver = ((route: ActivatedRouteSnapshot) => {
-  const filename = route.params['filename'];
-  const page = GUIDES_PAGES.find((page) => page.route.endsWith(filename));
-  if (!page) throw new Error(`Page ${filename} not found`);
+  const path = route.url.join('/');
+  const page = GUIDES_PAGES.find((page) => page.route.endsWith(path));
+  if (!page) throw new Error(`Page ${path} not found`);
   return page;
 }) satisfies ResolveFn<TuiDocPage>;
 
@@ -23,9 +23,9 @@ const routes: Routes = [
     path: '',
     component: GuidesComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'getting-started' },
+      { path: '', pathMatch: 'full', redirectTo: 'core/getting-started' },
       {
-        path: ':filename',
+        path: '**',
         component: GuideDetailComponent,
         title: (route) => guidePageResolver(route).title,
         resolve: { page: guidePageResolver },
