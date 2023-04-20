@@ -32,7 +32,8 @@ export class LayoutAnimationEntryDirective {
 
   snapshot(): void {
     const filter = this.nodeRegistry?.has.bind(this.nodeRegistry);
-    this.snapper.snapshotTree(this.node, this.snapshots, filter);
+    const snapshots = this.snapper.snapshotTree(this.node, filter);
+    this.snapshots.merge(snapshots);
   }
 
   animate(): AnimationRef {
