@@ -29,7 +29,13 @@ export class LayoutAnimator {
 
     this.initialize(root);
     const routes = this.getAnimationRouteMap(root, snapshots, estimation);
-    return this.engine.animate(root, { duration, easing, routes });
+    const ref = this.engine.animate(root, { duration, easing, routes });
+
+    ref.then(() => {
+      root.traverse((node) => node.reset(), { includeSelf: true });
+    });
+
+    return ref;
   }
 
   protected initialize(root: ProjectionNode): void {

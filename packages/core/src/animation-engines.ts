@@ -32,10 +32,7 @@ export class ProjectionNodeAnimationEngine {
         duration,
         ease: easing,
         onUpdate: animateFrame,
-        onComplete: () => {
-          node.reset();
-          resolve();
-        },
+        onComplete: () => resolve(),
         onStop: resolve,
       }).stop;
     });
