@@ -16,7 +16,7 @@ import {
 } from 'rxjs';
 
 import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
-import { LayoutAnimationScopeEntryRegistry } from './layout-animation-scope.directive';
+import { LayoutAnimationScopeEntryRegistry } from './layout-animation-scope.providers';
 
 @Directive({
   selector: '[lpjAnimationTrigger]',

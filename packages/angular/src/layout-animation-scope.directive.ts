@@ -1,19 +1,19 @@
 import {
   Directive,
-  Injectable,
   Injector,
   Input,
   OnInit,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
-import {
-  ProjectionNode,
-  ProjectionNodeSnapshotMap,
-} from '@layout-projection/core';
+import { ProjectionNodeSnapshotMap } from '@layout-projection/core';
 
-import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
-import { MapExpirer } from './shared/map';
+import {
+  LayoutAnimationScopeEntryRegistry,
+  LayoutAnimationScopeNodeRegistry,
+  LayoutAnimationScopeRef,
+  ProjectionNodeSnapshotMapExpirer,
+} from './layout-animation-scope.providers';
 
 @Directive({
   selector: '[lpjAnimationScope]',
@@ -68,25 +68,4 @@ export class LayoutAnimationScopeDirective implements OnInit {
 
 export interface LayoutAnimationScopeTemplateContext {
   $implicit: LayoutAnimationScopeRef;
-}
-
-@Injectable()
-export class LayoutAnimationScopeRef {
-  constructor(
-    readonly nodeRegistry: LayoutAnimationScopeNodeRegistry,
-    readonly entryRegistry: LayoutAnimationScopeEntryRegistry,
-    readonly snapshots: ProjectionNodeSnapshotMap,
-  ) {}
-}
-
-export class LayoutAnimationScopeNodeRegistry extends Set<ProjectionNode> {}
-export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntryDirective> {}
-
-@Injectable()
-export class ProjectionNodeSnapshotMapExpirer extends MapExpirer<
-  ProjectionNode['id']
-> {
-  constructor(map: ProjectionNodeSnapshotMap) {
-    super(map, 10);
-  }
 }

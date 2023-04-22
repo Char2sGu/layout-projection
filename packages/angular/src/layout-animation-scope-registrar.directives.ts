@@ -6,7 +6,7 @@ import {
   LayoutAnimationScopeEntryRegistry,
   LayoutAnimationScopeNodeRegistry,
   ProjectionNodeSnapshotMapExpirer,
-} from './layout-animation-scope.directive';
+} from './layout-animation-scope.providers';
 
 @Directive({
   selector: '[lpjNode]',

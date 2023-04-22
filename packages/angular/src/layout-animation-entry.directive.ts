@@ -8,7 +8,7 @@ import {
   ProjectionNodeSnapshotMap,
 } from '@layout-projection/core';
 
-import { LayoutAnimationScopeNodeRegistry } from './layout-animation-scope.directive';
+import { LayoutAnimationScopeNodeRegistry } from './layout-animation-scope.providers';
 
 @Directive({
   selector: '[lpjNode][lpjAnimation]',
