@@ -1,10 +1,18 @@
-# Dependency Management
+# Standalone Usage
+
+`@layout-projection/core` usually serves as the core of framework adapter, but can also be used separately if there is not a suitable framework adapter yet available for you.
+
+This guide offers you some inspirations of some potential standalone usages of the `@layout-projection/core` package.
+
+## Projection Tree
+
+## Class Dependencies
 
 `@layout-projection/core` APIs are highly composable and extensible, as the responsibility of each service class is clearly separated and the dependencies of a service are explicitly passed into the service as constructor parameters.
 
 Framework adapters usually provide you a beautiful API and hide the dependency details from you, but when used separately, you will have to manage the dependencies yourself.
 
-## The Primitive Way
+### The Primitive Way
 
 You might come to instantiate the dependencies every time you instantiate a class:
 
@@ -17,7 +25,7 @@ It is quite straightforward, but also quite rough:
 - There are multiple instances created for a single service, which is completely unnecessary.
 - The dependencies are fixed to specific classes, which works for simple cases but could severely damage the flexibility of a well-designed architecture.
 
-## The Service Map
+### The Service Map
 
 It's much more recommended to use a Service Map instead, which is simply a map of instances of services but works well:
 
@@ -57,8 +65,4 @@ const measurer = services.get(ElementMeasurer); // BetterElementMeasurer
 const node = new ProjectionNode(element, measurer);
 ```
 
-## Explore Your Own Style
-
-The Service Map style is just an inspiration for you.
-
-Use your creativity to explore your own style to make this library fit your application best.
+### Dependency Injection
