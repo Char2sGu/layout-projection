@@ -63,7 +63,7 @@ export class GuideDetailComponent implements OnInit, OnDestroy {
     this.currentHeaderId$
       .pipe(takeUntil(this.destroy), filter(Boolean))
       .subscribe((id) => {
-        this.history.pushState(null, '', `${this.location.pathname}#${id}`);
+        this.history.replaceState(null, '', `${this.location.pathname}#${id}`);
       });
 
     this.ready.pipe(skip(1)).subscribe(() => {
