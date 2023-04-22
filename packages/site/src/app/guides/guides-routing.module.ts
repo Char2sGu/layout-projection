@@ -23,7 +23,7 @@ const routes: Routes = [
     path: '',
     component: GuidesComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'core/layout-projection' },
+      { path: '', pathMatch: 'full', redirectTo: 'core/overview' },
       {
         path: '**',
         component: GuideDetailComponent,
