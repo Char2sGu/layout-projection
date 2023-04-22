@@ -1,38 +1,64 @@
 # Dependency Management
 
-`@layout-projection/core` does not have a built-in Dependency Injection engine, but it makes great use of the idea of Dependency Injection and many class constructors require several dependencies as their parameters, enabling better flexibility and extensibility.
+`@layout-projection/core` APIs are highly composable and extensible, as the responsibility of each service class is clearly separated and the dependencies of a service are explicitly passed into the service as constructor parameters.
 
-When used separately without a DI engine, `@layout-projection/core` requires developers to manually instantiate the dependencies and pass them to the constructors explicitly.
+Framework adapters usually provide you a beautiful API and hide the dependency details from you, but when used separately, you will have to manage the dependencies yourself.
 
-You can choose to manually instantiate dependency services every time:
+## The Primitive Way
+
+You might come to instantiate the dependencies every time you instantiate a class:
 
 ```ts
 new ProjectionNode(element, new ElementMeasurer(new CssBorderRadiusParser()));
 ```
 
-But it's much more recommended to use an instance map instead, which borrows the core idea from DI:
+It is quite straightforward, but also quite rough:
+
+- There are multiple instances created for a single service, which is completely unnecessary.
+- The dependencies are fixed to specific classes, which works for simple cases but could severely damage the flexibility of a well-designed architecture.
+
+## The Service Map
+
+It's much more recommended to use a Service Map instead, which is simply a map of instances of services but works well:
 
 ```ts
 const services = new Map<Function, any>();
+```
+
+During the initialization phrase of you application, you should provide an instance of all services to the Service Map:
+
+```ts
 services.set(CssBorderRadiusParser, new CssBorderRadiusParser());
 services.set(
   ElementMeasurer,
   new ElementMeasurer(services.get(CssBorderRadiusParser)),
 );
+```
 
+When a service is required as a dependency, simply retrieve the instance from the Service Map:
+
+```ts
 const node = new ProjectionNode(element, services.get(ElementMeasurer));
 ```
 
-The instance map not only allow you to create only one instance of each service and use it everywhere, but also allow you to replace certain services with your own implementations to customize the behavior of the library:
+The greatest advantage brought from a Service Map is that the implementation details of a service is abstracted, and you are only using a token to retrieve the service, which is the `ElementMeasurer` class constructor in the example above.
+
+You can replace certain the implementation of a certain service with your own one to customize the behavior of the package:
 
 ```ts
 class BetterElementMeasurer implements ElementMeasurer { ... }
 services.set(ElementMeasurer, new BetterElementMeasurer());
 ```
 
-...without changing the code of any other parts of the application, because the token for the service is the same:
+As you are still using the `ElementMeasurer` class constructor as the token, there is no change required for any other parts of your application:
 
 ```ts
 const measurer = services.get(ElementMeasurer); // BetterElementMeasurer
 const node = new ProjectionNode(element, measurer);
 ```
+
+## Explore Your Own Style
+
+The Service Map style is just an inspiration for you.
+
+Use your creativity to explore your own style to make this library fit your application best.
