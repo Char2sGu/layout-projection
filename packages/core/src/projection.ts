@@ -15,7 +15,7 @@ export class ProjectionNode {
   static idNext = 1;
 
   id = `anonymous-${ProjectionNode.idNext++}`;
-  activated = false;
+  activated = true;
 
   parent?: ProjectionNode;
   children = new Set<ProjectionNode>();
