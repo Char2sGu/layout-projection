@@ -14,6 +14,16 @@ Matt Perry heavily applied Layout Projection in [Framer Motion](https://www.fram
 
 To address this issue, we offer a **framework-agnostic** implementation of Layout Projection with various framework adapters to enable all web developers to enhance their applications with layout animations!
 
+## Example
+
+In this Vanilla JS example, a layout animation will be triggered to animate elements to their new layouts once the layout is updated.
+
+- Click on a list item to remove it.
+- Click on the background to add a new item to the list.
+
+<md-iframe src="https://stackblitz.com/edit/layout-projection-example-list?embed=1&file=index.ts&hideNavigation=1&view=preview">
+</md-iframe>
+
 ## Getting Started
 
 This project consists of multiple packages, with `@layout-projection/core` serving as the framework-agnostic core for all framework adapters.

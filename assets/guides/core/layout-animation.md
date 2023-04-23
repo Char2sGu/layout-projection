@@ -163,7 +163,7 @@ animator.animate({ ..., estimation: true });
 
 ## Usage Example
 
-In this Vanilla JS example, the list's items will be animated to their new layouts once the list is updated.
+In this Vanilla JS example, a layout animation will be triggered to animate elements to their new layouts once the layout is updated.
 
 - Click on a list item to remove it.
 - Click on the background to add a new item to the list.
