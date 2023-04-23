@@ -1,44 +1,33 @@
 # Snapshots
 
-In many cases, you might want to capture the current state of a specific Projection Node into a snapshot for future animation use.
-
-The `ProjectionNodeSnapper` service can be used to create such snapshots:
+The `ProjectionNodeSnapper` service captures the current state of Projection Nodes into snapshots for future use:
 
 ```ts
 const snapper = new ProjectionNodeSnapper(...deps);
-const snapshot = snapper.snapshot(node);
+const snapshot = snapper.snapshot(node); // ProjectionNodeSnapshot
 ```
 
-The return value of the `snapshot()` method is a `ProjectionNodeSnapshot`:
+To snapshot a whole subtree of Projection Nodes, use `snapshotTree()` instead, which traverse down the Projection Tree starting from the provided `root` , snapshot each node, and save the snapshots in a map:
 
 ```ts
-interface ProjectionNodeSnapshot {
-  element: HTMLElement;
-  boundingBox: BoundingBox;
-  borderRadiuses: BorderRadiusConfig;
-}
+const snapshots = snapper.snapshotTree(root); // ProjectionNodeSnapshotMap
 ```
 
-To capture a whole sub-tree of Projection Nodes, use the `snapshotTree()` method instead:
+Optionally, a `filter` can be specified to skip some child nodes in the traversal:
 
 ```ts
-const snapshots = snapper.snapshotTree(root);
+snapper.snapshotTree(root, (node) => node.element.tagName !== 'span');
 ```
 
-The return value is a `ProjectionNodeSnapshotMap`:
+Projection Nodes are identified by their ids, thus the id should be used to retrieve the snapshot of a specific node from the snapshot map:
 
 ```ts
-class ProjectionNodeSnapshotMap extends Map<
-  ProjectionNode['id'],
-  ProjectionNodeSnapshot
-> { ... }
+const snapshot = snapshots.get(root.id);
 ```
 
-Optionally, you can specify a `filter` to only snapshot part of the sub-tree:
+Snapshot maps can merge other snapshot maps, enabling developers to maintain an overall snapshot map for all Projection Nodes:
 
 ```ts
-const snapshots = snapper.snapshotTree(
-  root,
-  (node) => node.element.tagName !== 'span',
-);
+const snapshots = new ProjectionNodeSnapshotMap();
+snapshots.merge(snapper.snapshotTree(root));
 ```
