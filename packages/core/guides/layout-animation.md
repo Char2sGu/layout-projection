@@ -4,7 +4,7 @@ With the Layout Projection technique, developers can now create **GPU-accelerate
 
 Several services are built into `@layout-projection/core` to allow developers to easily create smooth layout animations based on the Layout Projection technique.
 
-Through this guide, you will learn about the animation API through which you can create a variety of fancy layout animations including shared-element animation and container-transform animation.
+Through this guide, you will learn about the animation API of `@layout-projection/core`, through which you can create a variety of fancy layout animations including shared-element transitions and container transforms.
 
 ## Prerequisites
 
@@ -129,12 +129,12 @@ updateLayout();
 await animator.animate({ root: root, from: snapshots });
 ```
 
-> The `ProjectionNodeSnapper` service is used here for snapshot capturing. Learn more about this service [here](./snapshots.md).
+> The `ProjectionNodeSnapper` service captures the current state of Projection Nodes into snapshots. Learn more about this service [here](./snapshots.md).
 
 Note that several requirements must be followed in order to perform the animation correctly:
 
-- You should invoke `animate()` after changing the layouts as soon as possible because the layout changes will be rendered after the current event loop is completed, and then the elements will blink on their new layouts before they are animated.
-- The layout changes must be within the scope of the subtree staring from the `root` you specified.
+- You should invoke `animate()` after changing the layouts as soon as possible, because the layout changes will be rendered after the current event loop is completed, and then the elements will blink on their new layouts before they are animated.
+- The layout changes must be within the scope of the subtree starting from the `root` node you specified.
 
 ### Easing and Duration
 
@@ -161,8 +161,14 @@ In order to include these new nodes in the animation, you need to set `estimatio
 animator.animate({ ..., estimation: true });
 ```
 
-## Example: Simple Layout Animation
+## Usage Example
 
-## Example: Shared-element Animation
+In this Vanilla JS example, the list's items will be animated to their new layouts once the list is updated.
 
-## Example: Container-transform Animation
+- Click on a list item to remove it.
+- Click on the background to add a new item to the list.
+
+<md-iframe src="https://stackblitz.com/edit/layout-projection-example-list?embed=1&file=index.ts&hideNavigation=1&view=preview">
+</md-iframe>
+
+> Checkout [Standalone Usage](./standalone-usage.md) for advices on using `@layout-projection/core` without a framework adapter.
