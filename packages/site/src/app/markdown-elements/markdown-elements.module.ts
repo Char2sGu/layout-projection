@@ -11,6 +11,7 @@ import {
 import { BlockquoteComponent } from './blockquote/blockquote.component';
 import { CodeblockComponent } from './codeblock/codeblock.component';
 import { HeadingComponent } from './heading/heading.component';
+import { IframeComponent } from './iframe/iframe.component';
 import { LinkComponent } from './link/link.component';
 import { ListComponent } from './list/list.component';
 import { ListItemComponent } from './list-item/list-item.component';
@@ -26,6 +27,7 @@ const COMPONENTS = [
   ListComponent,
   ListItemComponent,
   ParagraphComponent,
+  IframeComponent,
 ];
 
 @NgModule({
