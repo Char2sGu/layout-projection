@@ -33,7 +33,9 @@
 }
 
 a {
-  :host:not(:hover) & {
-    opacity: 0;
+  opacity: 0;
+  &:hover,
+  &:focus {
+    opacity: initial;
   }
 }
