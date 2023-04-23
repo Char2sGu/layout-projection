@@ -4,13 +4,13 @@ A Layout Projection projects an element from it's browser-computed layout (size 
 
 Based on this technique, developers can implement **GPU accelerated** high frame rate animations by continuously projecting an element from one layout to another in each frame.
 
-This guide introduces you the basic mechanism of Layout Projection with some fundamental APIs used to perform Layout Projections.
+This guide introduces you the basic mechanism of Layout Projection with some fundamental APIs of `@layout-projection/core` for performing Layout Projections.
 
 ## Projection Tree
 
 The Projection Tree serves as the infrastructure for Layout Projections. It is an abstract concept referring to a tree of Projection Nodes in a hierarchy based on the DOM tree.
 
-A Projection Node is corresponding to a specific DOM element, responsible for performing Layout Projection for the DOM element, where the states of its parents in the Projection Tree are involved to cancel the side effect of parent Layout Projections.
+A Projection Node is a piece of content that can be projected, which is represented by the `ProjectionNode` class. A `ProjectionNode` instance is bound to a specific DOM element, responsible for performing Layout Projection for the element, where the states of its parents in the Projection Tree are involved to cancel the side effect of parent Layout Projections.
 
 Instantiate a `ProjectionNode` for a DOM element and attach it to a parent node to add the element into the Projection Tree. The following example constructs a Projection Tree consisting of two Projection Nodes:
 
@@ -35,6 +35,35 @@ The Projection Tree needs to be strictly synchronized with the DOM tree in order
 - Once a DOM element in the Projection Tree is removed from the DOM tree, its corresponding Projection Node (if exists) should be immediately detached from its parent and references of the `ProjectionNode` instance should be eliminated.
 
 Framework adapters should be able to construct and synchronize the Projection Tree with the DOM tree automatically and declaratively.
+
+### Node Identity
+
+A Projection Node is a piece of content that can be projected, but the same "piece of content" can be different DOM element instances in different phrases of your application.
+
+As a `ProjectionNode` instance is strictly bound to a specific DOM element, you might need to instantiate multiple `ProjectionNode` instances for a same piece of content at different phrases.
+
+Projection Nodes are always identified by their unique ids instead of `ProjectionNode` instance references.
+
+By default, a random id is generated for each new `ProjectionNode` instance. If a Projection Node is represented by more than one `ProjectionNode` instances, you'll need to explicitly identify these `ProjectionNode` instances using a same unique id:
+
+```ts
+const oldNode = new ProjectionNode(oldElement, ...deps);
+oldNode.identifyAs('the-same-and-unique-id');
+const newNode = new ProjectionNode(newElement, ...deps);
+newNode.identifyAs('the-same-and-unique-id');
+```
+
+### Node Deactivation
+
+A Projection Node is activated by default, but can be deactivated to omit the node and its children from tree traversals.
+
+The `activate()` and `deactivate()` methods can be used to update the activation state:
+
+```ts
+someChild.deactivate();
+root.traverse((node) => someOperation(node));
+someChild.activate();
+```
 
 ## Projection Process
 
