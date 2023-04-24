@@ -27,17 +27,17 @@ export const GUIDES_PAGES: TuiDocPage[] = [
     route: 'guides/core/standalone-usage',
   },
   {
-    section: 'Adapter - Angular',
+    section: 'Adapter / Angular',
     title: 'Overview',
     route: 'guides/angular/overview',
   },
   {
-    section: 'Adapter - Angular',
+    section: 'Adapter / Angular',
     title: 'Projection Tree',
     route: 'guides/angular/projection-tree',
   },
   {
-    section: 'Adapter - Angular',
+    section: 'Adapter / Angular',
     title: 'Layout Animation',
     route: 'guides/angular/layout-animation',
   },
