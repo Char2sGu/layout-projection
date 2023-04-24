@@ -21,6 +21,14 @@ Matt Perry heavily applied the Layout Projection technique in [Framer Motion](ht
 
 Therefore, here we offer a **framework-agnostic** implementation of Layout Projection with a variety of framework adapters to enable all web developers to enhance their applications with layout animations!
 
+# Why not FLIP?
+
+[FLIP (First Last Invert Play)](https://aerotwist.com/blog/flip-your-animations/) is also a technique for performing layout animations using CSS `transform`s, where the elements are also `transform`ed to pretend that they are in their previous layout and then animated back to their new layouts.
+
+However, instead of calculating `transform`s for both the element and its children and update the `transform` styles in each animation frame, FLIP simply apply a `transition` for the `transform` property and removes the entire `transform` style to animate the element, which would cause severe distortion on the child elements if the aspect ratio of the element is changed.
+
+Layout Projection, in the other hand, perfectly prevented the distortion by animating the element frame by frame and applying a distortion-cancelling `transform` to all the child elements in each animation frame, enabling more advanced layout animations like container transforms.
+
 # Special Thanks
 
 Big thank to [@taowen](https://github.com/taowen) for providing [the GitHub Gist copy](https://gist.github.com/taowen/e102cf5731e527cb9ac02574783c4119) of the missing original blog by Matt Perry about the tech details of Layout Projection.
