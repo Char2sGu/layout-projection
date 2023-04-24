@@ -6,6 +6,38 @@ This guide offers you some inspirations of some potential standalone usages of t
 
 ## Projection Tree
 
+The Projection Tree can be hard to maintain without a framework adapter.
+
+A `WeakMap` can be used to record the corresponding `ProjectionNode` instances for each element you create without worrying about memory leaks:
+
+```ts
+const nodes = new WeakMap<Element, ProjectionNode>();
+```
+
+Whenever you instantiate a `ProjectionNode`, be sure to record it in the `WeakMap` and attach to a correct parent:
+
+```ts
+const list = document.createElement('list');
+const listNode = new ProjectionNode(list, ...deps);
+node.set(list, listNode);
+
+const item = document.createElement('li');
+list.append(item);
+const itemNode = new ProjectionNode(child, ...deps);
+itemNode.attach(listNode);
+nodes.set(item, itemNode);
+```
+
+After the element is removed, remember to clean up its corresponding `ProjectionNode` instance:
+
+```ts
+const items = [...list.children];
+for (const item of items) {
+  item.remove();
+  nodes.get(item)?.detach();
+}
+```
+
 ## Class Dependencies
 
 `@layout-projection/core` APIs are highly composable and extensible, as the responsibility of each service class is clearly separated and the dependencies of a service are explicitly passed into the service as constructor parameters.
@@ -66,3 +98,9 @@ const node = new ProjectionNode(element, measurer);
 ```
 
 ### Dependency Injection
+
+TODO
+
+## Creating Your Wrappers
+
+The `@layout-projection/core` APIs are highly extensible, but can also be cumbersome to work with directly. Feel free to wrap them up in a way that suits your needs best to ensure they are the fit for your application.
