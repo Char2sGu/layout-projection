@@ -1,5 +1,13 @@
+@import '@taiga-ui/core/styles/taiga-ui-local.less';
+
 .content {
-  padding: 3em 5em;
-  max-width: 80em;
+  padding: 3rem 5rem;
+  max-width: 80rem;
   margin: 0 auto;
+  @media @tui-tablet {
+    padding: 2rem 2.5rem;
+  }
+  @media @tui-mobile {
+    padding: 2rem 1.25rem;
+  }
 }
