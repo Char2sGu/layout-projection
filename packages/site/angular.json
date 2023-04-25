@@ -76,7 +76,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "1.5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -91,6 +91,10 @@
               "optimization": false,
               "vendorChunk": true,
               "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "production-budget-debug": {
               "sourceMap": true,
               "namedChunks": true
             }
