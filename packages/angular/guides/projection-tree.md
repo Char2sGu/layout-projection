@@ -14,7 +14,7 @@ The `lpjNode` property will be selected by the `ProjectionNodeDirective`, which 
 - automatically look for the parent `ProjectionNode` through the injector tree and attach to it on instantiation
 - automatically detach from the parent on destroy
 
-### Node Identity
+## Node Identification
 
 For cases where the `ProjectionNode` instance needs to be explicitly identified, pass the id to the `lpjNode` input:
 
@@ -22,7 +22,7 @@ For cases where the `ProjectionNode` instance needs to be explicitly identified,
 <div lpjNode="list-item-{{ item.id }}"></div>
 ```
 
-### Node Deactivation
+## Node Deactivation
 
 To deactivate the `ProjectionNode` instance, pass a `false` instead:
 
@@ -30,7 +30,7 @@ To deactivate the `ProjectionNode` instance, pass a `false` instead:
 <div [lpjNode]="activated ? 'list-item-{{ item.id }}' : false"></div>
 ```
 
-### Node Instance Accessing
+## Node Instance Accessing
 
 As the `ProjectionNode` instance is provided in the current view-level injector of the `[lpjNode]` directive, it can be queried through the View Query APIs just like how we access other providers provided in the component view:
 
