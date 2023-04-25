@@ -29,7 +29,7 @@
   "devDependencies": {
     "@angular/common": "^15.2.6",
     "@angular/core": "^15.2.6",
-    "@layout-projection/core": "file:packages/core",
+    "@layout-projection/core": "file:../core",
     "ng-packagr": "^15.2.2",
     "rxjs": "^7.8.0"
   }
