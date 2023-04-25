@@ -1,1 +1,0 @@
-# Animation Trigger in Angular
