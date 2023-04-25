@@ -10,6 +10,7 @@ import { ElementMeasurer } from './measure.js';
 import { ProjectionNode } from './projection.js';
 import { BoundingBox } from './shared.js';
 import {
+  ProjectionNodeSnapper,
   ProjectionNodeSnapshot,
   ProjectionNodeSnapshotMap,
 } from './snapshot.js';
@@ -128,3 +129,29 @@ export interface LayoutAnimationConfig {
   easing?: string | Easing;
   estimation?: boolean;
 }
+
+export class LayoutAnimationEntry {
+  // eslint-disable-next-line max-params
+  constructor(
+    public node: ProjectionNode,
+    protected animator: LayoutAnimator,
+    protected snapper: ProjectionNodeSnapper,
+    protected snapshots = new ProjectionNodeSnapshotMap(),
+  ) {}
+
+  snapshot(): void {
+    const snapshots = this.snapper.snapshotTree(this.node);
+    this.snapshots.merge(snapshots);
+  }
+
+  animate(config: LayoutAnimationEntryConfig): AnimationRef {
+    return this.animator.animate({
+      ...config,
+      root: this.node,
+      from: this.snapshots,
+    });
+  }
+}
+
+export interface LayoutAnimationEntryConfig
+  extends Omit<LayoutAnimationConfig, 'root' | 'from'> {}

@@ -1,7 +1,8 @@
 import { Directive, Input, Optional, Self } from '@angular/core';
 import {
   AnimationRef,
-  LayoutAnimationConfig,
+  LayoutAnimationEntry,
+  LayoutAnimationEntryConfig,
   LayoutAnimator,
   ProjectionNode,
   ProjectionNodeSnapper,
@@ -15,33 +16,31 @@ import { LayoutAnimationScopeNodeRegistry } from './layout-animation-scope.provi
   exportAs: 'lpjAnimation',
   standalone: true,
 })
-export class LayoutAnimationEntryDirective {
+export class LayoutAnimationEntryDirective extends LayoutAnimationEntry {
   @Input() set lpjAnimation(v: '' | this['config']) {
     if (typeof v === 'string') return;
     this.config = v;
   }
 
-  config: Omit<LayoutAnimationConfig, 'root' | 'from'> = {};
+  config: LayoutAnimationEntryConfig = {};
 
   constructor(
-    @Self() public node: ProjectionNode,
-    private animator: LayoutAnimator,
-    private snapper: ProjectionNodeSnapper,
-    private snapshots: ProjectionNodeSnapshotMap,
+    @Self() node: ProjectionNode,
+    animator: LayoutAnimator,
+    snapper: ProjectionNodeSnapper,
+    snapshots: ProjectionNodeSnapshotMap,
     @Optional() private nodeRegistry?: LayoutAnimationScopeNodeRegistry,
-  ) {}
+  ) {
+    super(node, animator, snapper, snapshots);
+  }
 
-  snapshot(): void {
+  override snapshot(): void {
     const filter = this.nodeRegistry?.has.bind(this.nodeRegistry);
     const snapshots = this.snapper.snapshotTree(this.node, filter);
     this.snapshots.merge(snapshots);
   }
 
-  animate(): AnimationRef {
-    return this.animator.animate({
-      root: this.node,
-      from: this.snapshots,
-      ...this.config,
-    });
+  override animate(): AnimationRef {
+    return super.animate(this.config);
   }
 }
