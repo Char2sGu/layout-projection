@@ -131,21 +131,27 @@ export interface LayoutAnimationConfig {
 }
 
 export class LayoutAnimationEntry {
-  // eslint-disable-next-line max-params
-  constructor(
-    public node: ProjectionNode,
-    protected animator: LayoutAnimator,
-    protected snapper: ProjectionNodeSnapper,
-    protected snapshots = new ProjectionNodeSnapshotMap(),
-  ) {}
+  readonly node: ProjectionNode;
+  protected animator: LayoutAnimator;
+  protected snapper: ProjectionNodeSnapper;
+  protected snapshots: ProjectionNodeSnapshotMap;
+  protected animationConfig: LayoutAnimationEntryAnimationConfig;
+
+  constructor(config: LayoutAnimationEntryConfig) {
+    this.node = config.node;
+    [this.animator, this.snapper] = config.deps;
+    this.snapshots = config.storage ?? new ProjectionNodeSnapshotMap();
+    this.animationConfig = config.animation ?? {};
+  }
 
   snapshot(): void {
     const snapshots = this.snapper.snapshotTree(this.node);
     this.snapshots.merge(snapshots);
   }
 
-  animate(config: LayoutAnimationEntryConfig): AnimationRef {
+  animate(config?: LayoutAnimationEntryAnimationConfig): AnimationRef {
     return this.animator.animate({
+      ...this.animationConfig,
       ...config,
       root: this.node,
       from: this.snapshots,
@@ -153,5 +159,12 @@ export class LayoutAnimationEntry {
   }
 }
 
-export interface LayoutAnimationEntryConfig
+export interface LayoutAnimationEntryConfig {
+  node: ProjectionNode;
+  deps: [LayoutAnimator, ProjectionNodeSnapper];
+  storage?: ProjectionNodeSnapshotMap;
+  animation?: LayoutAnimationEntryAnimationConfig;
+}
+
+export interface LayoutAnimationEntryAnimationConfig
   extends Omit<LayoutAnimationConfig, 'root' | 'from'> {}

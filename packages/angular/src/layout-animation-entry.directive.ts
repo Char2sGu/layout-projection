@@ -1,8 +1,7 @@
 import { Directive, Input, Optional, Self } from '@angular/core';
 import {
-  AnimationRef,
   LayoutAnimationEntry,
-  LayoutAnimationEntryConfig,
+  LayoutAnimationEntryAnimationConfig,
   LayoutAnimator,
   ProjectionNode,
   ProjectionNodeSnapper,
@@ -17,12 +16,12 @@ import { LayoutAnimationScopeNodeRegistry } from './layout-animation-scope.provi
   standalone: true,
 })
 export class LayoutAnimationEntryDirective extends LayoutAnimationEntry {
-  @Input() set lpjAnimation(v: '' | this['config']) {
+  @Input() set lpjAnimation(v: '' | this['animationConfig']) {
     if (typeof v === 'string') return;
-    this.config = v;
+    this.animationConfig = v;
   }
 
-  config: LayoutAnimationEntryConfig = {};
+  override animationConfig: LayoutAnimationEntryAnimationConfig = {};
 
   constructor(
     @Self() node: ProjectionNode,
@@ -31,16 +30,12 @@ export class LayoutAnimationEntryDirective extends LayoutAnimationEntry {
     snapshots: ProjectionNodeSnapshotMap,
     @Optional() private nodeRegistry?: LayoutAnimationScopeNodeRegistry,
   ) {
-    super(node, animator, snapper, snapshots);
+    super({ node, deps: [animator, snapper], storage: snapshots });
   }
 
   override snapshot(): void {
     const filter = this.nodeRegistry?.has.bind(this.nodeRegistry);
     const snapshots = this.snapper.snapshotTree(this.node, filter);
     this.snapshots.merge(snapshots);
-  }
-
-  override animate(): AnimationRef {
-    return super.animate(this.config);
   }
 }
