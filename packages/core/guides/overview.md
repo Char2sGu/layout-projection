@@ -32,6 +32,6 @@ In this Vanilla JS example, a layout animation will be triggered to animate elem
 
 This project consists of multiple packages, with `@layout-projection/core` serving as the framework-agnostic core for all framework adapters.
 
-While you may not need to use `@layout-projection/core` separately in most cases, it is crucial to first review the "Getting Started" section to gain a fundamental understanding of Layout Projections and layout animations within `@layout-projection/core`.
+While you may not need to use `@layout-projection/core` separately in most cases, it is crucial to first go through the "Getting Started" section to gain a fundamental understanding of Layout Projections and layout animations within `@layout-projection/core`.
 
 Afterward, refer to the "Developer Guides" section for more information about the `@layout-projection/core` package or proceed directly to your preferred framework adapter to begin working with a specific framework.
