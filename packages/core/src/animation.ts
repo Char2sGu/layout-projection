@@ -132,15 +132,15 @@ export interface LayoutAnimationConfig {
 
 export class LayoutAnimationEntry {
   readonly node: ProjectionNode;
+  readonly snapshots: ProjectionNodeSnapshotMap;
   protected animator: LayoutAnimator;
   protected snapper: ProjectionNodeSnapper;
-  protected snapshots: ProjectionNodeSnapshotMap;
   protected animationConfig: LayoutAnimationEntryAnimationConfig;
 
   constructor(config: LayoutAnimationEntryConfig) {
     this.node = config.node;
-    [this.animator, this.snapper] = config.deps;
     this.snapshots = config.storage ?? new ProjectionNodeSnapshotMap();
+    [this.animator, this.snapper] = config.deps;
     this.animationConfig = config.animation ?? {};
   }
 
