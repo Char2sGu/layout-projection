@@ -38,7 +38,6 @@ export class LayoutAnimationEntryDirective {
   }
 
   animate(): AnimationRef {
-    if (!this.snapshots) throw new Error('Missing snapshots');
     return this.animator.animate({
       root: this.node,
       from: this.snapshots,
