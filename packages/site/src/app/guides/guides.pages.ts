@@ -38,7 +38,17 @@ export const GUIDES_PAGES: TuiDocPage[] = [
   },
   {
     section: 'Adapter / Angular',
-    title: 'Layout Animation',
-    route: 'guides/angular/layout-animation',
+    title: 'Animation Scope',
+    route: 'guides/angular/animation-scope',
+  },
+  {
+    section: 'Adapter / Angular',
+    title: 'Animation Entry',
+    route: 'guides/angular/animation-entry',
+  },
+  {
+    section: 'Adapter / Angular',
+    title: 'Animation Trigger',
+    route: 'guides/angular/animation-trigger',
   },
 ];
