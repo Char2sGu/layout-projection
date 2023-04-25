@@ -102,7 +102,7 @@ Animations on subtrees are identified using the `root`. If there is already a pe
 
 The `LayoutAnimator` is a much higher-level service built on top of the Animation Engines, focusing on animating a subtree of the Projection Tree from their snapshot layouts to their current layouts.
 
-The `LayoutAnimator` covers the most common layout animations, and thus so it's the service you'll be working with the most.
+The `LayoutAnimator` covers the most common layout animations, and thus it should be the service you'll be working with the most.
 
 Just like the Animation Engines, `LayoutAnimator` exposes an `animate()` method to perform animations:
 
@@ -159,6 +159,79 @@ In order to include these new nodes in the animation, you need to set `estimatio
 
 ```ts
 animator.animate({ ..., estimation: true });
+```
+
+## Layout Animation Entry
+
+`LayoutAnimationEntry` is a facade-level API which integrated several services to simplify the process of performing non-disposable layout animations on the sub Projection Tree starting from a specified Projection Node:
+
+```ts
+const animationEntry = new LayoutAnimationEntry({
+  node: root,
+  deps: [animator, snapper],
+});
+```
+
+`LayoutAnimationEntry` requires a config object to instantiate, where:
+
+- the `node` property is the root node of the target subtree, and
+- the `deps` property is a tuple of services depended by the animation entry.
+
+The `snapshot()` method invokes the `ProjectionNodeSnapper` service to snapshot the subtree starting from the node specified in the config, and stores the snapshot map in its internal snapshot storage:
+
+```ts
+animationEntry.snapshot();
+```
+
+The `animate()` method invokes the `LayoutAnimator` service to animate nodes within the subtree from their layouts stored in the internal snapshot storage to their current layouts:
+
+```ts
+const animationRef = animationEntry.animate();
+```
+
+A simplified animation config object can be optionally provided to customize the animation behavior:
+
+```ts
+animationEntry.animate({
+  duration: 225,
+  easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+});
+```
+
+Combining these two methods, the process of performing layout animation can be further simplified to the extreme:
+
+```ts
+animationEntry.snapshot();
+updateLayout();
+animationEntry.animate();
+```
+
+Note that the snapshot storage will not be automatically pruned. You should regularly clean up the snapshot storage to avoid excessive accumulation of stale snapshots.
+
+To remove all snapshots from the snapshot storage, use `snapshots.clear()`:
+
+```ts
+animationEntry.snapshots.clear();
+```
+
+### Default Animation Config
+
+Optionally, an animation config object can be provided during instantiation:
+
+```ts
+new LayoutAnimationEntry({ ..., animationConfig: { duration: 225 } });
+```
+
+This animation config will serve as the default animation config, and will be overridden by the one provided at the method level.
+
+### External Snapshot Storage
+
+By default, a new `ProjectionNodeSnapshotMap` instance will be instantiated to serve as the snapshot storage.
+
+You can provide an external snapshot storage to use during instantiation:
+
+```ts
+new LayoutAnimationEntry({ ..., storage: sharedStorage });
 ```
 
 ## Usage Example
