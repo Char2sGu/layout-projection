@@ -12,7 +12,7 @@ To declare an animation scope, use the `[lpjAnimationScope]` directive:
 
 In the above example, any directives on or under the `<ul>` element will be scoped to the animation scope declared by the `[lpjAnimationScope]` directive.
 
-The `[lpjAnimationScope]` directive provides contextual providers that is essential for other animation directives within the animation scope to instantiate. When you encounter a runtime provider missing error, it's probably a good choice to check whether some animation directives are declared outside of an animation scope.
+The `[lpjAnimationScope]` directive provides contextual providers that is essential for animation directives within the animation scope to instantiate, which means that **animation directives must be declared under an animation scope**, otherwise a missing provider error would be raised at runtime.
 
 ## Shared Animation Scope
 
