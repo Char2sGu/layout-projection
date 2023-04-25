@@ -1,4 +1,4 @@
-import { inject, NgModule } from '@angular/core';
+import { inject, ModuleWithProviders, NgModule, Provider } from '@angular/core';
 import {
   CssBorderRadiusParser,
   CssEasingParser,
@@ -19,62 +19,62 @@ import { LayoutAnimationSelfTriggerDirective } from './layout-animation-self-tri
 import { LayoutAnimationTriggerDirective } from './layout-animation-trigger.directive';
 import { ProjectionNodeDirective } from './projection-node.directive';
 
+const DIRECTIVES = [
+  ProjectionNodeDirective,
+  LayoutAnimationEntryDirective,
+  LayoutAnimationScopeDirective,
+  LayoutAnimationScopeNodeRegistrarDirective,
+  LayoutAnimationScopeEntryRegistrarDirective,
+  LayoutAnimationTriggerDirective,
+  LayoutAnimationSelfTriggerDirective,
+];
+
 @NgModule({
-  declarations: [
-    ProjectionNodeDirective,
-    LayoutAnimationEntryDirective,
-    LayoutAnimationScopeDirective,
-    LayoutAnimationScopeNodeRegistrarDirective,
-    LayoutAnimationScopeEntryRegistrarDirective,
-    LayoutAnimationTriggerDirective,
-    LayoutAnimationSelfTriggerDirective,
-  ],
-  exports: [
-    ProjectionNodeDirective,
-    LayoutAnimationEntryDirective,
-    LayoutAnimationScopeDirective,
-    LayoutAnimationScopeNodeRegistrarDirective,
-    LayoutAnimationScopeEntryRegistrarDirective,
-    LayoutAnimationTriggerDirective,
-    LayoutAnimationSelfTriggerDirective,
-  ],
-  providers: [
-    {
-      provide: LayoutAnimator,
-      useFactory: () =>
-        new LayoutAnimator(
-          inject(ProjectionTreeAnimationEngine),
-          inject(ElementMeasurer),
-          inject(CssEasingParser),
-        ),
-    },
-    {
-      provide: ProjectionNodeAnimationEngine,
-      useFactory: () => new ProjectionNodeAnimationEngine(),
-    },
-    {
-      provide: ProjectionTreeAnimationEngine,
-      useFactory: () =>
-        new ProjectionTreeAnimationEngine(
-          inject(ProjectionNodeAnimationEngine),
-        ),
-    },
-    {
-      provide: ElementMeasurer,
-      useFactory: () => new ElementMeasurer(inject(CssBorderRadiusParser)),
-    },
-    {
-      provide: ProjectionNodeSnapper,
-      useFactory: () => new ProjectionNodeSnapper(inject(ElementMeasurer)),
-    },
-    {
-      provide: CssBorderRadiusParser,
-      useFactory: () => new CssBorderRadiusParser(),
-    },
-    {
-      provide: CssEasingParser,
-      useFactory: () => new CssEasingParser(),
-    },
-  ],
+  imports: DIRECTIVES,
+  exports: DIRECTIVES,
 })
-export class LayoutProjectionModule {}
+export class LayoutProjectionModule {
+  static forRoot(): ModuleWithProviders<LayoutProjectionModule> {
+    return {
+      ngModule: LayoutProjectionModule,
+      providers: PROVIDERS,
+    };
+  }
+}
+
+const PROVIDERS: Provider[] = [
+  {
+    provide: LayoutAnimator,
+    useFactory: () =>
+      new LayoutAnimator(
+        inject(ProjectionTreeAnimationEngine),
+        inject(ElementMeasurer),
+        inject(CssEasingParser),
+      ),
+  },
+  {
+    provide: ProjectionNodeAnimationEngine,
+    useFactory: () => new ProjectionNodeAnimationEngine(),
+  },
+  {
+    provide: ProjectionTreeAnimationEngine,
+    useFactory: () =>
+      new ProjectionTreeAnimationEngine(inject(ProjectionNodeAnimationEngine)),
+  },
+  {
+    provide: ElementMeasurer,
+    useFactory: () => new ElementMeasurer(inject(CssBorderRadiusParser)),
+  },
+  {
+    provide: ProjectionNodeSnapper,
+    useFactory: () => new ProjectionNodeSnapper(inject(ElementMeasurer)),
+  },
+  {
+    provide: CssBorderRadiusParser,
+    useFactory: () => new CssBorderRadiusParser(),
+  },
+  {
+    provide: CssEasingParser,
+    useFactory: () => new CssEasingParser(),
+  },
+];

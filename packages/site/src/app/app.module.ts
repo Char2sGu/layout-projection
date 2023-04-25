@@ -3,6 +3,7 @@ import { inject, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TitleStrategy } from '@angular/router';
+import { LayoutProjectionModule } from '@layout-projection/angular';
 import {
   TUI_DOC_LOGO,
   TUI_DOC_PAGES,
@@ -26,6 +27,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    LayoutProjectionModule.forRoot(),
     MarkdownElementsModule,
     MarkdownModule.forRoot({
       loader: HttpClient,

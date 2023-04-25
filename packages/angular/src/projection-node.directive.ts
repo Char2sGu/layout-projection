@@ -11,6 +11,7 @@ import { ElementMeasurer, ProjectionNode } from '@layout-projection/core';
 @Directive({
   selector: '[lpjNode]',
   exportAs: 'lpjNode',
+  standalone: true,
   providers: [
     { provide: ProjectionNode, useExisting: ProjectionNodeDirective },
   ],

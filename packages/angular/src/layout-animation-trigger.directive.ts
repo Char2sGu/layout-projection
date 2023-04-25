@@ -20,6 +20,7 @@ import { LayoutAnimationScopeEntryRegistry } from './layout-animation-scope.prov
 
 @Directive({
   selector: '[lpjAnimationTrigger]',
+  standalone: true,
 })
 export class LayoutAnimationTriggerDirective implements OnInit {
   /**

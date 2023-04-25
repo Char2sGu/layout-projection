@@ -5,6 +5,7 @@ import { LayoutAnimationTriggerDirective } from './layout-animation-trigger.dire
 
 @Directive({
   selector: '[lpjAnimation][lpjAnimationTrigger]',
+  standalone: true,
 })
 export class LayoutAnimationSelfTriggerDirective {
   constructor(

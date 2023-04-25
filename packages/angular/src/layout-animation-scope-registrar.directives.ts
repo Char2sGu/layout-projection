@@ -10,6 +10,7 @@ import {
 
 @Directive({
   selector: '[lpjNode]',
+  standalone: true,
 })
 export class LayoutAnimationScopeNodeRegistrarDirective
   implements OnInit, OnDestroy
@@ -31,6 +32,7 @@ export class LayoutAnimationScopeNodeRegistrarDirective
 
 @Directive({
   selector: '[lpjAnimation]',
+  standalone: true,
 })
 export class LayoutAnimationScopeEntryRegistrarDirective
   implements OnInit, OnDestroy

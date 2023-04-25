@@ -17,6 +17,7 @@ import {
 
 @Directive({
   selector: '[lpjAnimationScope]',
+  standalone: true,
 })
 export class LayoutAnimationScopeDirective implements OnInit {
   @Input() set lpjAnimationScope(v: '' | this['source']) {
