@@ -1,0 +1,1 @@
+# Animation Entry in Angular
