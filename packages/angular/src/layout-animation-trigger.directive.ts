@@ -1,4 +1,11 @@
-import { Directive, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Directive,
+  EventEmitter,
+  Input,
+  OnInit,
+  Optional,
+  Output,
+} from '@angular/core';
 import {
   AnimationRef,
   LayoutAnimationEntry,
@@ -50,17 +57,16 @@ export class LayoutAnimationTriggerDirective implements OnInit {
       | LayoutAnimationTriggerTargetInput
       | LayoutAnimationTriggerTargetInput[],
   ) {
-    const normalize = (input: LayoutAnimationTriggerTargetInput) =>
-      input instanceof ProjectionNode ? input.id : input;
-    this.targetIds =
-      value instanceof Array ? value.map(normalize) : [normalize(value)];
+    this.targets = Array.isArray(value) ? value : [value];
   }
-  private targetIds: string[] = [];
+  private targets: LayoutAnimationTriggerTargetInput[] = [];
 
   @Output() animationTrigger = new EventEmitter();
   @Output() animationSettle = new EventEmitter();
 
-  constructor(private entryRegistry: LayoutAnimationScopeEntryRegistry) {}
+  constructor(
+    @Optional() private entryRegistry?: LayoutAnimationScopeEntryRegistry,
+  ) {}
 
   ngOnInit(): void {
     this.trigger$
@@ -77,24 +83,44 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
 
   snapshot(): void {
-    this.findTargets().forEach((entry) => entry.snapshot());
+    this.resolveTargets().forEach((entry) => entry.snapshot());
   }
 
   animate(): AnimationRef {
-    const animations = this.findTargets().map((entry) => entry.animate());
+    const animations = this.resolveTargets().map((entry) => entry.animate());
     return new AnimationRef(
       Promise.all(animations), //
       () => animations.forEach((ref) => ref.stop()),
     );
   }
 
-  findTargets(): LayoutAnimationEntry[] {
-    const targets = Array.from(this.entryRegistry).filter((directive) =>
-      this.targetIds.includes(directive.node.id),
-    );
-    if (!targets.length) throw new Error(`Failed to find any target entry`);
-    return targets;
+  resolveTargets(): LayoutAnimationEntry[] {
+    return this.targets.map((target) => this.resolveTarget(target));
+  }
+
+  resolveTarget(
+    target: LayoutAnimationTriggerTargetInput,
+  ): LayoutAnimationEntry {
+    if (target instanceof LayoutAnimationEntry) return target;
+
+    if (!this.entryRegistry) this.resolveFailed(target, 'no context provided');
+    const entries = Array.from(this.entryRegistry);
+
+    const id = target instanceof ProjectionNode ? target.id : target;
+    const result = entries.find((e) => e.node.id === id);
+    if (!result) this.resolveFailed(target, 'not found');
+    return result;
+  }
+
+  private resolveFailed(
+    target: LayoutAnimationTriggerTargetInput,
+    detail: string,
+  ): never {
+    throw new Error(`Failed to resolve target ${target}: ${detail}`);
   }
 }
 
-export type LayoutAnimationTriggerTargetInput = ProjectionNode | string;
+export type LayoutAnimationTriggerTargetInput =
+  | ProjectionNode
+  | ProjectionNode['id']
+  | LayoutAnimationEntry;

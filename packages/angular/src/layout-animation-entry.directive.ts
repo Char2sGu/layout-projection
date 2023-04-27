@@ -27,6 +27,7 @@ export class LayoutAnimationEntryDirective extends LayoutAnimationEntry {
     this.animationConfig = v;
   }
 
+  // make public
   override animationConfig: LayoutAnimationEntryAnimationConfig = {};
 
   constructor(

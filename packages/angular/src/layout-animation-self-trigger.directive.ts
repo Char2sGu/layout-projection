@@ -12,6 +12,6 @@ export class LayoutAnimationSelfTriggerDirective {
     @Self() entry: LayoutAnimationEntry,
     @Self() trigger: LayoutAnimationTriggerDirective,
   ) {
-    trigger.lpjAnimationTriggerFor = entry.node;
+    trigger.lpjAnimationTriggerFor = entry;
   }
 }
