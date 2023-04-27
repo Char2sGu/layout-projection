@@ -1,5 +1,9 @@
 import { Directive, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AnimationRef, ProjectionNode } from '@layout-projection/core';
+import {
+  AnimationRef,
+  LayoutAnimationEntry,
+  ProjectionNode,
+} from '@layout-projection/core';
 import {
   animationFrames,
   BehaviorSubject,
@@ -15,7 +19,6 @@ import {
   tap,
 } from 'rxjs';
 
-import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 import { LayoutAnimationScopeEntryRegistry } from './layout-animation-scope.providers';
 
 @Directive({
@@ -85,7 +88,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
     );
   }
 
-  findTargets(): LayoutAnimationEntryDirective[] {
+  findTargets(): LayoutAnimationEntry[] {
     const targets = Array.from(this.entryRegistry).filter((directive) =>
       this.targetIds.includes(directive.node.id),
     );

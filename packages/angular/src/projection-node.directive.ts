@@ -13,7 +13,10 @@ import { ElementMeasurer, ProjectionNode } from '@layout-projection/core';
   exportAs: 'lpjNode',
   standalone: true,
   providers: [
-    { provide: ProjectionNode, useExisting: ProjectionNodeDirective },
+    {
+      provide: ProjectionNode,
+      useExisting: ProjectionNodeDirective,
+    },
   ],
 })
 export class ProjectionNodeDirective

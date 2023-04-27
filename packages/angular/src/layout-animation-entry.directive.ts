@@ -14,6 +14,12 @@ import { LayoutAnimationScopeNodeRegistry } from './layout-animation-scope.provi
   selector: '[lpjNode][lpjAnimation]',
   exportAs: 'lpjAnimation',
   standalone: true,
+  providers: [
+    {
+      provide: LayoutAnimationEntry,
+      useExisting: LayoutAnimationEntryDirective,
+    },
+  ],
 })
 export class LayoutAnimationEntryDirective extends LayoutAnimationEntry {
   @Input() set lpjAnimation(v: '' | this['animationConfig']) {

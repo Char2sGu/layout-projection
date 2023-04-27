@@ -1,6 +1,6 @@
 import { Directive, Self } from '@angular/core';
+import { LayoutAnimationEntry } from '@layout-projection/core';
 
-import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 import { LayoutAnimationTriggerDirective } from './layout-animation-trigger.directive';
 
 @Directive({
@@ -9,7 +9,7 @@ import { LayoutAnimationTriggerDirective } from './layout-animation-trigger.dire
 })
 export class LayoutAnimationSelfTriggerDirective {
   constructor(
-    @Self() entry: LayoutAnimationEntryDirective,
+    @Self() entry: LayoutAnimationEntry,
     @Self() trigger: LayoutAnimationTriggerDirective,
   ) {
     trigger.lpjAnimationTriggerFor = entry.node;

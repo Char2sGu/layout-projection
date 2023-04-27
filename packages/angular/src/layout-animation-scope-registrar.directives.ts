@@ -1,7 +1,6 @@
 import { Directive, OnDestroy, OnInit, Optional, Self } from '@angular/core';
-import { ProjectionNode } from '@layout-projection/core';
+import { LayoutAnimationEntry, ProjectionNode } from '@layout-projection/core';
 
-import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 import {
   LayoutAnimationScopeEntryRegistry,
   LayoutAnimationScopeNodeRegistry,
@@ -38,7 +37,7 @@ export class LayoutAnimationScopeEntryRegistrarDirective
   implements OnInit, OnDestroy
 {
   constructor(
-    @Self() private entry: LayoutAnimationEntryDirective,
+    @Self() private entry: LayoutAnimationEntry,
     @Optional() private registry?: LayoutAnimationScopeEntryRegistry,
   ) {}
   ngOnInit(): void {

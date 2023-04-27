@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import {
+  LayoutAnimationEntry,
   ProjectionNode,
   ProjectionNodeSnapshotMap,
 } from '@layout-projection/core';
 
-import { LayoutAnimationEntryDirective } from './layout-animation-entry.directive';
 import { MapExpirer } from './shared/map';
 
 export class LayoutAnimationScopeNodeRegistry extends Set<ProjectionNode> {}
-export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntryDirective> {}
+export class LayoutAnimationScopeEntryRegistry extends Set<LayoutAnimationEntry> {}
 
 @Injectable()
 export class LayoutAnimationScopeRef {
