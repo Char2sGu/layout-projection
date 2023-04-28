@@ -26,10 +26,17 @@ export class LinkComponent extends CustomElementComponent {
       this.link = value;
       return;
     }
+
     const fragment = this.router.parseUrl(value).fragment ?? undefined;
-    const pathRaw = fragment ? value.replace(`#${fragment}`, '') : value;
-    const filenameMatch = pathRaw.match(/^(?<path>.*)\/(?<filename>.*)\.md$/u);
-    if (!filenameMatch) throw new Error(`Invalid link: ${pathRaw}`);
+    const path = fragment ? value.replace(`#${fragment}`, '') : value;
+
+    if (!path) {
+      this.link = { path: '', fragment };
+      return;
+    }
+
+    const filenameMatch = path.match(/^(?<path>.*)\/(?<filename>.*)\.md$/u);
+    if (!filenameMatch) throw new Error(`Invalid link: ${path}`);
     const filename = filenameMatch?.groups?.['filename'];
     this.link = { path: `../${filename}`, fragment };
   }
