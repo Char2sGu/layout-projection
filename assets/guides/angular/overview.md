@@ -24,4 +24,6 @@ All the directives depends on the services from the core package. In order to pr
 export class AppModule {}
 ```
 
-## Quick Start
+## What's Next
+
+Checkout [Projection Tree](./projection-tree.md) to learn about how to declaratively construct the Projection Tree in Angular applications.
