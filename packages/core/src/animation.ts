@@ -1,9 +1,9 @@
 import { easeInOut, Easing } from 'popmotion';
 
 import {
-  AnimationRef,
   ProjectionNodeAnimationRouteMap,
   ProjectionTreeAnimationEngine,
+  ProjectionTreeAnimationRef,
 } from './animation-engines.js';
 import { CssEasingParser } from './css.js';
 import { ElementMeasurer } from './measure.js';
@@ -22,7 +22,7 @@ export class LayoutAnimator {
     protected easingParser: CssEasingParser,
   ) {}
 
-  animate(config: LayoutAnimationConfig): AnimationRef {
+  animate(config: LayoutAnimationConfig): ProjectionTreeAnimationRef {
     const { root, from: snapshots, estimation = false } = config;
     if (typeof config.easing === 'string')
       config.easing = this.easingParser.parse(config.easing);
@@ -149,7 +149,9 @@ export class LayoutAnimationEntry {
     this.snapshots.merge(snapshots);
   }
 
-  animate(config?: LayoutAnimationEntryAnimationConfig): AnimationRef {
+  animate(
+    config?: LayoutAnimationEntryAnimationConfig,
+  ): ProjectionTreeAnimationRef {
     return this.animator.animate({
       ...this.animationConfig,
       ...config,

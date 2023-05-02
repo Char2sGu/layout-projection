@@ -8,7 +8,7 @@ import {
 } from './shared.js';
 
 export class ProjectionNodeAnimationEngine {
-  protected records = new WeakMap<ProjectionNode, AnimationRef>();
+  protected records = new WeakMap<ProjectionNode, ProjectionNodeAnimationRef>();
 
   animate(
     node: ProjectionNode,
@@ -18,7 +18,7 @@ export class ProjectionNodeAnimationEngine {
 
     let stopper: () => void;
 
-    const promise = new Promise<void>((resolve) => {
+    const promise = new Promise<AnimationResult>((resolve) => {
       const { duration, easing, route } = config;
 
       const animateFrame = (progress: number) =>
@@ -32,8 +32,8 @@ export class ProjectionNodeAnimationEngine {
         duration,
         ease: easing,
         onUpdate: animateFrame,
-        onComplete: () => resolve(),
-        onStop: resolve,
+        onComplete: () => resolve({ node, type: 'completed' }),
+        onStop: () => resolve({ node, type: 'stopped' }),
       }).stop;
     });
 
@@ -93,7 +93,7 @@ export class ProjectionNodeAnimationEngine {
 }
 
 export class ProjectionTreeAnimationEngine {
-  protected records = new WeakMap<ProjectionNode, AnimationRef>();
+  protected records = new WeakMap<ProjectionNode, ProjectionTreeAnimationRef>();
 
   constructor(protected engine: ProjectionNodeAnimationEngine) {}
 
@@ -151,12 +151,12 @@ export class ProjectionNodeAnimationRouteMap extends Map<
   ProjectionNodeAnimationRoute
 > {}
 
-export class AnimationRef implements PromiseLike<void> {
-  constructor(private promise: Promise<any>, private stopper: () => void) {}
+export class AnimationRef<T = never> implements PromiseLike<T> {
+  constructor(private promise: Promise<T>, private stopper: () => void) {}
 
-  then<TResult1 = void, TResult2 = never>(
+  then<TResult1 = T, TResult2 = never>(
     onfulfilled?:
-      | ((value: void) => TResult1 | PromiseLike<TResult1>)
+      | ((value: T) => TResult1 | PromiseLike<TResult1>)
       | null
       | undefined,
     onrejected?:
@@ -172,17 +172,24 @@ export class AnimationRef implements PromiseLike<void> {
   }
 }
 
-export class ProjectionNodeAnimationRef extends AnimationRef {
+export interface AnimationResult {
+  node: ProjectionNode;
+  type: 'completed' | 'stopped';
+}
+
+export class ProjectionNodeAnimationRef extends AnimationRef<AnimationResult> {
   constructor(
     public node: ProjectionNode,
-    promise: Promise<any>,
+    promise: Promise<AnimationResult>,
     stopper: () => void,
   ) {
     super(promise, stopper);
   }
 }
 
-export class ProjectionTreeAnimationRef extends AnimationRef {
+export class ProjectionTreeAnimationRef extends AnimationRef<
+  AnimationResult[]
+> {
   constructor(
     public root: ProjectionNode,
     animations: ProjectionNodeAnimationRef[],
