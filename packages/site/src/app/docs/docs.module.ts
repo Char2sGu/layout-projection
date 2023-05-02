@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { inject, NgModule, SecurityContext } from '@angular/core';
+import { LayoutProjectionModule } from '@layout-projection/angular';
 import {
   TUI_DOC_LOGO,
   TUI_DOC_PAGES,
@@ -13,10 +14,20 @@ import { MarkdownElementsRenderer } from '../markdown-elements/markdown-elements
 import { DocsComponent } from './docs.component';
 import { DOCS_PAGES } from './docs.pages';
 import { DocsRoutingModule } from './docs-routing.module';
+import { LogoComponent } from './logo/logo.component';
 import { LOGO_COMPONENT } from './logo/logo.polymorphic';
+import { NavComponent } from './nav/nav.component';
+import { NavItemComponent } from './nav-item/nav-item.component';
+import { NavItemGroupComponent } from './nav-item-group/nav-item-group.component';
 
 @NgModule({
-  declarations: [DocsComponent],
+  declarations: [
+    DocsComponent,
+    LogoComponent,
+    NavComponent,
+    NavItemComponent,
+    NavItemGroupComponent,
+  ],
   imports: [
     CommonModule,
     MarkdownElementsModule,
@@ -30,6 +41,7 @@ import { LOGO_COMPONENT } from './logo/logo.polymorphic';
         }),
       },
     }),
+    LayoutProjectionModule,
     TuiDocMainModule,
     DocsRoutingModule,
   ],
