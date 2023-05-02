@@ -5,6 +5,8 @@ import {
 } from '@layout-projection/angular';
 import { LayoutAnimationEntry } from '@layout-projection/core';
 
+import { AnimationCurve } from '../../common/animation';
+
 @Component({
   selector: 'lpj-nav',
   templateUrl: './nav.component.html',
@@ -28,7 +30,7 @@ export class NavComponent {
     requestAnimationFrame(() => {
       this.entry.animate({
         duration: 125,
-        easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
+        easing: AnimationCurve.Emphasized,
       });
     });
   }
