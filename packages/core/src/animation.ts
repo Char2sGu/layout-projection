@@ -1,6 +1,7 @@
 import { easeInOut, Easing } from 'popmotion';
 
 import {
+  AnimationResult,
   ProjectionNodeAnimationRouteMap,
   ProjectionTreeAnimationEngine,
   ProjectionTreeAnimationRef,
@@ -32,8 +33,9 @@ export class LayoutAnimator {
     const routes = this.getAnimationRouteMap(root, snapshots, estimation);
     const ref = this.engine.animate(root, { duration, easing, routes });
 
-    ref.then(() => {
-      root.traverse((node) => node.reset(), { includeSelf: true });
+    ref.then((result) => {
+      if (result === AnimationResult.Completed)
+        root.traverse((node) => node.reset(), { includeSelf: true });
     });
 
     return ref;
