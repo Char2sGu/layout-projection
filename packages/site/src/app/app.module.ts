@@ -10,10 +10,12 @@ import { HIGHLIGHT_OPTIONS, HighlightOptions } from 'ngx-highlightjs';
 import { AppComponent } from './app.component';
 import { AppTitleStrategy } from './app.title-strategy';
 import { AppRoutingModule } from './app-routing.module';
+import { NavComponent } from './core/nav/nav.component';
+import { NavItemComponent } from './core/nav-item/nav-item.component';
 import { LogoComponent } from './docs/logo/logo.component';
 
 @NgModule({
-  declarations: [AppComponent, LogoComponent],
+  declarations: [AppComponent, LogoComponent, NavComponent, NavItemComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

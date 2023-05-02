@@ -1,0 +1,8 @@
+<lpj-nav-item
+  *ngFor="let item of items"
+  [overlay]="itemActive === item"
+  [outline]="itemActive == item"
+  (mouseenter)="itemActive = item; this.trigger()"
+>
+  {{ item }}
+</lpj-nav-item>

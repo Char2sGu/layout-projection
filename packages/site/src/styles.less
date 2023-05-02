@@ -2,12 +2,21 @@
 @import '@taiga-ui/core/styles/taiga-ui-fonts.less';
 @import '@taiga-ui/styles/taiga-ui-global.less';
 
-* {
-  box-sizing: border-box;
+:root {
+  --foreground-rgb: 0, 0, 10;
+  --background-start-rgb: 214, 219, 230;
+  --background-end-rgb: 255, 245, 255;
 }
 
-tui-doc-navigation {
-  .t-sublink_active {
-    color: var(--tui-text-01) !important;
-  }
+body {
+  margin: initial;
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+}
+
+* {
+  box-sizing: border-box;
 }
