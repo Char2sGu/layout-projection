@@ -175,6 +175,18 @@ export class AnimationRef implements PromiseLike<AnimationResult> {
   }
 }
 
+export class AggregationAnimationRef extends AnimationRef {
+  constructor(refs: AnimationRef[]) {
+    const promise = Promise.all(refs).then((results) =>
+      results.every((result) => result === AnimationResult.Completed)
+        ? AnimationResult.Completed
+        : AnimationResult.Stopped,
+    );
+    const stopper = () => refs.forEach((ref) => ref.stop());
+    super(promise, stopper);
+  }
+}
+
 export enum AnimationResult {
   Completed = 'completed',
   Stopped = 'stopped',
@@ -190,17 +202,8 @@ export class ProjectionNodeAnimationRef extends AnimationRef {
   }
 }
 
-export class ProjectionTreeAnimationRef extends AnimationRef {
-  constructor(
-    public root: ProjectionNode,
-    animations: ProjectionNodeAnimationRef[],
-  ) {
-    const promise = Promise.all(animations).then((results) =>
-      results.every((result) => result === AnimationResult.Completed)
-        ? AnimationResult.Completed
-        : AnimationResult.Stopped,
-    );
-    const stopper = () => animations.forEach((ref) => ref.stop());
-    super(promise, stopper);
+export class ProjectionTreeAnimationRef extends AggregationAnimationRef {
+  constructor(public root: ProjectionNode, refs: ProjectionNodeAnimationRef[]) {
+    super(refs);
   }
 }
