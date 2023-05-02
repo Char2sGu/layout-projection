@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  inject,
+} from '@angular/core';
 import {
   LayoutAnimationEntryDirective,
   ProjectionNodeDirective,
@@ -15,17 +20,51 @@ import { AnimationCurve } from '../../common/animation';
   hostDirectives: [ProjectionNodeDirective, LayoutAnimationEntryDirective],
 })
 export class NavComponent {
-  items = [
-    'Overview',
-    'Layout Projection',
-    'Layout Animation',
-    'Snapshot APIs',
-    'Standalone Usage',
+  items: NavItem[] = [
+    { name: 'Overview' },
+    { name: 'Layout Projection' },
+    { name: 'Layout Animation' },
+    {
+      name: 'Developer Guides',
+      children: [{ name: 'Snapshot APIs' }, { name: 'Standalone Usage' }],
+    },
+    {
+      name: 'Adapter / Angular',
+      children: [
+        { name: 'Overview' },
+        { name: 'Projection Tree' },
+        { name: 'Animation Directives' },
+        { name: 'Animation Scope' },
+      ],
+    },
   ];
-  itemActive?: string;
+  itemActive = this.items[0];
+  itemLastHovered?: NavItem;
   entry = inject(LayoutAnimationEntry);
 
-  trigger(): void {
+  @HostListener('mouseenter')
+  onMouseEnter(): void {
+    this.entry.snapshots.clear();
+  }
+
+  @HostListener('mouseleave')
+  onMouseLeave(): void {
+    this.itemLastHovered = undefined;
+  }
+
+  onItemMouseEnter(item: NavItem): void {
+    if (this.itemLastHovered === item) return;
+    this.itemLastHovered = item;
+    this.initiateLayoutAnimation();
+  }
+
+  onItemClick(item: NavItem): void {
+    if (this.itemActive === item) return;
+    this.itemActive = item;
+    this.initiateLayoutAnimation();
+  }
+
+  initiateLayoutAnimation(): void {
     this.entry.snapshot();
     requestAnimationFrame(() => {
       this.entry.animate({
@@ -34,4 +73,9 @@ export class NavComponent {
       });
     });
   }
+}
+
+interface NavItem {
+  name: string;
+  children?: NavItem[];
 }

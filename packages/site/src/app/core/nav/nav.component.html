@@ -1,8 +1,28 @@
-<lpj-nav-item
-  *ngFor="let item of items"
-  [overlay]="itemActive === item"
-  [outline]="itemActive == item"
-  (mouseenter)="itemActive = item; this.trigger()"
->
-  {{ item }}
-</lpj-nav-item>
+<ng-container *ngFor="let item of items">
+  <ng-container *ngIf="!item.children">
+    <ng-container
+      *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"
+    ></ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="item.children">
+    <lpj-nav-item-group [heading]="item.name">
+      <ng-container *ngFor="let item of item.children">
+        <ng-container
+          *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"
+        ></ng-container>
+      </ng-container>
+    </lpj-nav-item-group>
+  </ng-container>
+
+  <ng-template #itemTemplate let-item>
+    <lpj-nav-item
+      [overlay]="itemLastHovered === item"
+      [outline]="itemActive == item"
+      (click)="onItemClick(item)"
+      (mouseenter)="onItemMouseEnter(item)"
+    >
+      {{ item.name }}
+    </lpj-nav-item>
+  </ng-template>
+</ng-container>

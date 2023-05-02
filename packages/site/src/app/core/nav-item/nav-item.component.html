@@ -1,3 +1,5 @@
-<div class="overlay" *ngIf="overlay" lpjNode="nav-item-overlay"></div>
-<div class="outline" *ngIf="outline" lpjNode="nav-item-outline"></div>
-<ng-content></ng-content>
+<div class="outline" *ngIf="outline" lpjNode="nav-outline"></div>
+<div class="content">
+  <div class="overlay" *ngIf="overlay" lpjNode="nav-overlay"></div>
+  <ng-content></ng-content>
+</div>

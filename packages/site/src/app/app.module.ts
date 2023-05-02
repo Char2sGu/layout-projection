@@ -12,10 +12,17 @@ import { AppTitleStrategy } from './app.title-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { NavComponent } from './core/nav/nav.component';
 import { NavItemComponent } from './core/nav-item/nav-item.component';
+import { NavItemGroupComponent } from './core/nav-item-group/nav-item-group.component';
 import { LogoComponent } from './docs/logo/logo.component';
 
 @NgModule({
-  declarations: [AppComponent, LogoComponent, NavComponent, NavItemComponent],
+  declarations: [
+    AppComponent,
+    LogoComponent,
+    NavComponent,
+    NavItemComponent,
+    NavItemGroupComponent,
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
