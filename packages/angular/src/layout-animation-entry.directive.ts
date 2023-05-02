@@ -34,7 +34,7 @@ export class LayoutAnimationEntryDirective extends LayoutAnimationEntry {
     @Self() node: ProjectionNode,
     animator: LayoutAnimator,
     snapper: ProjectionNodeSnapper,
-    snapshots: ProjectionNodeSnapshotMap,
+    @Optional() snapshots?: ProjectionNodeSnapshotMap,
     @Optional() private nodeRegistry?: LayoutAnimationScopeNodeRegistry,
   ) {
     super({ node, deps: [animator, snapper], storage: snapshots });
