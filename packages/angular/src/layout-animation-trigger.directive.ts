@@ -7,6 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import {
+  AggregationAnimationRef,
   AnimationRef,
   LayoutAnimationEntry,
   ProjectionNode,
@@ -88,10 +89,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
 
   animate(): AnimationRef {
     const animations = this.resolveTargets().map((entry) => entry.animate());
-    return new AnimationRef(
-      Promise.all(animations), //
-      () => animations.forEach((ref) => ref.stop()),
-    );
+    return new AggregationAnimationRef(animations);
   }
 
   resolveTargets(): LayoutAnimationEntry[] {
