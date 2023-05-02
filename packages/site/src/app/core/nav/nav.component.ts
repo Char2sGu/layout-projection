@@ -20,17 +20,22 @@ import { AnimationCurve } from '../../common/animation';
   hostDirectives: [ProjectionNodeDirective, LayoutAnimationEntryDirective],
 })
 export class NavComponent {
-  items: NavItem[] = [
-    { name: 'Overview' },
-    { name: 'Layout Projection' },
-    { name: 'Layout Animation' },
+  itemGroups: NavItemGroup[] = [
+    {
+      name: 'Getting Started',
+      items: [
+        { name: 'Overview' },
+        { name: 'Layout Projection' },
+        { name: 'Layout Animation' },
+      ],
+    },
     {
       name: 'Developer Guides',
-      children: [{ name: 'Snapshot APIs' }, { name: 'Standalone Usage' }],
+      items: [{ name: 'Snapshot APIs' }, { name: 'Standalone Usage' }],
     },
     {
       name: 'Adapter / Angular',
-      children: [
+      items: [
         { name: 'Overview' },
         { name: 'Projection Tree' },
         { name: 'Animation Directives' },
@@ -38,7 +43,7 @@ export class NavComponent {
       ],
     },
   ];
-  itemActive = this.items[0];
+  itemActive?: NavItem;
   itemLastHovered?: NavItem;
   entry = inject(LayoutAnimationEntry);
 
@@ -75,7 +80,11 @@ export class NavComponent {
   }
 }
 
+interface NavItemGroup {
+  name: string;
+  items: NavItem[];
+}
+
 interface NavItem {
   name: string;
-  children?: NavItem[];
 }

@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostBinding,
+  Input,
+} from '@angular/core';
 
 @Component({
   selector: 'lpj-nav-item',
@@ -7,6 +12,5 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavItemComponent {
-  @Input() outline = false;
-  @Input() overlay = false;
+  @Input() @HostBinding('class.active') active = false;
 }

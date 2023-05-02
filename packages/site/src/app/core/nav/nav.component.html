@@ -1,28 +1,20 @@
-<ng-container *ngFor="let item of items">
-  <ng-container *ngIf="!item.children">
-    <ng-container
-      *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"
-    ></ng-container>
-  </ng-container>
-
-  <ng-container *ngIf="item.children">
-    <lpj-nav-item-group [heading]="item.name">
-      <ng-container *ngFor="let item of item.children">
-        <ng-container
-          *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"
-        ></ng-container>
-      </ng-container>
-    </lpj-nav-item-group>
-  </ng-container>
-
-  <ng-template #itemTemplate let-item>
-    <lpj-nav-item
-      [overlay]="itemLastHovered === item"
-      [outline]="itemActive == item"
-      (click)="onItemClick(item)"
-      (mouseenter)="onItemMouseEnter(item)"
-    >
-      {{ item.name }}
-    </lpj-nav-item>
-  </ng-template>
-</ng-container>
+<lpj-nav-item-group *ngFor="let group of itemGroups" [heading]="group.name">
+  <lpj-nav-item
+    *ngFor="let item of group.items"
+    [active]="itemActive === item"
+    (click)="onItemClick(item)"
+    (mouseenter)="onItemMouseEnter(item)"
+  >
+    <span class="text">{{ item.name }}</span>
+    <div
+      class="active-overlay"
+      *ngIf="itemActive === item"
+      lpjNode="nav-item-active-overlay"
+    ></div>
+    <div
+      class="hover-overlay"
+      *ngIf="itemLastHovered === item"
+      lpjNode="nav-item-hover-overlay"
+    ></div>
+  </lpj-nav-item>
+</lpj-nav-item-group>
