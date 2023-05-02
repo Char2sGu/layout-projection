@@ -32,8 +32,8 @@ export class ProjectionNodeAnimationEngine {
         duration,
         ease: easing,
         onUpdate: animateFrame,
-        onComplete: () => resolve({ node, type: 'completed' }),
-        onStop: () => resolve({ node, type: 'stopped' }),
+        onComplete: () => resolve(AnimationResult.Completed),
+        onStop: () => resolve(AnimationResult.Stopped),
       }).stop;
     });
 
@@ -151,12 +151,15 @@ export class ProjectionNodeAnimationRouteMap extends Map<
   ProjectionNodeAnimationRoute
 > {}
 
-export class AnimationRef<T = never> implements PromiseLike<T> {
-  constructor(private promise: Promise<T>, private stopper: () => void) {}
+export class AnimationRef implements PromiseLike<AnimationResult> {
+  constructor(
+    private promise: Promise<AnimationResult>,
+    private stopper: () => void,
+  ) {}
 
-  then<TResult1 = T, TResult2 = never>(
+  then<TResult1 = AnimationResult, TResult2 = never>(
     onfulfilled?:
-      | ((value: T) => TResult1 | PromiseLike<TResult1>)
+      | ((value: AnimationResult) => TResult1 | PromiseLike<TResult1>)
       | null
       | undefined,
     onrejected?:
@@ -172,12 +175,12 @@ export class AnimationRef<T = never> implements PromiseLike<T> {
   }
 }
 
-export interface AnimationResult {
-  node: ProjectionNode;
-  type: 'completed' | 'stopped';
+export enum AnimationResult {
+  Completed = 'completed',
+  Stopped = 'stopped',
 }
 
-export class ProjectionNodeAnimationRef extends AnimationRef<AnimationResult> {
+export class ProjectionNodeAnimationRef extends AnimationRef {
   constructor(
     public node: ProjectionNode,
     promise: Promise<AnimationResult>,
@@ -187,16 +190,17 @@ export class ProjectionNodeAnimationRef extends AnimationRef<AnimationResult> {
   }
 }
 
-export class ProjectionTreeAnimationRef extends AnimationRef<
-  AnimationResult[]
-> {
+export class ProjectionTreeAnimationRef extends AnimationRef {
   constructor(
     public root: ProjectionNode,
     animations: ProjectionNodeAnimationRef[],
   ) {
-    super(
-      Promise.all(animations), //
-      () => animations.forEach((ref) => ref.stop()),
+    const promise = Promise.all(animations).then((results) =>
+      results.every((result) => result === AnimationResult.Completed)
+        ? AnimationResult.Completed
+        : AnimationResult.Stopped,
     );
+    const stopper = () => animations.forEach((ref) => ref.stop());
+    super(promise, stopper);
   }
 }
