@@ -8,8 +8,19 @@ const routes: Routes = [
     redirectTo: 'docs',
   },
   {
-    path: 'docs',
-    loadChildren: () => import('./docs/docs.module').then((m) => m.DocsModule),
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'guides',
+  },
+  {
+    path: 'guides',
+    loadChildren: () =>
+      import('./guides/guides.module').then((m) => m.GuidesModule),
+  },
+  {
+    path: 'examples',
+    loadChildren: () =>
+      import('./examples/examples.module').then((m) => m.ExamplesModule),
   },
 ];
 
