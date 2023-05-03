@@ -8,6 +8,7 @@ import { MarkdownElementsModule } from '../markdown-elements/markdown-elements.m
 import { MarkdownElementsRenderer } from '../markdown-elements/markdown-elements.renderer';
 import { DocsComponent } from './docs.component';
 import { DocsRoutingModule } from './docs-routing.module';
+import { HeaderComponent } from './header/header.component';
 import { LogoComponent } from './logo/logo.component';
 import { NavComponent } from './nav/nav.component';
 import { NavItemComponent } from './nav-item/nav-item.component';
@@ -20,6 +21,7 @@ import { NavItemGroupComponent } from './nav-item-group/nav-item-group.component
     NavComponent,
     NavItemComponent,
     NavItemGroupComponent,
+    HeaderComponent,
   ],
   imports: [
     CommonModule,
