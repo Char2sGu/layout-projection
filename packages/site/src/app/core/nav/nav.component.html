@@ -16,6 +16,7 @@
       class="hover-overlay"
       *ngIf="itemLastHovered === item"
       lpjNode="nav-item-hover-overlay"
+      [@overlay]="entry.snapshots.has('nav-item-hover-overlay') || 'initial'"
     ></div>
   </lpj-nav-item>
 </lpj-nav-item-group>

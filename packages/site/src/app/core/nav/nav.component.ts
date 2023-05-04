@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,6 +19,11 @@ import { AnimationCurve } from '../../common/animation';
   styleUrls: ['./nav.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   hostDirectives: [ProjectionNodeDirective, LayoutAnimationEntryDirective],
+  animations: [
+    trigger('overlay', [
+      transition('void => initial', [style({ opacity: 0 }), animate(125)]),
+    ]),
+  ],
 })
 export class NavComponent {
   itemGroups: NavItemGroup[] = [
