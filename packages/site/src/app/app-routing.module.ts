@@ -17,11 +17,6 @@ const routes: Routes = [
     loadChildren: () =>
       import('./guides/guides.module').then((m) => m.GuidesModule),
   },
-  {
-    path: 'examples',
-    loadChildren: () =>
-      import('./examples/examples.module').then((m) => m.ExamplesModule),
-  },
 ];
 
 @NgModule({

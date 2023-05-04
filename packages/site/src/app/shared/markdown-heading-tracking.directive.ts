@@ -21,12 +21,10 @@ import { HeadingComponent } from '../markdown-elements/heading/heading.component
 import { CustomElementComponentRegistry } from '../markdown-elements/shared/custom-element';
 
 @Directive({
-  selector: '[lpjMarkdownCurrentHeadingTracker]',
+  selector: '[lpj-markdown][headingTracking]',
   standalone: true,
 })
-export class MarkdownCurrentHeadingTrackerDirective
-  implements OnInit, OnDestroy
-{
+export class MarkdownHeadingTrackingDirective implements OnInit, OnDestroy {
   headings$: Observable<HeadingComponent[]>;
   currentId$: Observable<string | undefined>;
 

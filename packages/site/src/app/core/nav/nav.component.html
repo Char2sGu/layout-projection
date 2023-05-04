@@ -2,6 +2,7 @@
 <lpj-nav-item-group *ngFor="let group of itemGroups" [heading]="group.name">
   <lpj-nav-item
     *ngFor="let item of group.items"
+    routerLink="{{ item.path }}"
     [active]="itemActive === item"
     (click)="onItemClick(item)"
     (mouseenter)="onItemMouseEnter(item)"

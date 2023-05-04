@@ -1,9 +1,9 @@
 import { DOCUMENT } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { combineLatest, filter, map, Observable } from 'rxjs';
+import { combineLatest, filter, map, Observable, retry } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
-import { MarkdownCurrentHeadingTrackerDirective } from '../../shared/markdown-current-heading-tracker.directive';
+import { MarkdownHeadingTrackingDirective } from '../../shared/markdown-heading-tracking.directive';
 
 @Component({
   selector: 'lpj-guide-toc',
@@ -18,7 +18,7 @@ export class GuideTocComponent {
   itemActive$: Observable<GuideTocItem>;
 
   constructor(
-    headingTracker: MarkdownCurrentHeadingTrackerDirective,
+    headingTracker: MarkdownHeadingTrackingDirective,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.items$ = headingTracker.headings$.pipe(
@@ -34,6 +34,7 @@ export class GuideTocComponent {
           };
         }),
       ),
+      retry(3),
     );
     this.itemActive$ = combineLatest([
       this.items$,

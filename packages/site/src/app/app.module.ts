@@ -9,10 +9,11 @@ import { HIGHLIGHT_OPTIONS, HighlightOptions } from 'ngx-highlightjs';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 import { AppComponent } from './app.component';
+import { APP_NAV_CONTENT } from './app.nav-content';
 import { AppTitleStrategy } from './app.title-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { LogoComponent } from './core/logo/logo.component';
-import { NavComponent } from './core/nav/nav.component';
+import { NAV_CONTENT, NavComponent } from './core/nav/nav.component';
 import { NavItemComponent } from './core/nav-item/nav-item.component';
 import { NavItemGroupComponent } from './core/nav-item-group/nav-item-group.component';
 import { MarkdownElementsModule } from './markdown-elements/markdown-elements.module';
@@ -59,6 +60,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
         },
       } satisfies HighlightOptions,
     },
+    { provide: NAV_CONTENT, useValue: APP_NAV_CONTENT },
   ],
   bootstrap: [AppComponent],
 })

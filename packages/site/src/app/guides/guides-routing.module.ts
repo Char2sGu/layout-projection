@@ -1,22 +1,19 @@
-import { NgModule } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  ResolveFn,
-  RouterModule,
-  Routes,
-} from '@angular/router';
-import { TuiDocPage } from '@taiga-ui/addon-doc';
+import { inject, NgModule } from '@angular/core';
+import { ResolveFn, RouterModule, Routes } from '@angular/router';
 
+import { NAV_CONTENT } from '../core/nav/nav.component';
+import { GuideRecord } from './guide.core';
 import { GuideDetailComponent } from './guide-detail/guide-detail.component';
 import { GuidesComponent } from './guides.component';
-import { GUIDES_PAGES } from './guides.pages';
 
-const guidePageResolver = ((route: ActivatedRouteSnapshot) => {
+const guideRecordResolver = ((...[route]) => {
   const path = route.url.join('/');
-  const page = GUIDES_PAGES.find((page) => page.route.endsWith(path));
-  if (!page) throw new Error(`Page ${path} not found`);
-  return page;
-}) satisfies ResolveFn<TuiDocPage>;
+  for (const group of inject(NAV_CONTENT)) {
+    const record = group.items.find((item) => item.path.endsWith(path));
+    if (record) return record;
+  }
+  throw new Error(`No guide found for path: ${path}`);
+}) satisfies ResolveFn<GuideRecord>;
 
 const routes: Routes = [
   {
@@ -27,8 +24,8 @@ const routes: Routes = [
       {
         path: '**',
         component: GuideDetailComponent,
-        title: (route) => guidePageResolver(route).title,
-        resolve: { page: guidePageResolver },
+        title: (...args) => guideRecordResolver(...args).name,
+        resolve: { record: guideRecordResolver },
       },
     ],
   },

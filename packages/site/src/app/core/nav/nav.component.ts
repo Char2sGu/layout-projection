@@ -4,6 +4,7 @@ import {
   Component,
   HostListener,
   inject,
+  InjectionToken,
 } from '@angular/core';
 import {
   LayoutAnimationEntryDirective,
@@ -12,6 +13,8 @@ import {
 import { LayoutAnimationEntry } from '@layout-projection/core';
 
 import { AnimationCurve } from '../../common/animation';
+
+export const NAV_CONTENT = new InjectionToken<NavItemGroup[]>('NAV_CONTENT');
 
 @Component({
   selector: 'lpj-nav',
@@ -26,29 +29,7 @@ import { AnimationCurve } from '../../common/animation';
   ],
 })
 export class NavComponent {
-  itemGroups: NavItemGroup[] = [
-    {
-      name: 'Getting Started',
-      items: [
-        { name: 'Overview' },
-        { name: 'Layout Projection' },
-        { name: 'Layout Animation' },
-      ],
-    },
-    {
-      name: 'Developer Guides',
-      items: [{ name: 'Snapshot APIs' }, { name: 'Standalone Usage' }],
-    },
-    {
-      name: 'Adapter / Angular',
-      items: [
-        { name: 'Overview' },
-        { name: 'Projection Tree' },
-        { name: 'Animation Directives' },
-        { name: 'Animation Scope' },
-      ],
-    },
-  ];
+  itemGroups: NavItemGroup[] = inject(NAV_CONTENT);
   itemActive?: NavItem;
   itemLastHovered?: NavItem;
   entry = inject(LayoutAnimationEntry);
@@ -86,11 +67,12 @@ export class NavComponent {
   }
 }
 
-interface NavItemGroup {
+export interface NavItemGroup {
   name: string;
   items: NavItem[];
 }
 
-interface NavItem {
+export interface NavItem {
   name: string;
+  path: string;
 }
