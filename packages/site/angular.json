@@ -60,11 +60,6 @@
                 "glob": "**/*",
                 "input": "../angular/guides",
                 "output": "assets/guides/angular"
-              },
-              {
-                "glob": "**/*.example.*",
-                "input": "../angular-examples/src",
-                "output": "assets/examples/angular"
               }
             ],
             "styles": ["src/styles.less"],
