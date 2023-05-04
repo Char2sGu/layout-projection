@@ -11,7 +11,6 @@ import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 import { AppComponent } from './app.component';
 import { AppTitleStrategy } from './app.title-strategy';
 import { AppRoutingModule } from './app-routing.module';
-import { HeaderComponent } from './core/header/header.component';
 import { LogoComponent } from './core/logo/logo.component';
 import { NavComponent } from './core/nav/nav.component';
 import { NavItemComponent } from './core/nav-item/nav-item.component';
@@ -26,7 +25,6 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
     NavComponent,
     NavItemComponent,
     NavItemGroupComponent,
-    HeaderComponent,
   ],
   imports: [
     BrowserModule,
