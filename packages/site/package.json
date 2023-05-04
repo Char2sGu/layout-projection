@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.5",
-    "@angular/cli": "^15.2.5",
+    "@angular/cli": "^16.0.0",
     "@types/dompurify": "2.2.3",
     "@types/marked": "^4.0.8",
     "angular-cli-ghpages": "^1.0.5"
