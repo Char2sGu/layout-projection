@@ -12,6 +12,7 @@ import {
   filter,
   map,
   Observable,
+  shareReplay,
   switchMap,
   takeUntil,
 } from 'rxjs';
@@ -26,7 +27,8 @@ import { CustomElementComponentRegistry } from '../markdown-elements/shared/cust
 export class MarkdownCurrentHeadingTrackerDirective
   implements OnInit, OnDestroy
 {
-  headingId$: Observable<string | undefined>;
+  headings$: Observable<HeadingComponent[]>;
+  currentId$: Observable<string | undefined>;
 
   private destroy = new EventEmitter();
 
@@ -35,22 +37,26 @@ export class MarkdownCurrentHeadingTrackerDirective
     @Inject(HISTORY) private history: History,
     private customElementComponentRegistry: CustomElementComponentRegistry,
   ) {
-    this.headingId$ = this.customElementComponentRegistry.update$.pipe(
+    this.headings$ = this.customElementComponentRegistry.update$.pipe(
       debounceTime(50),
-      map(() => this.customElementComponentRegistry),
-      map((set) =>
-        [...set]
-          .filter((c): c is HeadingComponent => c instanceof HeadingComponent)
-          .map((c) => c.visibility$.pipe(map((v) => ({ id: c.id, v })))),
+      map(() => [...this.customElementComponentRegistry]),
+      map((arr) =>
+        arr.filter((c): c is HeadingComponent => c instanceof HeadingComponent),
       ),
-      switchMap((entries) => combineLatest(entries)),
-      debounceTime(500),
+      shareReplay(1),
+    );
+    this.currentId$ = this.headings$.pipe(
+      map((headings) =>
+        headings.map((c) => c.visibility$.pipe(map((v) => ({ id: c.id, v })))),
+      ),
+      switchMap((entries) => combineLatest(entries).pipe(debounceTime(100))),
       map((visibilities) => visibilities.find(({ v }) => v)?.id),
+      shareReplay(1),
     );
   }
 
   ngOnInit(): void {
-    this.headingId$
+    this.currentId$
       .pipe(takeUntil(this.destroy), filter(Boolean))
       .subscribe((id) => {
         this.history.replaceState(null, '', `${this.location.pathname}#${id}`);

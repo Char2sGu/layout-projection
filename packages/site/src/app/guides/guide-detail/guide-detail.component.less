@@ -1,12 +1,14 @@
 @import '@taiga-ui/core/styles/taiga-ui-local.less';
 
 :host {
-  display: block;
+  display: flex;
+  width: 100%;
 }
 
 .content {
+  flex: 1;
   padding: 3rem 5rem;
-  width: 60rem;
+  max-width: 60rem;
   margin: 0 auto;
   @media @tui-tablet {
     padding: 1rem 2.5rem;
@@ -14,4 +16,13 @@
   @media @tui-mobile {
     padding: 1rem 1.25rem;
   }
+}
+
+.toc {
+  --margin: 16px;
+  position: sticky;
+  top: var(--margin);
+  width: 200px;
+  height: fit-content;
+  margin: var(--margin);
 }

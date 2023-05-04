@@ -21,7 +21,6 @@ import { MarkdownCurrentHeadingTrackerDirective } from '../../shared/markdown-cu
 })
 export class GuideDetailComponent implements OnInit, OnDestroy {
   filepath$!: Observable<string>;
-  currentHeaderId$!: Observable<string | undefined>;
   ready = new EventEmitter();
 
   protected destroy = new EventEmitter();

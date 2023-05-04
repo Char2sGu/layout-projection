@@ -1,0 +1,36 @@
+:host {
+  display: block;
+}
+
+.overline {
+  margin: 16px 4px;
+  font: var(--tui-font-text-s);
+  text-transform: uppercase;
+  color: var(--tui-text-02);
+  user-select: none;
+}
+
+.nav-item {
+  position: relative;
+  --border-width: 1px;
+
+  a {
+    display: block;
+    padding: 4px 0;
+    padding-left: calc(var(--indent) * 12px);
+    color: var(--tui-text-01);
+    font: var(--tui-font-text-s);
+    text-decoration: none;
+    border-left: var(--border-width) solid var(--tui-base-03);
+  }
+
+  .activation-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--border-width);
+    background-color: var(--tui-text-01);
+    z-index: 1;
+  }
+}
