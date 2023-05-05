@@ -2,14 +2,14 @@
 
 :host {
   display: flex;
-  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 3rem 5rem;
+  gap: 5rem;
 }
 
 .content {
-  flex: 1;
-  padding: 3rem 5rem;
-  max-width: 60rem;
-  margin: 0 auto;
+  max-width: 48rem;
   @media @tui-tablet {
     padding: 1rem 2.5rem;
   }
@@ -19,10 +19,8 @@
 }
 
 .toc {
-  --margin: 16px;
   position: sticky;
-  top: var(--margin);
+  top: 80px;
   width: 200px;
   height: fit-content;
-  margin: var(--margin);
 }
