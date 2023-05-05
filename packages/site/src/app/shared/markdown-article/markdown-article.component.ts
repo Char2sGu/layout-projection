@@ -6,13 +6,14 @@ import {
   ElementRef,
   EventEmitter,
   inject,
+  Injectable,
   Injector,
   Input,
   Output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
-import { BehaviorSubject, filter, map, switchMap } from 'rxjs';
+import { BehaviorSubject, filter, map, of, switchMap, tap } from 'rxjs';
 
 import { CustomElementComponentInjector } from '../../markdown-elements/shared/custom-element';
 
@@ -29,16 +30,21 @@ export class MarkdownArticleComponent {
   @Input('src') set srcInput(v: string) { this.src$.next(v); }
   src$ = new BehaviorSubject<string | null>(null);
 
-  contentInMarkdown$ = this.src$.pipe(
+  content$ = this.src$.pipe(
     filter(Boolean),
-    switchMap((src) => this.markdownService.getSource(src)),
-  );
-  contentInHtml$ = this.contentInMarkdown$.pipe(
-    map((raw) =>
-      this.markdownService.parse(raw, {
-        markedOptions: this.markdownRenderConfig,
-      }),
-    ),
+    switchMap((src) => {
+      const contentCache = this.cache.get(src);
+      return contentCache
+        ? of(contentCache)
+        : this.markdownService.getSource(src).pipe(
+            map((raw) =>
+              this.markdownService.parse(raw, {
+                markedOptions: this.markdownRenderConfig,
+              }),
+            ),
+            tap((content) => this.cache.set(src, content)),
+          );
+    }),
   );
 
   @Output() ready = new EventEmitter();
@@ -46,6 +52,7 @@ export class MarkdownArticleComponent {
   private element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   private markdownService = inject(MarkdownService);
   private markdownRenderConfig = inject(MarkedOptions);
+  private cache = inject(MarkdownArticleCache);
   private elementInjector = inject(CustomElementComponentInjector);
   private currentInjector = inject(Injector);
   private destroyRef = inject(DestroyRef);
@@ -53,9 +60,12 @@ export class MarkdownArticleComponent {
   constructor() {
     this.elementInjector.use(this.currentInjector);
     this.destroyRef.onDestroy(() => this.elementInjector.use());
-    this.contentInHtml$.pipe(takeUntilDestroyed()).subscribe((html) => {
+    this.content$.pipe(takeUntilDestroyed()).subscribe((html) => {
       this.element.innerHTML = html;
       this.ready.emit();
     });
   }
 }
+
+@Injectable({ providedIn: 'root' })
+export class MarkdownArticleCache extends Map<string, string> {}
