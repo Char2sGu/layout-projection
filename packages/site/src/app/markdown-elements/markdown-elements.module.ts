@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TuiDocCodeModule } from '@taiga-ui/addon-doc';
+import { TuiButtonModule } from '@taiga-ui/core';
 
 import { BlockquoteComponent } from './blockquote/blockquote.component';
 import { CodeblockComponent } from './codeblock/codeblock.component';
@@ -29,7 +30,7 @@ const COMPONENTS = [
 
 @NgModule({
   declarations: [...COMPONENTS],
-  imports: [CommonModule, RouterModule, TuiDocCodeModule],
+  imports: [CommonModule, RouterModule, TuiButtonModule, TuiDocCodeModule],
   providers: [MarkdownElementsRenderer, CustomElementComponentInjector],
 })
 export class MarkdownElementsModule {
