@@ -1,14 +1,7 @@
-import { DOCUMENT } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Inject,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { DOCUMENT, ViewportScroller } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { filter, map, Observable } from 'rxjs';
 
 @Component({
   selector: 'lpj-guide-detail',
@@ -16,22 +9,18 @@ import { map, Observable } from 'rxjs';
   styleUrls: ['./guide-detail.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GuideDetailComponent implements OnInit, OnDestroy {
-  filepath$!: Observable<string>;
+export class GuideDetailComponent {
+  filepath$: Observable<string>;
 
-  protected destroy = new EventEmitter();
+  private route = inject(ActivatedRoute);
+  private document = inject(DOCUMENT);
+  private scroller = inject(ViewportScroller);
 
-  constructor(
-    private route: ActivatedRoute,
-    @Inject(DOCUMENT) private document: Document,
-  ) {}
-
-  ngOnInit(): void {
+  constructor() {
     this.filepath$ = this.route.url.pipe(map((url) => url.join('/')));
-  }
-
-  ngOnDestroy(): void {
-    this.destroy.emit();
+    this.route.fragment.pipe(filter(Boolean)).subscribe((fragment) => {
+      this.scroller.scrollToAnchor(fragment);
+    });
   }
 
   resetScroll(): void {

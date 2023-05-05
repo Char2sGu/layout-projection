@@ -1,5 +1,11 @@
+import { ViewportScroller } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { inject, NgModule, SecurityContext } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  inject,
+  NgModule,
+  SecurityContext,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TitleStrategy } from '@angular/router';
@@ -53,6 +59,14 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
   ],
   providers: [
     { provide: TitleStrategy, useClass: AppTitleStrategy },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => {
+        const scroller = inject(ViewportScroller);
+        return () => scroller.setOffset([0, 64]);
+      },
+      multi: true,
+    },
     { provide: NAV_CONTENT, useValue: APP_NAV_CONTENT },
   ],
   bootstrap: [AppComponent],
