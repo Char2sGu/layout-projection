@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 import {
   BehaviorSubject,
   combineLatest,
+  debounceTime,
   filter,
   map,
   mergeWith,
@@ -73,6 +74,7 @@ export class GuideDetailComponent {
       switchMap((observables) => combineLatest(observables)),
       map((entries) => entries.find(({ visible }) => visible)?.ele),
       filter(Boolean),
+      debounceTime(0),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
 
