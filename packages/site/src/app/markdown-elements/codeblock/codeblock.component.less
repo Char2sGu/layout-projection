@@ -1,4 +1,99 @@
 :host {
   display: block;
   margin: 1rem 0;
+  padding: 24px 32px;
+  background-color: var(--tui-base-02);
+  overflow-x: auto;
+  border-radius: 4px;
+  color: var(--tui-text-01);
+  font-family: monospace;
+  font-size: 1rem;
+  white-space: pre;
+}
+
+::ng-deep {
+  .hljs-subst,
+  .hljs-title {
+    font-weight: normal;
+    color: var(--tui-text-01);
+  }
+
+  .hljs-comment,
+  .hljs-quote {
+    color: var(--tui-text-03);
+    font-style: italic;
+  }
+
+  .hljs-meta {
+    color: #e38162;
+  }
+
+  .hljs-section,
+  .hljs-name,
+  .hljs-literal,
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-type,
+  .hljs-selector-id,
+  .hljs-selector-class {
+    font-weight: bold;
+    color: var(--tui-link);
+  }
+
+  .hljs-attribute,
+  .hljs-number,
+  .hljs-regexp,
+  .hljs-link {
+    font-weight: bold;
+    color: var(--tui-support-06);
+  }
+
+  .hljs-number,
+  .hljs-regexp,
+  .hljs-link {
+    font-weight: normal;
+  }
+
+  .hljs-string {
+    color: var(--tui-positive);
+    font-weight: bold;
+  }
+
+  .hljs-symbol,
+  .hljs-bullet,
+  .hljs-formula {
+    color: var(--tui-text-01);
+    background: var(--tui-base-02);
+    font-style: italic;
+  }
+
+  .hljs-doctag {
+    text-decoration: underline;
+  }
+
+  .hljs-variable,
+  .hljs-template-variable {
+    color: var(--tui-link-hover);
+  }
+
+  .hljs-addition {
+    background: var(--tui-success-bg);
+  }
+
+  .hljs-deletion {
+    background: var(--tui-error-bg);
+  }
+
+  .hljs-emphasis {
+    font-style: italic;
+  }
+
+  .hljs-strong {
+    font-weight: bold;
+  }
+
+  .hljs-ln-numbers {
+    color: var(--tui-text-03);
+    padding-right: 1rem !important;
+  }
 }

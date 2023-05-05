@@ -19,9 +19,9 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
   }
 
   override code(code: string, language: string | undefined): string {
-    const content = '```' + (language ?? '') + '\n' + code + '\n' + '```';
     const element = CodeblockComponent.create();
-    element.setAttribute('content', content);
+    if (language) element.setAttribute('language', language);
+    element.innerHTML = code;
     return element.outerHTML;
   }
 

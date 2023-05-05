@@ -1,5 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostBinding,
+  inject,
+  Input,
+} from '@angular/core';
 
+import { SyntaxHighlighter } from '../../core/syntax-highlighter.service';
 import { CustomElementComponent } from '../shared/custom-element';
 
 @Component({
@@ -10,6 +18,16 @@ import { CustomElementComponent } from '../shared/custom-element';
 export class CodeblockComponent extends CustomElementComponent {
   static override readonly selector = 'md-codeblock';
 
-  @Input() filename?: string;
-  @Input() content?: string;
+  @Input() language?: string;
+
+  @HostBinding('class') get languageBinding(): string {
+    return this.language ? `language-${this.language}` : '';
+  }
+
+  private element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  private highlighter = inject(SyntaxHighlighter);
+
+  ngAfterViewInit(): void {
+    this.highlighter.highlightElement(this.element);
+  }
 }
