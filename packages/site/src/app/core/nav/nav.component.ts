@@ -6,11 +6,13 @@ import {
   inject,
   InjectionToken,
 } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import {
   LayoutAnimationEntryDirective,
   ProjectionNodeDirective,
 } from '@layout-projection/angular';
 import { LayoutAnimationEntry } from '@layout-projection/core';
+import { filter, map, Observable, tap } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
 
@@ -30,13 +32,23 @@ export const NAV_CONTENT = new InjectionToken<NavItemGroup[]>('NAV_CONTENT');
 })
 export class NavComponent {
   itemGroups: NavItemGroup[] = inject(NAV_CONTENT);
-  itemActive?: NavItem;
+  itemActive$: Observable<NavItem>;
   itemLastHovered?: NavItem;
-  entry = inject(LayoutAnimationEntry);
+  animationEntry = inject(LayoutAnimationEntry);
+
+  private router = inject(Router);
+
+  constructor() {
+    this.itemActive$ = this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.matchActiveItemByRoute()),
+      tap(() => this.initiateLayoutAnimation()),
+    );
+  }
 
   @HostListener('mouseenter')
   onMouseEnter(): void {
-    this.entry.snapshots.clear();
+    this.animationEntry.snapshots.clear();
   }
 
   @HostListener('mouseleave')
@@ -50,20 +62,29 @@ export class NavComponent {
     this.initiateLayoutAnimation();
   }
 
-  onItemClick(item: NavItem): void {
-    if (this.itemActive === item) return;
-    this.itemActive = item;
-    this.initiateLayoutAnimation();
-  }
-
   initiateLayoutAnimation(): void {
-    this.entry.snapshot();
+    this.animationEntry.snapshot();
     requestAnimationFrame(() => {
-      this.entry.animate({
+      this.animationEntry.animate({
         duration: 125,
         easing: AnimationCurve.Emphasized,
       });
     });
+  }
+
+  matchActiveItemByRoute(): NavItem {
+    for (const group of this.itemGroups) {
+      const item = group.items.find((item) =>
+        this.router.isActive(item.path, {
+          paths: 'exact',
+          fragment: 'ignored',
+          matrixParams: 'ignored',
+          queryParams: 'ignored',
+        }),
+      );
+      if (item) return item;
+    }
+    throw new Error('No active nav item matched');
   }
 }
 
