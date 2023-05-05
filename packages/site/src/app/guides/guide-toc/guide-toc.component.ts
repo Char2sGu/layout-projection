@@ -9,18 +9,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LayoutAnimationEntry } from '@layout-projection/core';
 import {
   BehaviorSubject,
+  combineLatest,
   filter,
-  finalize,
   map,
   Observable,
   of,
-  scan,
   shareReplay,
-  Subject,
   switchMap,
 } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
+import { VisibilityObserver } from '../../core/visibility-observer.service';
 import { HeadingComponent } from '../../markdown-elements/heading/heading.component';
 import { NgElementQuerier } from '../../markdown-elements/shared/ng-element';
 import { MarkdownArticleComponent } from '../../shared/markdown-article/markdown-article.component';
@@ -44,6 +43,7 @@ export class GuideTocComponent {
 
   @ViewChild(LayoutAnimationEntry) private entry?: LayoutAnimationEntry;
   private querier = inject(NgElementQuerier);
+  private visibilityObserver = inject(VisibilityObserver);
 
   constructor() {
     const article$ = this.article$.pipe(filter(Boolean));
@@ -73,26 +73,16 @@ export class GuideTocComponent {
     );
 
     this.activeId$ = headings$.pipe(
-      switchMap((headings) => this.watchHeadingElementVisibilities(headings)),
-      map((visibilities) => Object.entries(visibilities).find(([, v]) => v)),
+      map((headings) =>
+        headings.map((heading) =>
+          this.visibilityObserver
+            .observe(heading)
+            .pipe(map((visible) => ({ id: heading.id, visible }))),
+        ),
+      ),
+      switchMap((observables) => combineLatest(observables)),
+      map((entries) => entries.find(({ visible }) => visible)?.id),
       filter(Boolean),
-      map(([id]) => id),
-    );
-  }
-
-  watchHeadingElementVisibilities(
-    headings: HTMLElement[],
-  ): Observable<Record<string, boolean>> {
-    const entries$ = new Subject<IntersectionObserverEntry[]>();
-    const observer = new IntersectionObserver((v) => entries$.next(v));
-    headings.forEach((heading) => observer.observe(heading));
-    return entries$.pipe(
-      finalize(() => observer.disconnect()),
-      scan((visibilities: Record<string, boolean>, entries) => {
-        for (const entry of entries)
-          visibilities[entry.target.id] = entry.isIntersecting;
-        return visibilities;
-      }, {}),
     );
   }
 }
