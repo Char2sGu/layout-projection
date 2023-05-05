@@ -1,6 +1,13 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { combineLatest, filter, map, Observable, retry } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  ViewChild,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LayoutAnimationEntry } from '@layout-projection/core';
+import { combineLatest, filter, map, Observable } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
 import { MarkdownHeadingTrackingDirective } from '../../shared/markdown-heading-tracking.directive';
@@ -17,16 +24,18 @@ export class GuideTocComponent {
   items$: Observable<GuideTocItem[]>;
   itemActive$: Observable<GuideTocItem>;
 
+  @ViewChild(LayoutAnimationEntry) entry?: LayoutAnimationEntry;
+
   constructor(
     headingTracker: MarkdownHeadingTrackingDirective,
     @Inject(DOCUMENT) document: Document,
   ) {
     this.items$ = headingTracker.headings$.pipe(
       map((headings) =>
-        headings.map((heading) => {
-          if (!heading.id) throw new Error();
+        headings.flatMap((heading) => {
+          if (!heading.id) return [];
           const ele = document.getElementById(heading.id);
-          if (!ele) throw new Error();
+          if (!ele) return [];
           return {
             id: heading.id,
             level: +heading.level,
@@ -34,7 +43,6 @@ export class GuideTocComponent {
           };
         }),
       ),
-      retry(3),
     );
     this.itemActive$ = combineLatest([
       this.items$,
@@ -43,6 +51,10 @@ export class GuideTocComponent {
       map(([items, currentId]) => items.find((item) => item.id === currentId)),
       filter(Boolean),
     );
+
+    this.items$.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.entry?.snapshots.clear();
+    });
   }
 }
 
