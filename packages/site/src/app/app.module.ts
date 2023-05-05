@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TitleStrategy } from '@angular/router';
 import { LayoutProjectionModule } from '@layout-projection/angular';
+import { TuiRootModule } from '@taiga-ui/core';
 import { EventPluginsModule } from '@tinkoff/ng-event-plugins';
 import { HIGHLIGHT_OPTIONS, HighlightOptions } from 'ngx-highlightjs';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
@@ -45,6 +46,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
       },
     }),
     AppRoutingModule,
+    TuiRootModule,
   ],
   providers: [
     { provide: TitleStrategy, useClass: AppTitleStrategy },
