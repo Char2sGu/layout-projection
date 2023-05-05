@@ -26,6 +26,7 @@ export class LayoutAnimationScopeDirective implements OnInit {
   }
 
   source?: LayoutAnimationScopeRef;
+  current!: LayoutAnimationScopeRef;
 
   constructor(
     private templateRef: TemplateRef<LayoutAnimationScopeTemplateContext>,
@@ -34,10 +35,10 @@ export class LayoutAnimationScopeDirective implements OnInit {
 
   ngOnInit(): void {
     const injector = this.createInjector();
-    const ref = injector.get(LayoutAnimationScopeRef);
+    this.current = injector.get(LayoutAnimationScopeRef);
     this.viewContainer.createEmbeddedView(
       this.templateRef,
-      { $implicit: ref },
+      { $implicit: this.current },
       { injector },
     );
   }
