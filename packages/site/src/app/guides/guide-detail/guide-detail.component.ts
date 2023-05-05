@@ -1,4 +1,4 @@
-import { DOCUMENT, ViewportScroller } from '@angular/common';
+import { ViewportScroller } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -50,7 +50,6 @@ export class GuideDetailComponent {
   render = new EventEmitter();
 
   private route = inject(ActivatedRoute);
-  private document = inject(DOCUMENT);
   private scroller = inject(ViewportScroller);
   private querier = inject(NgElementQuerier);
   private visibilityObserver = inject(VisibilityObserver);
@@ -81,13 +80,5 @@ export class GuideDetailComponent {
     this.headings$.subscribe(() => {
       this.scroller.scrollToPosition([0, 0]);
     });
-
-    this.route.fragment.pipe(filter(Boolean)).subscribe((fragment) => {
-      this.scroller.scrollToAnchor(fragment);
-    });
-  }
-
-  resetScroll(): void {
-    this.document.documentElement.scrollTop = 0;
   }
 }
