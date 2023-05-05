@@ -25,7 +25,7 @@ import { NavItemGroupComponent } from './core/nav-item-group/nav-item-group.comp
 import { MarkdownElementsModule } from './markdown-elements/markdown-elements.module';
 import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.renderer';
 
-// TODO: scroll to route fragment element
+// TODO: scroll animation
 // TODO: article switch route animation
 // TODO: responsive layout
 
