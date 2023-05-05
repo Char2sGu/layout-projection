@@ -5,14 +5,16 @@ import {
   HostListener,
   inject,
   InjectionToken,
+  Signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import {
   LayoutAnimationEntryDirective,
   ProjectionNodeDirective,
 } from '@layout-projection/angular';
 import { LayoutAnimationEntry } from '@layout-projection/core';
-import { filter, map, Observable, tap } from 'rxjs';
+import { filter, map, shareReplay, tap } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
 
@@ -32,17 +34,20 @@ export const NAV_CONTENT = new InjectionToken<NavItemGroup[]>('NAV_CONTENT');
 })
 export class NavComponent {
   itemGroups: NavItemGroup[] = inject(NAV_CONTENT);
-  itemActive$: Observable<NavItem>;
+  itemActive: Signal<NavItem | undefined>;
   itemLastHovered?: NavItem;
   animationEntry = inject(LayoutAnimationEntry);
 
   private router = inject(Router);
 
   constructor() {
-    this.itemActive$ = this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this.matchActiveItemByRoute()),
-      tap(() => this.initiateLayoutAnimation()),
+    this.itemActive = toSignal(
+      this.router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.matchActiveItemByRoute()),
+        tap(() => this.initiateLayoutAnimation()),
+        shareReplay(1),
+      ),
     );
   }
 
