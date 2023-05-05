@@ -8,7 +8,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, Observable, skip } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { MarkdownHeadingTrackingDirective } from '../../shared/markdown-heading-tracking.directive';
 
@@ -21,7 +21,6 @@ import { MarkdownHeadingTrackingDirective } from '../../shared/markdown-heading-
 })
 export class GuideDetailComponent implements OnInit, OnDestroy {
   filepath$!: Observable<string>;
-  ready = new EventEmitter();
 
   protected destroy = new EventEmitter();
 
@@ -32,13 +31,13 @@ export class GuideDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.filepath$ = this.route.url.pipe(map((url) => url.join('/')));
-
-    this.ready.pipe(skip(1)).subscribe(() => {
-      this.document.documentElement.scrollTop = 0;
-    });
   }
 
   ngOnDestroy(): void {
     this.destroy.emit();
+  }
+
+  resetScroll(): void {
+    this.document.documentElement.scrollTop = 0;
   }
 }

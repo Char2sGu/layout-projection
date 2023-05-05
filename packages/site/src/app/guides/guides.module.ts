@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { LayoutProjectionModule } from '@layout-projection/angular';
 
-import { MarkdownComponent } from '../shared/markdown/markdown.component';
+import { MarkdownArticleComponent } from '../shared/markdown-article/markdown-article.component';
 import { MarkdownHeadingTrackingDirective } from '../shared/markdown-heading-tracking.directive';
 import { GuideDetailComponent } from './guide-detail/guide-detail.component';
 import { GuideTocComponent } from './guide-toc/guide-toc.component';
@@ -15,8 +15,8 @@ import { GuidesRoutingModule } from './guides-routing.module';
     CommonModule,
     GuidesRoutingModule,
     LayoutProjectionModule,
-    MarkdownComponent,
     MarkdownHeadingTrackingDirective,
+    MarkdownArticleComponent,
   ],
 })
 export class GuidesModule {}
