@@ -13,8 +13,18 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
-import { BehaviorSubject, filter, map, of, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  filter,
+  from,
+  map,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 
+import { SyntaxHighlighter } from '../../core/syntax-highlighter.service';
 import { NgElementComponentInjector } from '../../markdown-elements/shared/ng-element';
 
 @Component({
@@ -53,6 +63,7 @@ export class MarkdownArticleComponent {
   private markdownService = inject(MarkdownService);
   private markdownRenderConfig = inject(MarkedOptions);
   private cache = inject(MarkdownArticleCache);
+  private highlighter = inject(SyntaxHighlighter);
   private elementInjector = inject(NgElementComponentInjector);
   private currentInjector = inject(Injector);
   private destroyRef = inject(DestroyRef);
@@ -60,10 +71,16 @@ export class MarkdownArticleComponent {
   constructor() {
     this.elementInjector.use(this.currentInjector);
     this.destroyRef.onDestroy(() => this.elementInjector.use());
-    this.content$.pipe(takeUntilDestroyed()).subscribe((html) => {
-      this.element.innerHTML = html;
-      this.render.emit();
-    });
+    this.content$
+      .pipe(
+        takeUntilDestroyed(),
+        combineLatestWith(from(this.highlighter.loadEngine())),
+        map(([content]) => content),
+      )
+      .subscribe((html) => {
+        this.element.innerHTML = html;
+        this.render.emit();
+      });
   }
 }
 
