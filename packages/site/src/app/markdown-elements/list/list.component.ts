@@ -19,7 +19,7 @@ export class ListComponent extends CustomElementComponent {
 
   @HostBinding() get class(): string {
     const ordered = parseBooleanStringInput(this.ordered);
-    return ordered ? 'tui-list tui-list_ordered' : 'tui-list';
+    return ordered ? 'tui-list tui-list_ordered' : 'tui-list tui-list_linear';
   }
 
   @Input() ordered = '';
