@@ -20,7 +20,6 @@ import { MarkdownElementsModule } from './markdown-elements/markdown-elements.mo
 import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.renderer';
 
 // TODO: scroll to route fragment element
-// TODO: remove display time difference between toc and article
 // TODO: article switch route animation
 
 @NgModule({

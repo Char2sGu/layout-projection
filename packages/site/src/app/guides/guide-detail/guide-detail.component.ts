@@ -10,14 +10,11 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { map, Observable } from 'rxjs';
 
-import { MarkdownHeadingTrackingDirective } from '../../shared/markdown-heading-tracking.directive';
-
 @Component({
   selector: 'lpj-guide-detail',
   templateUrl: './guide-detail.component.html',
   styleUrls: ['./guide-detail.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  hostDirectives: [MarkdownHeadingTrackingDirective],
 })
 export class GuideDetailComponent implements OnInit, OnDestroy {
   filepath$!: Observable<string>;

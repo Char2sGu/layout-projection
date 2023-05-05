@@ -1,7 +1,9 @@
-<lpj-markdown-article
-  class="content"
-  *ngIf="filepath$ | async as filepath"
-  src="assets/guides/{{ filepath }}.md"
-  (ready)="resetScroll()"
-></lpj-markdown-article>
-<lpj-guide-toc class="toc"></lpj-guide-toc>
+<ng-container *ngIf="filepath$ | async as filepath">
+  <lpj-markdown-article
+    class="content"
+    src="assets/guides/{{ filepath }}.md"
+    (ready)="resetScroll()"
+    #article
+  ></lpj-markdown-article>
+  <lpj-guide-toc class="toc" [article]="article"></lpj-guide-toc>
+</ng-container>

@@ -1,16 +1,34 @@
-import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  Inject,
+  Input,
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NgElement } from '@angular/elements';
 import { LayoutAnimationEntry } from '@layout-projection/core';
-import { combineLatest, filter, map, Observable } from 'rxjs';
+import {
+  BehaviorSubject,
+  filter,
+  finalize,
+  map,
+  Observable,
+  of,
+  scan,
+  shareReplay,
+  skip,
+  Subject,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
-import { MarkdownHeadingTrackingDirective } from '../../shared/markdown-heading-tracking.directive';
+import { HeadingComponent } from '../../markdown-elements/heading/heading.component';
+import {
+  CustomElementComponent,
+  CustomElementComponentType,
+} from '../../markdown-elements/shared/custom-element';
+import { MarkdownArticleComponent } from '../../shared/markdown-article/markdown-article.component';
 
 @Component({
   selector: 'lpj-guide-toc',
@@ -21,40 +39,64 @@ import { MarkdownHeadingTrackingDirective } from '../../shared/markdown-heading-
 export class GuideTocComponent {
   AnimationCurve = AnimationCurve;
 
+  // prettier-ignore
+  @Input({ alias: 'article', required: true })
+  set articleInput(v: MarkdownArticleComponent) { this.article$.next(v) }
+  article$ = new BehaviorSubject<MarkdownArticleComponent | null>(null);
+  articleElement$ = this.article$.pipe(
+    filter(Boolean),
+    switchMap((article) => article.ready.pipe(map(() => article.element))),
+    shareReplay(1),
+  );
+
   items$: Observable<GuideTocItem[]>;
-  itemActive$: Observable<GuideTocItem>;
+  activeId$: Observable<string> = of('a');
 
   @ViewChild(LayoutAnimationEntry) private entry?: LayoutAnimationEntry;
 
-  constructor(
-    headingTracker: MarkdownHeadingTrackingDirective,
-    @Inject(DOCUMENT) document: Document,
-  ) {
-    this.items$ = headingTracker.headings$.pipe(
-      map((headings) =>
-        headings.flatMap((heading) => {
-          if (!heading.id) return [];
-          const ele = document.getElementById(heading.id);
-          if (!ele) return [];
-          return {
-            id: heading.id,
-            level: +heading.level,
-            title: ele.innerText,
-          };
-        }),
-      ),
-    );
-    this.itemActive$ = combineLatest([
-      this.items$,
-      headingTracker.currentId$,
-    ]).pipe(
-      map(([items, currentId]) => items.find((item) => item.id === currentId)),
-      filter(Boolean),
+  constructor() {
+    this.articleElement$
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.entry?.snapshots.clear());
+
+    const headings$ = this.articleElement$.pipe(
+      map((element) => queryCustomElement(element, HeadingComponent)),
+      shareReplay(1),
     );
 
-    this.items$.pipe(takeUntilDestroyed()).subscribe(() => {
-      this.entry?.snapshots.clear();
-    });
+    this.items$ = headings$.pipe(
+      map((headings) =>
+        headings.map((heading) => ({
+          id: heading.id,
+          title: heading.innerText,
+          level: +heading.level,
+        })),
+      ),
+      shareReplay(1),
+    );
+
+    const headingVisibilities$ = headings$.pipe(
+      switchMap((headings) => {
+        const entries$ = new Subject<IntersectionObserverEntry[]>();
+        const observer = new IntersectionObserver((v) => entries$.next(v));
+        headings.forEach((heading) => observer.observe(heading));
+        return entries$.pipe(
+          takeUntil(headings$.pipe(skip(1))),
+          finalize(() => observer.disconnect()),
+          scan((visibilities: Record<string, boolean>, entries) => {
+            for (const entry of entries)
+              visibilities[entry.target.id] = entry.isIntersecting;
+            return visibilities;
+          }, {}),
+        );
+      }),
+    );
+
+    this.activeId$ = headingVisibilities$.pipe(
+      map((visibilities) => Object.entries(visibilities).find(([, v]) => v)),
+      filter(Boolean),
+      map(([id]) => id),
+    );
   }
 }
 
@@ -62,4 +104,13 @@ export interface GuideTocItem {
   id: string;
   title: string;
   level: number;
+}
+
+// TODO: move
+function queryCustomElement<Component extends CustomElementComponent>(
+  from: HTMLElement,
+  type: CustomElementComponentType<Component>,
+): (NgElement & Component)[] {
+  const elements = from.querySelectorAll<NgElement & Component>(type.selector);
+  return [...elements];
 }

@@ -1,10 +1,10 @@
-<ng-container *ngIf="itemActive$ | async as itemActive">
+<ng-container *ngIf="activeId$ | async as activeId">
   <div class="overline">Contents</div>
   <ul
     class="nav-list"
     lpjNode
     [lpjAnimation]="{ duration: 125, easing: AnimationCurve.Emphasized }"
-    [lpjAnimationTrigger]="itemActive"
+    [lpjAnimationTrigger]="activeId"
   >
     <li
       class="nav-item"
@@ -13,7 +13,7 @@
     >
       <div
         class="activation-indicator"
-        *ngIf="itemActive.id === item.id"
+        *ngIf="activeId === item.id"
         lpjNode="activation-indicator"
       ></div>
       <a [routerLink]="[]" [fragment]="item.id">{{ item.title }}</a>

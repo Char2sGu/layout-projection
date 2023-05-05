@@ -25,8 +25,7 @@ export class IframeComponent extends CustomElementComponent implements OnInit {
     super();
   }
 
-  override ngOnInit(): void {
-    super.ngOnInit();
+  ngOnInit(): void {
     if (this.src)
       this.safeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.src);
   }

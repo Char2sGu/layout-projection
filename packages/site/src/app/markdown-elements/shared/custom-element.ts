@@ -1,15 +1,8 @@
-import {
-  EventEmitter,
-  inject,
-  Injectable,
-  Injector,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Injectable, Injector, Type } from '@angular/core';
 import { createCustomElement, NgElement } from '@angular/elements';
 
 @Injectable()
-export class CustomElementComponent implements OnInit, OnDestroy {
+export class CustomElementComponent {
   static readonly selector: string;
 
   static initialize(injector: Injector): void {
@@ -22,33 +15,12 @@ export class CustomElementComponent implements OnInit, OnDestroy {
   static create(): NgElement {
     return document.createElement(this.selector) as NgElement;
   }
-
-  protected registry = inject(CustomElementComponentRegistry);
-
-  ngOnInit(): void {
-    this.registry.add(this);
-  }
-
-  ngOnDestroy(): void {
-    this.registry.delete(this);
-  }
 }
 
-@Injectable({ providedIn: 'root' })
-export class CustomElementComponentRegistry extends Set<CustomElementComponent> {
-  update$ = new EventEmitter();
-
-  override add(value: CustomElementComponent): this {
-    super.add(value);
-    this.update$.emit();
-    return this;
-  }
-
-  override delete(value: CustomElementComponent): boolean {
-    const result = super.delete(value);
-    this.update$.emit();
-    return result;
-  }
+export interface CustomElementComponentType<
+  Component extends CustomElementComponent,
+> extends Type<Component> {
+  selector: string;
 }
 
 @Injectable({ providedIn: 'root' })
