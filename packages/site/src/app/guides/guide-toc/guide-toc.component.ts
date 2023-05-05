@@ -24,7 +24,7 @@ export class GuideTocComponent {
   items$: Observable<GuideTocItem[]>;
   itemActive$: Observable<GuideTocItem>;
 
-  @ViewChild(LayoutAnimationEntry) entry?: LayoutAnimationEntry;
+  @ViewChild(LayoutAnimationEntry) private entry?: LayoutAnimationEntry;
 
   constructor(
     headingTracker: MarkdownHeadingTrackingDirective,

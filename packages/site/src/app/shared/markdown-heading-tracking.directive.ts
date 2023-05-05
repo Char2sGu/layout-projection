@@ -36,7 +36,7 @@ export class MarkdownHeadingTrackingDirective implements OnInit, OnDestroy {
     private customElementComponentRegistry: CustomElementComponentRegistry,
   ) {
     this.headings$ = this.customElementComponentRegistry.update$.pipe(
-      debounceTime(50),
+      debounceTime(0),
       map(() => [...this.customElementComponentRegistry]),
       map((arr) =>
         arr.filter((c): c is HeadingComponent => c instanceof HeadingComponent),
@@ -47,7 +47,7 @@ export class MarkdownHeadingTrackingDirective implements OnInit, OnDestroy {
       map((headings) =>
         headings.map((c) => c.visibility$.pipe(map((v) => ({ id: c.id, v })))),
       ),
-      switchMap((entries) => combineLatest(entries).pipe(debounceTime(100))),
+      switchMap((entries) => combineLatest(entries).pipe(debounceTime(150))),
       map((visibilities) => visibilities.find(({ v }) => v)?.id),
       shareReplay(1),
     );
