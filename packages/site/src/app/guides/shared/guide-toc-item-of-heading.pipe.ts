@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 import { HeadingNgElement } from '../../markdown-elements/heading/heading.component';
-import { GuideTocItem } from '../guide-toc/guide-toc.component';
+import { GuideTocItem } from './guide.models';
 
 @Pipe({
   name: 'guideTocItemOfHeading',

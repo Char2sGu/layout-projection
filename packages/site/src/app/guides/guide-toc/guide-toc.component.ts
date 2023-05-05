@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { AnimationCurve } from '../../common/animation';
+import { GuideTocItem } from '../shared/guide.models';
 
 @Component({
   selector: 'lpj-guide-toc',
@@ -13,10 +14,4 @@ export class GuideTocComponent {
 
   @Input({ required: true }) items: GuideTocItem[] = [];
   @Input({ required: true }) itemActive?: GuideTocItem;
-}
-
-export interface GuideTocItem {
-  id: string;
-  title: string;
-  level: number;
 }
