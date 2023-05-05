@@ -1,4 +1,3 @@
-import { ViewportScroller } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,7 +7,6 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import {
   BehaviorSubject,
   combineLatest,
@@ -49,8 +47,6 @@ export class GuideDetailComponent {
 
   render = new EventEmitter();
 
-  private route = inject(ActivatedRoute);
-  private scroller = inject(ViewportScroller);
   private querier = inject(NgElementQuerier);
   private visibilityObserver = inject(VisibilityObserver);
 
@@ -76,9 +72,5 @@ export class GuideDetailComponent {
       debounceTime(0),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
-
-    this.headings$.subscribe(() => {
-      this.scroller.scrollToPosition([0, 0]);
-    });
   }
 }

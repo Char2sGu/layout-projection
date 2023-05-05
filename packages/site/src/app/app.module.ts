@@ -19,7 +19,7 @@ import { NavItemGroupComponent } from './core/nav-item-group/nav-item-group.comp
 import { MarkdownElementsModule } from './markdown-elements/markdown-elements.module';
 import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.renderer';
 
-// TODO: scroll animation
+// TODO: instantly scroll to top on page change
 // TODO: article switch route animation
 // TODO: responsive layout
 
