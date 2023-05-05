@@ -19,6 +19,7 @@ export class CodeblockComponent extends NgElementComponent {
   static override readonly selector = 'md-codeblock';
 
   @Input() language?: string;
+  @Input() content: string = '';
 
   @HostBinding('class') get languageBinding(): string {
     return this.language ? `language-${this.language}` : '';
@@ -28,6 +29,6 @@ export class CodeblockComponent extends NgElementComponent {
   private highlighter = inject(SyntaxHighlighter);
 
   ngAfterViewInit(): void {
-    this.highlighter.highlightElement(this.element);
+    this.highlighter.highlight(this.element, this.content, this.language);
   }
 }

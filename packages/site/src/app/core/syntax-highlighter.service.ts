@@ -2,14 +2,37 @@ import { DOCUMENT } from '@angular/common';
 import { inject, Injectable } from '@angular/core';
 import type { HLJSApi } from 'highlight.js';
 
+const LANGUAGES = ['typescript', 'xml', 'bash'] as const;
+type SupportedLanguage = (typeof LANGUAGES)[number];
+
+const LANGUAGE_LOADERS = {
+  typescript: () => import('highlight.js/lib/languages/typescript'),
+  xml: () => import('highlight.js/lib/languages/xml'),
+  bash: () => import('highlight.js/lib/languages/bash'),
+} as const satisfies Record<SupportedLanguage, () => Promise<unknown>>;
+
+const LANGUAGE_ALIASES = {
+  ts: 'typescript',
+  html: 'xml',
+  sh: 'bash',
+} as const satisfies Readonly<Record<string, SupportedLanguage>>;
+
 @Injectable({ providedIn: 'root' })
 export class SyntaxHighlighter {
   private engine?: HljsWithPlugins;
   private document = inject(DOCUMENT);
 
-  async highlightElement(element: HTMLElement): Promise<void> {
+  async highlight(
+    element: HTMLElement,
+    content: string,
+    language?: string,
+  ): Promise<void> {
     const engine = await this.loadEngine();
-    engine.highlightElement(element);
+    language = language && this.normalizeLanguage(language);
+    const result = language
+      ? engine.highlight(content, { language })
+      : engine.highlightAuto(content, [...LANGUAGES]);
+    element.innerHTML = result.value;
     engine.lineNumbersBlock(element);
   }
 
@@ -25,12 +48,9 @@ export class SyntaxHighlighter {
     Object.defineProperty(window, 'hljs', { value: hljs });
     await import('highlightjs-line-numbers.js' as string);
 
-    const languages = {
-      typescript: import('highlight.js/lib/languages/typescript'),
-    };
     await Promise.all(
-      Object.entries(languages).map(([name, module]) =>
-        module
+      Object.entries(LANGUAGE_LOADERS).map(([name, moduleLoader]) =>
+        moduleLoader()
           .then((m) => m.default)
           .then((language) => hljs.registerLanguage(name, language)),
       ),
@@ -38,6 +58,14 @@ export class SyntaxHighlighter {
 
     this.engine = hljs;
     return this.engine;
+  }
+
+  normalizeLanguage(language: string): SupportedLanguage {
+    language =
+      LANGUAGE_ALIASES[language as keyof typeof LANGUAGE_ALIASES] ?? language;
+    if (!LANGUAGES.includes(language as SupportedLanguage))
+      throw new Error(`Unsupported language: ${language}`);
+    return language as SupportedLanguage;
   }
 }
 

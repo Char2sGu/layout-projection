@@ -1,4 +1,3 @@
-/* eslint-disable max-params */
 import { Injectable } from '@angular/core';
 import { Slugger } from 'marked';
 import { MarkedRenderer } from 'ngx-markdown';
@@ -21,7 +20,7 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
   override code(code: string, language: string | undefined): string {
     const element = CodeblockComponent.create();
     if (language) element.setAttribute('language', language);
-    element.innerHTML = code;
+    element.setAttribute('content', code);
     return element.outerHTML;
   }
 
