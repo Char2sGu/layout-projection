@@ -1,15 +1,13 @@
-<ng-container *ngIf="filepath$ | async as filepath">
-  <lpj-markdown-article
-    class="content"
-    src="assets/guides/{{ filepath }}.md"
-    (render)="render.emit()"
-  ></lpj-markdown-article>
-  <lpj-guide-toc
-    class="toc"
-    *ngIf="headings$ | async | guideTocItemsFromHeadings as items"
-    [items]="items"
-    [itemActive]="
-      headingActive$ | async | guideTocItemOfHeading : items | preferUndefined
-    "
-  ></lpj-guide-toc>
-</ng-container>
+<lpj-markdown-article
+  class="content"
+  src="assets/guides/{{ record.path }}.md"
+  (render)="render.emit()"
+></lpj-markdown-article>
+<lpj-guide-toc
+  class="toc"
+  *ngIf="headings$ | async | guideTocItemsFromHeadings as items"
+  [items]="items"
+  [itemActive]="
+    headingActive$ | async | guideTocItemOfHeading : items | preferUndefined
+  "
+></lpj-guide-toc>

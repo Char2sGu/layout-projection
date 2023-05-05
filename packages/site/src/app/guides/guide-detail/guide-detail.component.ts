@@ -5,6 +5,7 @@ import {
   ElementRef,
   EventEmitter,
   inject,
+  Input,
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -26,6 +27,7 @@ import {
 } from '../../markdown-elements/heading/heading.component';
 import { NgElementQuerier } from '../../markdown-elements/shared/ng-element';
 import { MarkdownArticleComponent } from '../../shared/markdown-article/markdown-article.component';
+import { GuideRecord } from '../shared/guide.models';
 
 @Component({
   selector: 'lpj-guide-detail',
@@ -34,7 +36,7 @@ import { MarkdownArticleComponent } from '../../shared/markdown-article/markdown
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuideDetailComponent {
-  filepath$: Observable<string>;
+  @Input() record!: GuideRecord;
 
   // prettier-ignore
   @ViewChild(MarkdownArticleComponent, { read: ElementRef })
@@ -53,8 +55,6 @@ export class GuideDetailComponent {
   private visibilityObserver = inject(VisibilityObserver);
 
   constructor() {
-    this.filepath$ = this.route.url.pipe(map((url) => url.join('/')));
-
     this.headings$ = this.contentElement$.pipe(
       mergeWith(this.render.pipe(map(() => this.contentElement$.value))),
       filter(Boolean),
