@@ -5,15 +5,15 @@ import {
   Input,
 } from '@angular/core';
 
-import { CustomElementComponent } from '../shared/custom-element';
 import { parseNumberStringInput } from '../shared/input';
+import { NgElementComponent } from '../shared/ng-element';
 
 @Component({
   templateUrl: './heading.component.html',
   styleUrls: ['./heading.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeadingComponent extends CustomElementComponent {
+export class HeadingComponent extends NgElementComponent {
   static override readonly selector = 'md-heading';
 
   @HostBinding('class') get class(): string {

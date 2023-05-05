@@ -6,14 +6,14 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
-import { CustomElementComponent } from '../shared/custom-element';
+import { NgElementComponent } from '../shared/ng-element';
 
 @Component({
   templateUrl: './iframe.component.html',
   styleUrls: ['./iframe.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IframeComponent extends CustomElementComponent implements OnInit {
+export class IframeComponent extends NgElementComponent implements OnInit {
   static override readonly selector = 'md-iframe';
 
   @Input() src?: string;

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 
-import { CustomElementComponent } from '../shared/custom-element';
+import { NgElementComponent } from '../shared/ng-element';
 
 @Component({
   selector: 'lpj-paragraph',
@@ -8,7 +8,7 @@ import { CustomElementComponent } from '../shared/custom-element';
   styleUrls: ['./paragraph.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ParagraphComponent extends CustomElementComponent {
+export class ParagraphComponent extends NgElementComponent {
   static override readonly selector = 'md-paragraph';
 
   @HostBinding() class = 'tui-text_body-m';

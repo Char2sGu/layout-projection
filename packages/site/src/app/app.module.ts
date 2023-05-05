@@ -21,6 +21,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
 
 // TODO: scroll to route fragment element
 // TODO: article switch route animation
+// TODO: responsive layout
 
 @NgModule({
   declarations: [

@@ -13,7 +13,7 @@ import { ListComponent } from './list/list.component';
 import { ListItemComponent } from './list-item/list-item.component';
 import { MarkdownElementsRenderer } from './markdown-elements.renderer';
 import { ParagraphComponent } from './paragraph/paragraph.component';
-import { CustomElementComponentInjector } from './shared/custom-element';
+import { NgElementComponentInjector } from './shared/ng-element';
 
 const COMPONENTS = [
   CodeblockComponent,
@@ -30,10 +30,10 @@ const COMPONENTS = [
 @NgModule({
   declarations: [...COMPONENTS],
   imports: [CommonModule, RouterModule, TuiButtonModule],
-  providers: [MarkdownElementsRenderer, CustomElementComponentInjector],
+  providers: [MarkdownElementsRenderer, NgElementComponentInjector],
 })
 export class MarkdownElementsModule {
-  constructor(injector: CustomElementComponentInjector) {
+  constructor(injector: NgElementComponentInjector) {
     COMPONENTS.forEach((c) => c.initialize(injector));
   }
 }

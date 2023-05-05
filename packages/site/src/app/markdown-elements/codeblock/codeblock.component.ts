@@ -8,14 +8,14 @@ import {
 } from '@angular/core';
 
 import { SyntaxHighlighter } from '../../core/syntax-highlighter.service';
-import { CustomElementComponent } from '../shared/custom-element';
+import { NgElementComponent } from '../shared/ng-element';
 
 @Component({
   templateUrl: './codeblock.component.html',
   styleUrls: ['./codeblock.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodeblockComponent extends CustomElementComponent {
+export class CodeblockComponent extends NgElementComponent {
   static override readonly selector = 'md-codeblock';
 
   @Input() language?: string;

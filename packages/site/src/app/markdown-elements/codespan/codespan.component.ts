@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { CustomElementComponent } from '../shared/custom-element';
+import { NgElementComponent } from '../shared/ng-element';
 
 @Component({
   selector: 'lpj-codespan',
@@ -8,6 +8,6 @@ import { CustomElementComponent } from '../shared/custom-element';
   styleUrls: ['./codespan.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CodespanComponent extends CustomElementComponent {
+export class CodespanComponent extends NgElementComponent {
   static override readonly selector = 'md-codespan';
 }

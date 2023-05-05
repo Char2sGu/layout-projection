@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { CustomElementComponent } from '../shared/custom-element';
+import { NgElementComponent } from '../shared/ng-element';
 
 @Component({
   templateUrl: './blockquote.component.html',
   styleUrls: ['./blockquote.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BlockquoteComponent extends CustomElementComponent {
+export class BlockquoteComponent extends NgElementComponent {
   static override readonly selector = 'md-blockquote';
 }

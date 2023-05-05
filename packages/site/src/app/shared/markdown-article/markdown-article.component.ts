@@ -15,7 +15,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
 import { BehaviorSubject, filter, map, of, switchMap, tap } from 'rxjs';
 
-import { CustomElementComponentInjector } from '../../markdown-elements/shared/custom-element';
+import { NgElementComponentInjector } from '../../markdown-elements/shared/ng-element';
 
 @Component({
   selector: 'lpj-markdown-article',
@@ -49,12 +49,12 @@ export class MarkdownArticleComponent {
     }),
   );
 
-  @Output() ready = new EventEmitter();
+  @Output() render = new EventEmitter();
 
   private markdownService = inject(MarkdownService);
   private markdownRenderConfig = inject(MarkedOptions);
   private cache = inject(MarkdownArticleCache);
-  private elementInjector = inject(CustomElementComponentInjector);
+  private elementInjector = inject(NgElementComponentInjector);
   private currentInjector = inject(Injector);
   private destroyRef = inject(DestroyRef);
 
@@ -63,7 +63,7 @@ export class MarkdownArticleComponent {
     this.destroyRef.onDestroy(() => this.elementInjector.use());
     this.content$.pipe(takeUntilDestroyed()).subscribe((html) => {
       this.element.innerHTML = html;
-      this.ready.emit();
+      this.render.emit();
     });
   }
 }

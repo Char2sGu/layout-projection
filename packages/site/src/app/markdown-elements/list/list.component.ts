@@ -5,8 +5,8 @@ import {
   Input,
 } from '@angular/core';
 
-import { CustomElementComponent } from '../shared/custom-element';
 import { parseBooleanStringInput } from '../shared/input';
+import { NgElementComponent } from '../shared/ng-element';
 
 @Component({
   selector: 'lpj-list',
@@ -14,7 +14,7 @@ import { parseBooleanStringInput } from '../shared/input';
   styleUrls: ['./list.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListComponent extends CustomElementComponent {
+export class ListComponent extends NgElementComponent {
   static override readonly selector = 'md-list';
 
   @HostBinding() get class(): string {

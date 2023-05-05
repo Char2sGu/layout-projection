@@ -2,7 +2,7 @@
   <lpj-markdown-article
     class="content"
     src="assets/guides/{{ filepath }}.md"
-    (ready)="resetScroll()"
+    (render)="resetScroll()"
     #article
   ></lpj-markdown-article>
   <lpj-guide-toc class="toc" [article]="article"></lpj-guide-toc>

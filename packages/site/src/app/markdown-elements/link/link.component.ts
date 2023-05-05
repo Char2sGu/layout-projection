@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { CustomElementComponent } from '../shared/custom-element';
+import { NgElementComponent } from '../shared/ng-element';
 
 /**
  * Accepts:
@@ -14,7 +14,7 @@ import { CustomElementComponent } from '../shared/custom-element';
   styleUrls: ['./link.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LinkComponent extends CustomElementComponent {
+export class LinkComponent extends NgElementComponent {
   static override readonly selector = 'md-link';
 
   constructor(private router: Router) {
