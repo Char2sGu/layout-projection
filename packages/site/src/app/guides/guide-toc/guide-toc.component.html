@@ -1,20 +1,19 @@
-<ng-container *ngIf="activeId$ | async as activeId">
+<ng-container *lpjAnimationScope>
+  <ng-container
+    *lpjAnimationTrigger="itemActive; for: 'activation-indicator'"
+  ></ng-container>
   <div class="overline">Contents</div>
-  <ul
-    class="nav-list"
-    lpjNode
-    [lpjAnimation]="{ duration: 125, easing: AnimationCurve.Emphasized }"
-    [lpjAnimationTrigger]="activeId"
-  >
+  <ul class="nav-list">
     <li
       class="nav-item"
-      *ngFor="let item of items$ | async"
+      *ngFor="let item of items; let index = index"
       style="--indent: {{ item.level }}"
     >
       <div
         class="activation-indicator"
-        *ngIf="activeId === item.id"
+        *ngIf="itemActive !== undefined ? itemActive === item : index === 0"
         lpjNode="activation-indicator"
+        [lpjAnimation]="{ duration: 125, easing: AnimationCurve.Emphasized }"
       ></div>
       <a [routerLink]="[]" [fragment]="item.id">{{ item.title }}</a>
     </li>

@@ -2,8 +2,14 @@
   <lpj-markdown-article
     class="content"
     src="assets/guides/{{ filepath }}.md"
-    (render)="resetScroll()"
-    #article
+    (render)="render.emit()"
   ></lpj-markdown-article>
-  <lpj-guide-toc class="toc" [article]="article"></lpj-guide-toc>
+  <lpj-guide-toc
+    class="toc"
+    *ngIf="headings$ | async | guideTocItemsFromHeadings as items"
+    [items]="items"
+    [itemActive]="
+      headingActive$ | async | guideTocItemOfHeading : items | preferUndefined
+    "
+  ></lpj-guide-toc>
 </ng-container>

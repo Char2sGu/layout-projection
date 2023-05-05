@@ -4,6 +4,7 @@ import {
   HostBinding,
   Input,
 } from '@angular/core';
+import { NgElement } from '@angular/elements';
 
 import { parseNumberStringInput } from '../shared/input';
 import { NgElementComponent } from '../shared/ng-element';
@@ -21,6 +22,8 @@ export class HeadingComponent extends NgElementComponent {
     return `level-${level}`;
   }
 
-  @Input() id?: string;
+  @Input() id = '';
   @Input() level = '1';
 }
+
+export interface HeadingNgElement extends NgElement, HeadingComponent {}

@@ -26,8 +26,6 @@ import { NgElementComponentInjector } from '../../markdown-elements/shared/ng-el
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MarkdownArticleComponent {
-  readonly element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
-
   // prettier-ignore
   @Input('src') set srcInput(v: string) { this.src$.next(v); }
   src$ = new BehaviorSubject<string | null>(null);
@@ -51,6 +49,7 @@ export class MarkdownArticleComponent {
 
   @Output() render = new EventEmitter();
 
+  private element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   private markdownService = inject(MarkdownService);
   private markdownRenderConfig = inject(MarkedOptions);
   private cache = inject(MarkdownArticleCache);
