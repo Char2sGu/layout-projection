@@ -5,6 +5,7 @@ import { MarkedRenderer } from 'ngx-markdown';
 
 import { BlockquoteComponent } from './blockquote/blockquote.component';
 import { CodeblockComponent } from './codeblock/codeblock.component';
+import { CodespanComponent } from './codespan/codespan.component';
 import { HeadingComponent } from './heading/heading.component';
 import { LinkComponent } from './link/link.component';
 import { ListComponent } from './list/list.component';
@@ -21,6 +22,12 @@ export class MarkdownElementsRenderer extends MarkedRenderer {
     const content = '```' + (language ?? '') + '\n' + code + '\n' + '```';
     const element = CodeblockComponent.create();
     element.setAttribute('content', content);
+    return element.outerHTML;
+  }
+
+  override codespan(code: string): string {
+    const element = CodespanComponent.create();
+    element.innerHTML = code;
     return element.outerHTML;
   }
 

@@ -5,6 +5,7 @@ import { TuiDocCodeModule } from '@taiga-ui/addon-doc';
 
 import { BlockquoteComponent } from './blockquote/blockquote.component';
 import { CodeblockComponent } from './codeblock/codeblock.component';
+import { CodespanComponent } from './codespan/codespan.component';
 import { HeadingComponent } from './heading/heading.component';
 import { IframeComponent } from './iframe/iframe.component';
 import { LinkComponent } from './link/link.component';
@@ -23,6 +24,7 @@ const COMPONENTS = [
   ListItemComponent,
   ParagraphComponent,
   IframeComponent,
+  CodespanComponent,
 ];
 
 @NgModule({
