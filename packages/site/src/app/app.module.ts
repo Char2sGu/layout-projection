@@ -6,7 +6,11 @@ import { RouteReuseStrategy, TitleStrategy } from '@angular/router';
 import { LayoutProjectionModule } from '@layout-projection/angular';
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import { TuiButtonModule, TuiRootModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiRootModule,
+  TuiScrollbarModule,
+} from '@taiga-ui/core';
 import { EventPluginsModule } from '@tinkoff/ng-event-plugins';
 import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
@@ -17,9 +21,11 @@ import { AppTitleStrategy } from './app.title-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { HeaderComponent } from './core/header/header.component';
 import { LogoComponent } from './core/logo/logo.component';
-import { NAV_CONTENT, NavComponent } from './core/nav/nav.component';
+import { NAV_CONTENT } from './core/nav.models';
+import { NavComponent } from './core/nav/nav.component';
 import { NavItemComponent } from './core/nav-item/nav-item.component';
 import { NavItemGroupComponent } from './core/nav-item-group/nav-item-group.component';
+import { NavMenuComponent } from './core/nav-menu/nav-menu.component';
 import { MarkdownElementsModule } from './markdown-elements/markdown-elements.module';
 import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.renderer';
 
@@ -31,6 +37,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
     NavItemComponent,
     NavItemGroupComponent,
     HeaderComponent,
+    NavMenuComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,6 +61,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
     TuiButtonModule,
     TuiSidebarModule,
     TuiActiveZoneModule,
+    TuiScrollbarModule,
   ],
   providers: [
     { provide: TitleStrategy, useClass: AppTitleStrategy },

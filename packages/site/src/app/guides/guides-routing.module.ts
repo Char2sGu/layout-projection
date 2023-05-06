@@ -6,7 +6,7 @@ import {
   Routes,
 } from '@angular/router';
 
-import { NAV_CONTENT } from '../core/nav/nav.component';
+import { NAV_CONTENT } from '../core/nav.models';
 import { SyntaxHighlighter } from '../core/syntax-highlighter.service';
 import { GuideDetailComponent } from './guide-detail/guide-detail.component';
 import { GuidesComponent } from './guides.component';

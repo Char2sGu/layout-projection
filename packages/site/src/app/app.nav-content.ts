@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-import { NAV_CONTENT } from './core/nav/nav.component';
+import { NAV_CONTENT } from './core/nav.models';
 
 export const APP_NAV_CONTENT: typeof NAV_CONTENT extends InjectionToken<infer T>
   ? T
