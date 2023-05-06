@@ -23,9 +23,6 @@ import { NavItemGroupComponent } from './core/nav-item-group/nav-item-group.comp
 import { MarkdownElementsModule } from './markdown-elements/markdown-elements.module';
 import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.renderer';
 
-// TODO: article switch route animation
-// TODO: responsive layout
-
 @NgModule({
   declarations: [
     AppComponent,
