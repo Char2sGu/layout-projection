@@ -10,7 +10,7 @@ export class GuideDownloader {
   private cache = new Map<string, string>();
 
   download(record: GuideRecord): Observable<string> {
-    const url = `/assets/guides/${record.path}.md`;
+    const url = `assets/guides/${record.path}.md`;
     const cache = this.cache.get(url);
     return cache
       ? of(cache)
