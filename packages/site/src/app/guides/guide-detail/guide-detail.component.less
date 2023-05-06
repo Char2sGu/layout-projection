@@ -1,24 +1,30 @@
 @import '@taiga-ui/core/styles/taiga-ui-local.less';
 
 :host {
+  --padding-vertical: 3rem;
+  --padding-horizontal: 5rem;
+
   display: flex;
   max-width: 1240px;
   margin: 0 auto;
-  padding: 3rem 5rem;
-  gap: 5rem;
+  padding: var(--padding-vertical) var(--padding-horizontal);
+  gap: var(--padding-horizontal);
   background-color: var(--tui-base-01);
+
+  @media @tui-tablet {
+    --padding-vertical: 1rem;
+    --padding-horizontal: 2.5rem;
+  }
+  @media @tui-mobile {
+    --padding-vertical: 1rem;
+    --padding-horizontal: 1.25rem;
+  }
 }
 
 .content {
   flex: 1;
   min-width: 0;
   max-width: 48rem;
-  @media @tui-tablet {
-    padding: 1rem 2.5rem;
-  }
-  @media @tui-mobile {
-    padding: 1rem 1.25rem;
-  }
 }
 
 .toc {
@@ -26,4 +32,8 @@
   top: 80px;
   width: 200px;
   height: fit-content;
+
+  @media @tui-mobile {
+    display: none;
+  }
 }
