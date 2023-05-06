@@ -24,7 +24,6 @@ import {
 } from '../../markdown-elements/heading/heading.component';
 import { NgElementQuerier } from '../../markdown-elements/shared/ng-element';
 import { MarkdownArticleComponent } from '../../shared/markdown-article/markdown-article.component';
-import { GuideRecord } from '../shared/guide.models';
 
 @Component({
   selector: 'lpj-guide-detail',
@@ -33,7 +32,6 @@ import { GuideRecord } from '../shared/guide.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GuideDetailComponent {
-  @Input() record!: GuideRecord;
   @Input() content!: string;
 
   @ViewChild(MarkdownArticleComponent, { read: ElementRef })

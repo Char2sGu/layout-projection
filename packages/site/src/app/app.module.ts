@@ -2,7 +2,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { inject, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TitleStrategy } from '@angular/router';
+import { RouteReuseStrategy, TitleStrategy } from '@angular/router';
 import { LayoutProjectionModule } from '@layout-projection/angular';
 import { TuiRootModule } from '@taiga-ui/core';
 import { EventPluginsModule } from '@tinkoff/ng-event-plugins';
@@ -10,6 +10,7 @@ import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 import { AppComponent } from './app.component';
 import { APP_NAV_CONTENT } from './app.nav-content';
+import { AppRouteReuseStrategy } from './app.route-reuse-strategy';
 import { AppTitleStrategy } from './app.title-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { LogoComponent } from './core/logo/logo.component';
@@ -19,7 +20,6 @@ import { NavItemGroupComponent } from './core/nav-item-group/nav-item-group.comp
 import { MarkdownElementsModule } from './markdown-elements/markdown-elements.module';
 import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.renderer';
 
-// TODO: instantly scroll to top on page change
 // TODO: article switch route animation
 // TODO: responsive layout
 
@@ -53,6 +53,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
   ],
   providers: [
     { provide: TitleStrategy, useClass: AppTitleStrategy },
+    { provide: RouteReuseStrategy, useClass: AppRouteReuseStrategy },
     { provide: NAV_CONTENT, useValue: APP_NAV_CONTENT },
   ],
   bootstrap: [AppComponent],
