@@ -1,5 +1,6 @@
 import {
   animate,
+  group,
   query,
   style,
   transition,
@@ -18,24 +19,24 @@ import { AnimationCurve } from '../common/animation';
   animations: [
     trigger('route', [
       transition('* => *', [
-        query(
-          ':enter',
-          [
-            style({ opacity: 0 }),
-            animate(`210ms 90ms ${AnimationCurve.Deceleration}`),
-            style({ opacity: 1 }),
-          ],
-          { optional: true },
-        ),
-        query(
-          ':leave',
-          [
-            style({ opacity: 1 }),
-            animate(`90ms ${AnimationCurve.Acceleration}`),
-            style({ opacity: 0 }),
-          ],
-          { optional: true },
-        ),
+        group([
+          query(
+            ':enter', //
+            [
+              style({ opacity: 0 }),
+              animate(
+                `210ms 90ms ${AnimationCurve.Deceleration}`,
+                style({ opacity: 1 }),
+              ),
+            ],
+            { optional: true },
+          ),
+          query(
+            ':leave', //
+            [animate(`90ms`)],
+            { optional: true },
+          ),
+        ]),
       ]),
     ]),
   ],
