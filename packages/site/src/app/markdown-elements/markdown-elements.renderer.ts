@@ -1,3 +1,4 @@
+/* eslint-disable max-params */
 import { Injectable } from '@angular/core';
 import { Slugger } from 'marked';
 import { MarkedRenderer } from 'ngx-markdown';

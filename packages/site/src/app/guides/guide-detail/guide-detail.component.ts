@@ -36,6 +36,7 @@ import { GuideRecord } from '../shared/guide.models';
 })
 export class GuideDetailComponent {
   @Input() record!: GuideRecord;
+  @Input() content!: string;
 
   // prettier-ignore
   @ViewChild(MarkdownArticleComponent, { read: ElementRef })

@@ -13,18 +13,8 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
-import {
-  BehaviorSubject,
-  combineLatestWith,
-  filter,
-  from,
-  map,
-  of,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, filter, map } from 'rxjs';
 
-import { SyntaxHighlighter } from '../../core/syntax-highlighter.service';
 import { NgElementComponentInjector } from '../../markdown-elements/shared/ng-element';
 
 @Component({
@@ -37,23 +27,20 @@ import { NgElementComponentInjector } from '../../markdown-elements/shared/ng-el
 })
 export class MarkdownArticleComponent {
   // prettier-ignore
-  @Input('src') set srcInput(v: string) { this.src$.next(v); }
-  src$ = new BehaviorSubject<string | null>(null);
+  @Input({ alias: 'content', required: true })
+  set contentInput(v: string) { this.content$.next(v) }
+  content$ = new BehaviorSubject<string>('');
 
-  content$ = this.src$.pipe(
+  html$ = this.content$.pipe(
     filter(Boolean),
-    switchMap((src) => {
-      const contentCache = this.cache.get(src);
-      return contentCache
-        ? of(contentCache)
-        : this.markdownService.getSource(src).pipe(
-            map((raw) =>
-              this.markdownService.parse(raw, {
-                markedOptions: this.markdownRenderConfig,
-              }),
-            ),
-            tap((content) => this.cache.set(src, content)),
-          );
+    map((content) => {
+      const cache = this.cache.get(content);
+      if (cache) return cache;
+      const result = this.markdownService.parse(content, {
+        markedOptions: this.markdownRenderConfig,
+      });
+      this.cache.set(content, result);
+      return result;
     }),
   );
 
@@ -63,7 +50,6 @@ export class MarkdownArticleComponent {
   private markdownService = inject(MarkdownService);
   private markdownRenderConfig = inject(MarkedOptions);
   private cache = inject(MarkdownArticleCache);
-  private highlighter = inject(SyntaxHighlighter);
   private elementInjector = inject(NgElementComponentInjector);
   private currentInjector = inject(Injector);
   private destroyRef = inject(DestroyRef);
@@ -71,16 +57,10 @@ export class MarkdownArticleComponent {
   constructor() {
     this.elementInjector.use(this.currentInjector);
     this.destroyRef.onDestroy(() => this.elementInjector.use());
-    this.content$
-      .pipe(
-        takeUntilDestroyed(),
-        combineLatestWith(from(this.highlighter.loadEngine())),
-        map(([content]) => content),
-      )
-      .subscribe((html) => {
-        this.element.innerHTML = html;
-        this.render.emit();
-      });
+    this.html$.pipe(takeUntilDestroyed()).subscribe((html) => {
+      this.element.innerHTML = html;
+      this.render.emit();
+    });
   }
 }
 
