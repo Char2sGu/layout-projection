@@ -7,9 +7,10 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   combineLatest,
-  debounceTime,
+  distinctUntilChanged,
   filter,
   map,
   Observable,
@@ -17,6 +18,7 @@ import {
   switchMap,
 } from 'rxjs';
 
+import { UrlFragmentReplacer } from '../../core/url-fragment-replacer.service';
 import { VisibilityObserver } from '../../core/visibility-observer.service';
 import {
   HeadingComponent,
@@ -44,6 +46,7 @@ export class GuideDetailComponent {
 
   private querier = inject(NgElementQuerier);
   private visibilityObserver = inject(VisibilityObserver);
+  private fragmentReplacer = inject(UrlFragmentReplacer);
 
   constructor() {
     this.headings$ = this.render.pipe(
@@ -63,8 +66,12 @@ export class GuideDetailComponent {
       switchMap((observables) => combineLatest(observables)),
       map((entries) => entries.find(({ visible }) => visible)?.ele),
       filter(Boolean),
-      debounceTime(0),
+      distinctUntilChanged((a, b) => a.id === b.id),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
+
+    this.headingActive$.pipe(takeUntilDestroyed()).subscribe((heading) => {
+      this.fragmentReplacer.replaceWith(heading.id);
+    });
   }
 }
