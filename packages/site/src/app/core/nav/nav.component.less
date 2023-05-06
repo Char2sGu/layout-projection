@@ -22,6 +22,9 @@ a {
 .hover-overlay {
   .overlay();
   background-color: var(--tui-clear-hover);
+  @media (hover: none) {
+    display: none;
+  }
 }
 
 .overlay() {
