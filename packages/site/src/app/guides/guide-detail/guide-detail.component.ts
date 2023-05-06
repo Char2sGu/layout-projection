@@ -8,12 +8,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
-  BehaviorSubject,
   combineLatest,
   debounceTime,
   filter,
   map,
-  mergeWith,
   Observable,
   shareReplay,
   switchMap,
@@ -38,10 +36,8 @@ export class GuideDetailComponent {
   @Input() record!: GuideRecord;
   @Input() content!: string;
 
-  // prettier-ignore
   @ViewChild(MarkdownArticleComponent, { read: ElementRef })
-  set contentElementInput(elementRef: ElementRef<HTMLElement>) { this.contentElement$.next(elementRef.nativeElement) }
-  contentElement$ = new BehaviorSubject<HTMLElement | null>(null);
+  contentElementRef!: ElementRef<HTMLElement>;
 
   headings$: Observable<HeadingNgElement[]>;
   headingActive$: Observable<HeadingNgElement>;
@@ -52,9 +48,8 @@ export class GuideDetailComponent {
   private visibilityObserver = inject(VisibilityObserver);
 
   constructor() {
-    this.headings$ = this.contentElement$.pipe(
-      mergeWith(this.render.pipe(map(() => this.contentElement$.value))),
-      filter(Boolean),
+    this.headings$ = this.render.pipe(
+      map(() => this.contentElementRef.nativeElement),
       map((element) => this.querier.queryAll(element, HeadingComponent)),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
