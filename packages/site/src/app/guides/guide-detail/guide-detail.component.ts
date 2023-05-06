@@ -10,6 +10,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   combineLatest,
+  debounceTime,
   distinctUntilChanged,
   filter,
   map,
@@ -69,6 +70,7 @@ export class GuideDetailComponent {
       map((entries) => entries.find(({ visible }) => visible)?.ele),
       filter(Boolean),
       distinctUntilChanged((a, b) => a.id === b.id),
+      debounceTime(200),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
 
