@@ -1,3 +1,5 @@
+@import '@taiga-ui/core/styles/taiga-ui-local.less';
+
 :host {
   display: contents;
 }
@@ -12,11 +14,22 @@
   width: 280px;
   height: 100vh;
   border-right: 1px solid var(--tui-base-03);
+  @media @tui-tablet {
+    display: none;
+  }
 }
 
 .main {
   flex: 1;
   min-width: 0;
-  display: block;
-  height: 100%;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  border-bottom: 1px solid var(--tui-base-03);
+  @media @tui-desktop-min {
+    display: none;
+  }
+  z-index: 1;
 }
