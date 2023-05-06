@@ -25,6 +25,7 @@ import {
   HeadingNgElement,
 } from '../../markdown-elements/heading/heading.component';
 import { NgElementQuerier } from '../../markdown-elements/shared/ng-element';
+import { FixLayoutOnDestroyDirective } from '../../shared/fix-layout-on-destroy.directive';
 import { MarkdownArticleComponent } from '../../shared/markdown-article/markdown-article.component';
 
 @Component({
@@ -32,6 +33,7 @@ import { MarkdownArticleComponent } from '../../shared/markdown-article/markdown
   templateUrl: './guide-detail.component.html',
   styleUrls: ['./guide-detail.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [FixLayoutOnDestroyDirective],
 })
 export class GuideDetailComponent {
   @Input() content!: string;
