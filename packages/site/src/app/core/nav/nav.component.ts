@@ -14,7 +14,7 @@ import {
   ProjectionNodeDirective,
 } from '@layout-projection/angular';
 import { LayoutAnimationEntry } from '@layout-projection/core';
-import { filter, map, shareReplay, tap } from 'rxjs';
+import { filter, map, shareReplay, startWith, tap } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
 
@@ -41,11 +41,12 @@ export class NavComponent {
   private router = inject(Router);
 
   constructor() {
-    this.itemActive = toSignal(
+    this.itemActive = toSignal<NavItem | undefined>(
       this.router.events.pipe(
         filter((event) => event instanceof NavigationEnd),
-        map(() => this.matchActiveItemByRoute()),
+        map(() => this.matchActiveItemByRoute() ?? undefined),
         tap(() => this.initiateLayoutAnimation()),
+        startWith(this.matchActiveItemByRoute() ?? undefined),
         shareReplay(1),
       ),
     );
@@ -77,7 +78,7 @@ export class NavComponent {
     });
   }
 
-  matchActiveItemByRoute(): NavItem {
+  matchActiveItemByRoute(): NavItem | null {
     for (const group of this.itemGroups) {
       const item = group.items.find((item) =>
         this.router.isActive(item.path, {
@@ -89,7 +90,7 @@ export class NavComponent {
       );
       if (item) return item;
     }
-    throw new Error('No active nav item matched');
+    return null;
   }
 }
 
