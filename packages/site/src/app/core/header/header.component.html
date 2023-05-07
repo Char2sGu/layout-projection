@@ -2,6 +2,7 @@
   tuiIconButton
   icon="tuiIconMenuLarge"
   appearance="icon"
+  (click)="sidebar = true"
   (tuiActiveZoneChange)="sidebar = $event"
 >
   <lpj-nav *tuiSidebar="sidebar"></lpj-nav>
