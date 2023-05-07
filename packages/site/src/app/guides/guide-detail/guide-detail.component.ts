@@ -1,3 +1,4 @@
+import { ViewportScroller } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,11 +9,15 @@ import {
   ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import {
   combineLatest,
+  combineLatestWith,
   debounceTime,
+  delay,
   distinctUntilChanged,
   filter,
+  first,
   map,
   Observable,
   shareReplay,
@@ -47,9 +52,11 @@ export class GuideDetailComponent {
 
   render = new EventEmitter();
 
+  private route = inject(ActivatedRoute);
   private querier = inject(NgElementQuerier);
   private visibilityObserver = inject(VisibilityObserver);
   private fragmentReplacer = inject(UrlFragmentReplacer);
+  private viewportScroller = inject(ViewportScroller);
 
   constructor() {
     this.headings$ = this.render.pipe(
@@ -73,6 +80,16 @@ export class GuideDetailComponent {
       debounceTime(200),
       shareReplay({ bufferSize: 1, refCount: true }),
     );
+
+    this.render
+      .pipe(
+        combineLatestWith(this.route.fragment.pipe(filter(Boolean))),
+        first(),
+        delay(0), // strange layout issue that causes the scroll to be inaccurate
+      )
+      .subscribe(([, id]) => {
+        this.viewportScroller.scrollToAnchor(id);
+      });
 
     this.headingActive$.pipe(takeUntilDestroyed()).subscribe((heading) => {
       this.fragmentReplacer.replaceWith(heading.id);
