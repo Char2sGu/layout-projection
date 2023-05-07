@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TuiButtonModule } from '@taiga-ui/core';
 
+import { SafeValuePipe } from '../shared/safe-value.pipe';
 import { BlockquoteComponent } from './blockquote/blockquote.component';
 import { CodeblockComponent } from './codeblock/codeblock.component';
 import { CodespanComponent } from './codespan/codespan.component';
@@ -29,7 +30,7 @@ const COMPONENTS = [
 
 @NgModule({
   declarations: [...COMPONENTS],
-  imports: [CommonModule, RouterModule, TuiButtonModule],
+  imports: [CommonModule, RouterModule, TuiButtonModule, SafeValuePipe],
   providers: [MarkdownElementsRenderer, NgElementComponentInjector],
 })
 export class MarkdownElementsModule {

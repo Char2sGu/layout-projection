@@ -1,1 +1,5 @@
-<iframe [src]="safeSrc" [title]="title" loading="lazy"></iframe>
+<iframe
+  *ngIf="(render$ | async) && src"
+  [src]="src | safeValue : 'url'"
+  [title]="title"
+></iframe>

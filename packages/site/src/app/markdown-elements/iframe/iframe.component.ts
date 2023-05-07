@@ -1,11 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
+  inject,
   Input,
-  OnInit,
 } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { filter, take } from 'rxjs';
 
+import { VisibilityObserver } from '../../core/visibility-observer.service';
 import { NgElementComponent } from '../shared/ng-element';
 
 @Component({
@@ -13,20 +15,16 @@ import { NgElementComponent } from '../shared/ng-element';
   styleUrls: ['./iframe.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IframeComponent extends NgElementComponent implements OnInit {
+export class IframeComponent extends NgElementComponent {
   static override readonly selector = 'md-iframe';
+
+  private element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  private visibilityObserver = inject(VisibilityObserver);
 
   @Input() src?: string;
   @Input() title?: string;
 
-  safeSrc?: SafeResourceUrl;
-
-  constructor(private sanitizer: DomSanitizer) {
-    super();
-  }
-
-  ngOnInit(): void {
-    if (this.src)
-      this.safeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(this.src);
-  }
+  render$ = this.visibilityObserver
+    .observe(this.element)
+    .pipe(filter(Boolean), take(1));
 }
