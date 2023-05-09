@@ -62,6 +62,8 @@ animationRef.stop();
 
 Note that the `AnimationRef` is a `PromiseLike` which would never reject and would resolve once the animation is settled despite of the reason, which means that it would resolve no matter the animation is finished or stopped.
 
+The resolve value is an item from the `AnimationResult` enum, which can be either `AnimationResult.Completed` or `AnimationResult.Stopped`, indicating the result of the animation.
+
 The element will be projected to the layout of the last animation frame when the animation is settled. You may want to `reset()` the Projection Node to remove the applied `transform` styles and put it back into its original layout.
 
 When invoking `animate()` on a Projection Node where another animation is pending, the Animation Engine will automatically eagerly stop the pending animation to perform the new animation.

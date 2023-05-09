@@ -40,6 +40,23 @@ You might want to share an Animation Scope declared in the parent component with
 </my-list>
 ```
 
+## Animation Scope Access from Component Class
+
+The Animation Scope of an `[lpjAnimationScope]` directive is exposed through its `current` property.
+
+To access the current Animation Scope from the component class, simply query the instance of the `[lpjAnimationScope]` directive and read its `current` property:
+
+```ts
+class SomeComponent {
+  @ViewChild(LayoutAnimationScopeDirective)
+  animationScope!: LayoutAnimationScopeDirective;
+
+  someMethod(): void {
+    const scope = this.animationScope.current;
+  }
+}
+```
+
 ## Animation Scope Leak
 
 Animation scopes are expected to only include directives declared within the component template, however, this is not the current behavior due to Angular injection mechanism limitations.
