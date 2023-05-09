@@ -21,5 +21,10 @@
     "popmotion": "^11.0.5",
     "style-value-types": "^5.1.2",
     "tslib": "^2.5.0"
-  }
+  },
+  "files": [
+    "/dist",
+    "/src",
+    "README.md"
+  ]
 }
