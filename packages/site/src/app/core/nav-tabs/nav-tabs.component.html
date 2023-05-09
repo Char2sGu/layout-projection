@@ -1,0 +1,21 @@
+<ng-container *lpjAnimationScope>
+  <ng-container
+    *lpjAnimationTrigger="itemActive; for: 'activation-indicator'"
+  ></ng-container>
+  <div
+    class="tab"
+    *ngFor="let item of items"
+    [class.active]="itemActive == item"
+    (click)="itemActive = item"
+  >
+    <div class="content">
+      <span>{{ item }}</span>
+      <div
+        class="activation-indicator"
+        lpjNode="activation-indicator"
+        [lpjAnimation]="{ duration: 125, easing: AnimationCurve.Emphasized }"
+        *ngIf="itemActive == item"
+      ></div>
+    </div>
+  </div>
+</ng-container>

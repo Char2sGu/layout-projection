@@ -26,6 +26,7 @@ import { NavComponent } from './core/nav/nav.component';
 import { NavItemComponent } from './core/nav-item/nav-item.component';
 import { NavItemGroupComponent } from './core/nav-item-group/nav-item-group.component';
 import { NavMenuComponent } from './core/nav-menu/nav-menu.component';
+import { NavTabsComponent } from './core/nav-tabs/nav-tabs.component';
 import { MarkdownElementsModule } from './markdown-elements/markdown-elements.module';
 import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.renderer';
 
@@ -38,6 +39,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
     NavItemGroupComponent,
     HeaderComponent,
     NavMenuComponent,
+    NavTabsComponent,
   ],
   imports: [
     BrowserModule,
