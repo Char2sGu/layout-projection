@@ -2,10 +2,7 @@
   <div class="root">
     <lpj-nav class="nav"></lpj-nav>
     <main class="main">
-      <lpj-header
-        class="header"
-        [@header]="(headerDetached$ | async) ? 'detached' : 'regular'"
-      ></lpj-header>
+      <lpj-header class="header" [@header]="headerState$ | async"></lpj-header>
       <router-outlet></router-outlet>
     </main>
   </div>
