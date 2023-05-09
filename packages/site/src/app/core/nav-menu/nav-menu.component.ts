@@ -73,7 +73,7 @@ export class NavMenuComponent {
     requestAnimationFrame(() => {
       this.animationEntry.animate({
         duration: 125,
-        easing: AnimationCurve.Emphasized,
+        easing: AnimationCurve.Standard,
       });
     });
   }
