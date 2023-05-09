@@ -2,10 +2,10 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   HostListener,
   inject,
   Input,
-  Signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
@@ -14,7 +14,17 @@ import {
   ProjectionNodeDirective,
 } from '@layout-projection/angular';
 import { LayoutAnimationEntry } from '@layout-projection/core';
-import { filter, map, shareReplay, startWith, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  filter,
+  map,
+  mergeWith,
+  Observable,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
 import { NavItem, NavItemGroup } from '../nav.models';
@@ -32,40 +42,51 @@ import { NavItem, NavItemGroup } from '../nav.models';
   ],
 })
 export class NavMenuComponent {
-  @Input({ alias: 'content', required: true })
-  itemGroups: NavItemGroup[] = [];
-  itemActive: Signal<NavItem | undefined>;
-  itemLastHovered?: NavItem;
   animationEntry = inject(LayoutAnimationEntry);
-
   private router = inject(Router);
 
-  constructor() {
-    this.itemActive = toSignal<NavItem | undefined>(
+  // prettier-ignore
+  @Input({ alias: 'content', required: true })
+  set itemGroupsInput(v: NavItemGroup[]) { this.itemGroups$.next(v) }
+  itemGroups$ = new BehaviorSubject<NavItemGroup[]>([]);
+  itemGroups = toSignal(this.itemGroups$, { initialValue: [] });
+
+  // prettier-ignore
+  @HostListener('mouseenter')
+  mouseEnterInput(): void { this.mouseEnter.emit() }
+  mouseEnter = new EventEmitter();
+
+  // prettier-ignore
+  @HostListener('mouseleave')
+  mouseLeaveInput(): void { this.mouseLeave.emit() }
+  mouseLeave = new EventEmitter();
+
+  itemMouseEnter = new EventEmitter<NavItem>();
+
+  itemActive$: Observable<NavItem | undefined> = this.itemGroups$.pipe(
+    filter((groups) => !!groups.length),
+    switchMap((groups) =>
       this.router.events.pipe(
         filter((event) => event instanceof NavigationEnd),
-        map(() => this.matchActiveItemByRoute() ?? undefined),
-        tap(() => this.initiateLayoutAnimation()),
-        startWith(this.matchActiveItemByRoute() ?? undefined),
-        shareReplay(1),
+        map(() => groups),
+        startWith(groups),
       ),
-    );
-  }
+    ),
+    map((groups) => this.matchActiveItemByRoute(groups) ?? undefined),
+    tap(() => this.initiateLayoutAnimation()),
+    shareReplay(1),
+  );
+  itemActive = toSignal(this.itemActive$);
 
-  @HostListener('mouseenter')
-  onMouseEnter(): void {
-    this.animationEntry.snapshots.clear();
-  }
+  itemLastHovered$ = this.itemMouseEnter.pipe(
+    mergeWith(this.mouseLeave.pipe(map(() => undefined))),
+    tap(() => this.initiateLayoutAnimation()),
+    shareReplay(1),
+  );
+  itemLastHovered = toSignal(this.itemLastHovered$);
 
-  @HostListener('mouseleave')
-  onMouseLeave(): void {
-    this.itemLastHovered = undefined;
-  }
-
-  onItemMouseEnter(item: NavItem): void {
-    if (this.itemLastHovered === item) return;
-    this.itemLastHovered = item;
-    this.initiateLayoutAnimation();
+  constructor() {
+    this.mouseEnter.subscribe(() => this.animationEntry.snapshots.clear());
   }
 
   initiateLayoutAnimation(): void {
@@ -78,8 +99,8 @@ export class NavMenuComponent {
     });
   }
 
-  matchActiveItemByRoute(): NavItem | null {
-    for (const group of this.itemGroups) {
+  matchActiveItemByRoute(groups: NavItemGroup[]): NavItem | null {
+    for (const group of groups) {
       const item = group.items.find((item) =>
         this.router.isActive(item.path, {
           paths: 'exact',

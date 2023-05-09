@@ -1,8 +1,8 @@
-<lpj-nav-item-group *ngFor="let group of itemGroups" [heading]="group.name">
+<lpj-nav-item-group *ngFor="let group of itemGroups()" [heading]="group.name">
   <a *ngFor="let item of group.items" routerLink="{{ item.path }}">
     <lpj-nav-item
       [active]="itemActive() === item"
-      (mouseenter)="onItemMouseEnter(item)"
+      (mouseenter)="itemMouseEnter.emit(item)"
     >
       <span class="text">{{ item.name }}</span>
       <div
@@ -12,7 +12,7 @@
       ></div>
       <div
         class="hover-overlay"
-        *ngIf="itemLastHovered === item"
+        *ngIf="itemLastHovered() === item"
         lpjNode="nav-item-hover-overlay"
         [@overlay]="
           animationEntry.snapshots.has('nav-item-hover-overlay') || 'initial'
