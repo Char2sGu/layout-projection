@@ -10,10 +10,6 @@ export const APP_NAV_CONTENT: NavContent = {
       name: 'Fundamentals',
       items: [
         {
-          name: 'Overview',
-          path: 'guides/angular/overview',
-        },
-        {
           name: 'Projection Tree',
           path: 'guides/angular/projection-tree',
         },
@@ -36,10 +32,6 @@ export const APP_NAV_CONTENT: NavContent = {
     {
       name: 'Fundamentals',
       items: [
-        {
-          name: 'Overview',
-          path: 'guides/core/overview',
-        },
         {
           name: 'Layout Projection',
           path: 'guides/core/layout-projection',
