@@ -16,7 +16,7 @@ export class AppTitleStrategy extends TitleStrategy {
   override updateTitle(routerState: RouterStateSnapshot): void {
     const title = this.buildTitle(routerState);
     if (title !== undefined)
-      this.title.setTitle(`Layout Projection | ${title}`);
+      this.title.setTitle(`${title} - Layout Projection`);
   }
 }
 
