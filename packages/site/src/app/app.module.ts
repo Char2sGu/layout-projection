@@ -2,7 +2,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { inject, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouteReuseStrategy, TitleStrategy } from '@angular/router';
 import { LayoutProjectionModule } from '@layout-projection/angular';
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -16,8 +15,6 @@ import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
 
 import { AppComponent } from './app.component';
 import { APP_NAV_CONTENT } from './app.nav-content';
-import { AppRouteReuseStrategy } from './app.route-reuse-strategy';
-import { AppTitleStrategy } from './app.title-strategy';
 import { AppRoutingModule } from './app-routing.module';
 import { HeaderComponent } from './core/header/header.component';
 import { LogoComponent } from './core/logo/logo.component';
@@ -65,11 +62,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
     TuiActiveZoneModule,
     TuiScrollbarModule,
   ],
-  providers: [
-    { provide: TitleStrategy, useClass: AppTitleStrategy },
-    { provide: RouteReuseStrategy, useClass: AppRouteReuseStrategy },
-    { provide: NAV_CONTENT, useValue: APP_NAV_CONTENT },
-  ],
+  providers: [{ provide: NAV_CONTENT, useValue: APP_NAV_CONTENT }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

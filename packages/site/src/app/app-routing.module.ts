@@ -1,5 +1,15 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {
+  RouteReuseStrategy,
+  RouterModule,
+  Routes,
+  TitleStrategy,
+} from '@angular/router';
+
+import {
+  AppRouteReuseStrategy,
+  AppTitleStrategy,
+} from './app-routing.strategies';
 
 const routes: Routes = [
   {
@@ -29,5 +39,9 @@ const routes: Routes = [
     }),
   ],
   exports: [RouterModule],
+  providers: [
+    { provide: TitleStrategy, useClass: AppTitleStrategy },
+    { provide: RouteReuseStrategy, useClass: AppRouteReuseStrategy },
+  ],
 })
 export class AppRoutingModule {}
