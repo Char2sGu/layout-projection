@@ -8,9 +8,13 @@
   (itemActiveChange)="tabActive$.next($event)"
 ></lpj-nav-tabs>
 <tui-scrollbar class="nav-menu-wrapper">
-  <lpj-nav-menu
-    class="nav-menu"
-    *ngIf="items$ | async as items"
-    [content]="items"
-  ></lpj-nav-menu>
+  <ng-container *ngIf="items$ | async as items">
+    <lpj-nav-menu
+      class="nav-menu"
+      *lpjRerenderOnChange="items"
+      lpjFixLayoutOnDestroy
+      [content]="items"
+      @navMenu
+    ></lpj-nav-menu>
+  </ng-container>
 </tui-scrollbar>

@@ -26,6 +26,8 @@ import { NavMenuComponent } from './core/nav-menu/nav-menu.component';
 import { NavTabsComponent } from './core/nav-tabs/nav-tabs.component';
 import { MarkdownElementsModule } from './markdown-elements/markdown-elements.module';
 import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.renderer';
+import { FixLayoutOnDestroyDirective } from './shared/fix-layout-on-destroy.directive';
+import { RerenderOnChangeDirective } from './shared/rerender-on-change.directive';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
     HeaderComponent,
     NavMenuComponent,
     NavTabsComponent,
+    RerenderOnChangeDirective,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +64,7 @@ import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.
     TuiSidebarModule,
     TuiActiveZoneModule,
     TuiScrollbarModule,
+    FixLayoutOnDestroyDirective,
   ],
   providers: [{ provide: NAV_CONTENT, useValue: APP_NAV_CONTENT }],
   bootstrap: [AppComponent],
