@@ -15,7 +15,7 @@ import { GuideDownloader } from './shared/guide-downloader.service';
 
 const guideRecordResolver = ((...[route]) => {
   const path = route.url.join('/');
-  for (const group of inject(NAV_CONTENT)) {
+  for (const group of Object.values(inject(NAV_CONTENT)).flat()) {
     const record = group.items.find((item) => item.path.endsWith(path));
     if (!record) continue;
     return {

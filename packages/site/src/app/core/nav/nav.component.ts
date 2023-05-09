@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { BehaviorSubject, map } from 'rxjs';
 
 import { NAV_CONTENT } from '../nav.models';
 
@@ -9,7 +10,10 @@ import { NAV_CONTENT } from '../nav.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavComponent {
-  tabs = ['Tutorial', 'API'];
-  tabActive = this.tabs[0];
-  content = inject(NAV_CONTENT);
+  private content = inject(NAV_CONTENT);
+
+  tabs = Object.keys(this.content);
+  tabActive$ = new BehaviorSubject(this.tabs[0]);
+
+  items$ = this.tabActive$.pipe(map((tab) => this.content[tab]));
 }

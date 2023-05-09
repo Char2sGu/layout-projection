@@ -1,6 +1,10 @@
 import { InjectionToken } from '@angular/core';
 
-export const NAV_CONTENT = new InjectionToken<NavItemGroup[]>('NAV_CONTENT');
+export const NAV_CONTENT = new InjectionToken<NavContent>('NAV_CONTENT');
+
+export interface NavContent {
+  [tab: string]: NavItemGroup[];
+}
 
 export interface NavItemGroup {
   name: string;

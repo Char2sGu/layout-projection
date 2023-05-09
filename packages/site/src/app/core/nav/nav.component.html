@@ -4,8 +4,13 @@
 <lpj-nav-tabs
   class="nav-tabs"
   [items]="['Tutorial', 'API']"
-  [(itemActive)]="tabActive"
+  [itemActive]="tabActive$.value"
+  (itemActiveChange)="tabActive$.next($event)"
 ></lpj-nav-tabs>
 <tui-scrollbar class="nav-menu-wrapper">
-  <lpj-nav-menu class="nav-menu" [content]="content"></lpj-nav-menu>
+  <lpj-nav-menu
+    class="nav-menu"
+    *ngIf="items$ | async as items"
+    [content]="items"
+  ></lpj-nav-menu>
 </tui-scrollbar>
