@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+
+import { NAV_CONTENT } from '../nav.models';
 
 @Component({
   selector: 'lpj-nav',
@@ -6,4 +8,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./nav.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavComponent {}
+export class NavComponent {
+  tabs = ['Tutorial', 'API'];
+  tabActive = this.tabs[0];
+  content = inject(NAV_CONTENT);
+}

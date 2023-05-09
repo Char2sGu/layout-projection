@@ -1,26 +1,23 @@
-<lpj-nav-tabs class="tabs"></lpj-nav-tabs>
-<div class="content">
-  <lpj-nav-item-group *ngFor="let group of itemGroups" [heading]="group.name">
-    <a *ngFor="let item of group.items" routerLink="{{ item.path }}">
-      <lpj-nav-item
-        [active]="itemActive() === item"
-        (mouseenter)="onItemMouseEnter(item)"
-      >
-        <span class="text">{{ item.name }}</span>
-        <div
-          class="active-overlay"
-          *ngIf="itemActive() === item"
-          lpjNode="nav-item-active-overlay"
-        ></div>
-        <div
-          class="hover-overlay"
-          *ngIf="itemLastHovered === item"
-          lpjNode="nav-item-hover-overlay"
-          [@overlay]="
-            animationEntry.snapshots.has('nav-item-hover-overlay') || 'initial'
-          "
-        ></div>
-      </lpj-nav-item>
-    </a>
-  </lpj-nav-item-group>
-</div>
+<lpj-nav-item-group *ngFor="let group of itemGroups" [heading]="group.name">
+  <a *ngFor="let item of group.items" routerLink="{{ item.path }}">
+    <lpj-nav-item
+      [active]="itemActive() === item"
+      (mouseenter)="onItemMouseEnter(item)"
+    >
+      <span class="text">{{ item.name }}</span>
+      <div
+        class="active-overlay"
+        *ngIf="itemActive() === item"
+        lpjNode="nav-item-active-overlay"
+      ></div>
+      <div
+        class="hover-overlay"
+        *ngIf="itemLastHovered === item"
+        lpjNode="nav-item-hover-overlay"
+        [@overlay]="
+          animationEntry.snapshots.has('nav-item-hover-overlay') || 'initial'
+        "
+      ></div>
+    </lpj-nav-item>
+  </a>
+</lpj-nav-item-group>

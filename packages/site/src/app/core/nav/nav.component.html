@@ -1,6 +1,11 @@
 <div class="logo-wrapper">
   <lpj-logo class="logo"></lpj-logo>
 </div>
+<lpj-nav-tabs
+  class="nav-tabs"
+  [items]="['Tutorial', 'API']"
+  [(itemActive)]="tabActive"
+></lpj-nav-tabs>
 <tui-scrollbar class="nav-menu-wrapper">
-  <lpj-nav-menu class="nav-menu"></lpj-nav-menu>
+  <lpj-nav-menu class="nav-menu" [content]="content"></lpj-nav-menu>
 </tui-scrollbar>

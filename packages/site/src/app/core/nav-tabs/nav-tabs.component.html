@@ -6,7 +6,7 @@
     class="tab"
     *ngFor="let item of items"
     [class.active]="itemActive == item"
-    (click)="itemActive = item"
+    (click)="itemActiveChange.emit(item)"
   >
     <div class="content">
       <span>{{ item }}</span>

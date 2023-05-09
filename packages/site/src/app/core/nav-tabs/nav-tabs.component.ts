@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 
 import { AnimationCurve } from '../../common/animation';
 
@@ -10,6 +16,7 @@ import { AnimationCurve } from '../../common/animation';
 })
 export class NavTabsComponent {
   AnimationCurve = AnimationCurve;
-  items = ['Tutorial', 'API'];
-  itemActive = this.items[0];
+  @Input({ required: true }) items: string[] = [];
+  @Input({ required: true }) itemActive?: string;
+  @Output() itemActiveChange = new EventEmitter<string>();
 }

@@ -4,6 +4,7 @@ import {
   Component,
   HostListener,
   inject,
+  Input,
   Signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -16,7 +17,7 @@ import { LayoutAnimationEntry } from '@layout-projection/core';
 import { filter, map, shareReplay, startWith, tap } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
-import { NAV_CONTENT, NavItem, NavItemGroup } from '../nav.models';
+import { NavItem, NavItemGroup } from '../nav.models';
 
 @Component({
   selector: 'lpj-nav-menu',
@@ -31,7 +32,8 @@ import { NAV_CONTENT, NavItem, NavItemGroup } from '../nav.models';
   ],
 })
 export class NavMenuComponent {
-  itemGroups: NavItemGroup[] = inject(NAV_CONTENT);
+  @Input({ alias: 'content', required: true })
+  itemGroups: NavItemGroup[] = [];
   itemActive: Signal<NavItem | undefined>;
   itemLastHovered?: NavItem;
   animationEntry = inject(LayoutAnimationEntry);
