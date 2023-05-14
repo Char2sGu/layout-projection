@@ -2,6 +2,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   EventEmitter,
   HostListener,
   inject,
@@ -87,6 +88,10 @@ export class NavMenuComponent {
     this.mouseEnter
       .pipe(takeUntilDestroyed())
       .subscribe(() => this.animationEntry.snapshots.clear());
+
+    // Magic workaround for the second takeUntilDestroyed() to work
+    // TODO: remove when fixed
+    inject(DestroyRef).onDestroy(() => {});
 
     merge(
       this.itemActive$.pipe(filter(Boolean)),
