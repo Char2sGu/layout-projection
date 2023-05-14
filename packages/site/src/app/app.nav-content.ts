@@ -7,7 +7,7 @@ export const APP_NAV_CONTENT: NavContent = {
       items: [],
     },
     {
-      name: 'Fundamentals',
+      name: 'References',
       items: [
         {
           name: 'Projection Tree',
@@ -30,7 +30,7 @@ export const APP_NAV_CONTENT: NavContent = {
       items: [],
     },
     {
-      name: 'Fundamentals',
+      name: 'References',
       items: [
         {
           name: 'Layout Projection',
