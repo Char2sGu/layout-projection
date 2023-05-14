@@ -7,7 +7,7 @@ import {
   inject,
   Input,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import {
   LayoutAnimationEntryDirective,
@@ -18,12 +18,12 @@ import {
   BehaviorSubject,
   filter,
   map,
+  merge,
   mergeWith,
   Observable,
   shareReplay,
   startWith,
   switchMap,
-  tap,
 } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
@@ -73,20 +73,27 @@ export class NavMenuComponent {
       ),
     ),
     map((groups) => this.matchActiveItemByRoute(groups) ?? undefined),
-    tap(() => this.initiateLayoutAnimation()),
     shareReplay(1),
   );
   itemActive = toSignal(this.itemActive$);
 
   itemLastHovered$ = this.itemMouseEnter.pipe(
     mergeWith(this.mouseLeave.pipe(map(() => undefined))),
-    tap(() => this.initiateLayoutAnimation()),
     shareReplay(1),
   );
   itemLastHovered = toSignal(this.itemLastHovered$);
 
   constructor() {
-    this.mouseEnter.subscribe(() => this.animationEntry.snapshots.clear());
+    this.mouseEnter
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.animationEntry.snapshots.clear());
+
+    merge(
+      this.itemActive$.pipe(filter(Boolean)),
+      this.itemLastHovered$.pipe(filter(Boolean)),
+    )
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => this.initiateLayoutAnimation());
   }
 
   initiateLayoutAnimation(): void {
