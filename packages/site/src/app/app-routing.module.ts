@@ -15,11 +15,6 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'docs',
-  },
-  {
-    path: '',
-    pathMatch: 'full',
     redirectTo: 'guides',
   },
   {
@@ -27,6 +22,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./guides/guides.module').then((m) => m.GuidesModule),
   },
+  // TODO: 404 route
 ];
 
 @NgModule({

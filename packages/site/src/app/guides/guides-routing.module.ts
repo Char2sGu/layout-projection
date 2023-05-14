@@ -2,59 +2,64 @@ import { inject, NgModule } from '@angular/core';
 import {
   CanActivateFn,
   ResolveFn,
+  Route,
   RouterModule,
+  ROUTES,
   Routes,
 } from '@angular/router';
 
-import { NAV_CONTENT } from '../core/nav.models';
+import { NAV_CONTENT, NavContent } from '../core/nav.models';
 import { SyntaxHighlighter } from '../core/syntax-highlighter.service';
 import { GuideDetailComponent } from './guide-detail/guide-detail.component';
 import { GuidesComponent } from './guides.component';
 import { GuideRecord } from './shared/guide.models';
 import { GuideDownloader } from './shared/guide-downloader.service';
 
-const guideRecordResolver = ((...[route]) => {
-  const path = route.url.join('/');
-  for (const group of Object.values(inject(NAV_CONTENT)).flat()) {
-    const record = group.items.find((item) => item.path.endsWith(path));
-    if (!record) continue;
-    return {
-      name: record.name,
-      path: record.path.replace(/^.*guides\//u, ''),
-    };
-  }
-  throw new Error(`No guide found for path: ${path}`);
-}) satisfies ResolveFn<GuideRecord>;
-
-const guideContentResolver = ((...args) => {
-  const record = guideRecordResolver(...args);
-  return inject(GuideDownloader).download(record);
-}) satisfies ResolveFn<string>;
-
-const guideHighlighterInitializer = (() =>
-  inject(SyntaxHighlighter)
-    .loadEngine()
-    .then(() => true)) satisfies CanActivateFn;
-
-const routes: Routes = [
+const routesFactory = (): Routes => [
   {
     path: '',
     component: GuidesComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'core/overview' },
       {
-        path: '**',
-        component: GuideDetailComponent,
-        title: (...args) => guideRecordResolver(...args).name,
-        resolve: { record: guideRecordResolver, content: guideContentResolver },
-        canActivate: [guideHighlighterInitializer],
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'core/references/layout-projection',
       },
+      ...generateRoutesFromNavContent(inject(NAV_CONTENT)),
     ],
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild([])],
   exports: [RouterModule],
+  providers: [{ provide: ROUTES, useFactory: routesFactory, multi: true }],
 })
 export class GuidesRoutingModule {}
+
+function generateRoutesFromNavContent(navContent: NavContent): Route[] {
+  const contentResolverFactory =
+    (record: GuideRecord): ResolveFn<string> =>
+    () =>
+      inject(GuideDownloader).download(record);
+
+  const highlighterInitializer: CanActivateFn = () =>
+    inject(SyntaxHighlighter)
+      .loadEngine()
+      .then(() => true);
+
+  return Object.values(navContent)
+    .flat()
+    .flatMap((group) => group.items)
+    .map((v): GuideRecord => v)
+    .map(
+      (record): Route => ({
+        path: record.path,
+        component: GuideDetailComponent,
+        title: record.name,
+        data: { record },
+        resolve: { content: contentResolverFactory(record) },
+        canActivate: [highlighterInitializer],
+      }),
+    );
+}

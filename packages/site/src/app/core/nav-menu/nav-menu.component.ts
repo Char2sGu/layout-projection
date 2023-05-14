@@ -114,7 +114,7 @@ export class NavMenuComponent {
   matchActiveItemByRoute(groups: NavItemGroup[]): NavItem | null {
     for (const group of groups) {
       const item = group.items.find((item) =>
-        this.router.isActive(item.path, {
+        this.router.isActive(`guides/${item.path}`, {
           paths: 'exact',
           fragment: 'ignored',
           matrixParams: 'ignored',
