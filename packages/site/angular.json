@@ -53,13 +53,23 @@
               },
               {
                 "glob": "**/*",
+                "input": "src/content/core",
+                "output": "assets/guides/core/content"
+              },
+              {
+                "glob": "**/*",
                 "input": "../core/guides",
-                "output": "assets/guides/core"
+                "output": "assets/guides/core/references"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/content/angular",
+                "output": "assets/guides/angular/content"
               },
               {
                 "glob": "**/*",
                 "input": "../angular/guides",
-                "output": "assets/guides/angular"
+                "output": "assets/guides/angular/references"
               }
             ],
             "styles": ["src/styles.less"],
