@@ -4,7 +4,12 @@ export const APP_NAV_CONTENT: NavContent = {
   ['Angular']: [
     {
       name: 'Getting Started',
-      items: [],
+      items: [
+        {
+          name: 'Overview',
+          path: 'angular/README',
+        },
+      ],
     },
     {
       name: 'References',
@@ -27,7 +32,12 @@ export const APP_NAV_CONTENT: NavContent = {
   ['Core']: [
     {
       name: 'Getting Started',
-      items: [],
+      items: [
+        {
+          name: 'Overview',
+          path: 'core/README',
+        },
+      ],
     },
     {
       name: 'References',

@@ -23,7 +23,7 @@ const routesFactory = (): Routes => [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'core/references/layout-projection',
+        redirectTo: 'angular/README',
       },
       ...generateRoutesFromNavContent(inject(NAV_CONTENT)),
     ],

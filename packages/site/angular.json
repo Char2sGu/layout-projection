@@ -52,6 +52,11 @@
                 "output": "assets/taiga-ui/icons"
               },
               {
+                "glob": "README.md",
+                "input": "../core",
+                "output": "assets/guides/core"
+              },
+              {
                 "glob": "**/*",
                 "input": "src/content/core",
                 "output": "assets/guides/core/content"
@@ -60,6 +65,11 @@
                 "glob": "**/*",
                 "input": "../core/guides",
                 "output": "assets/guides/core/references"
+              },
+              {
+                "glob": "README.md",
+                "input": "../angular",
+                "output": "assets/guides/angular"
               },
               {
                 "glob": "**/*",
