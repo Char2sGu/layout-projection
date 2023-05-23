@@ -76,10 +76,8 @@ export class LayoutAnimator {
         const borderRadiusesTo = node.borderRadiuses;
 
         map.set(node.id, {
-          boundingBoxFrom,
-          boundingBoxTo,
-          borderRadiusesFrom,
-          borderRadiusesTo,
+          boundingBox: { from: boundingBoxFrom, to: boundingBoxTo },
+          borderRadiuses: { from: borderRadiusesFrom, to: borderRadiusesTo },
         });
       },
       { includeSelf: true },

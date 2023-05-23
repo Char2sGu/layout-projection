@@ -5,6 +5,7 @@ import {
   AnimationConfig,
   AnimationRef,
   AnimationResult,
+  AnimationStyleRoute,
 } from './animation-core.js';
 import { ProjectionNode } from './projection.js';
 import {
@@ -63,8 +64,7 @@ export class ProjectionNodeAnimationEngine {
     route: ProjectionNodeAnimationRoute,
     progress: number,
   ): BoundingBox {
-    const from = route.boundingBoxFrom;
-    const to = route.boundingBoxTo;
+    const { from, to } = route.boundingBox;
     return new BoundingBox({
       top: mix(from.top, to.top, progress),
       left: mix(from.left, to.left, progress),
@@ -77,8 +77,7 @@ export class ProjectionNodeAnimationEngine {
     route: ProjectionNodeAnimationRoute,
     progress: number,
   ): BorderRadiusConfig {
-    const from = route.borderRadiusesFrom;
-    const to = route.borderRadiusesTo;
+    const { from, to } = route.borderRadiuses;
 
     const mixRadius = (
       from: BorderRadiusCornerConfig,
@@ -157,10 +156,8 @@ export interface ProjectionTreeAnimationConfig extends AnimationConfig {
 }
 
 export interface ProjectionNodeAnimationRoute {
-  boundingBoxFrom: BoundingBox;
-  boundingBoxTo: BoundingBox;
-  borderRadiusesFrom: BorderRadiusConfig;
-  borderRadiusesTo: BorderRadiusConfig;
+  boundingBox: AnimationStyleRoute<BoundingBox>;
+  borderRadiuses: AnimationStyleRoute<BorderRadiusConfig>;
 }
 
 export class ProjectionNodeAnimationRouteMap extends Map<

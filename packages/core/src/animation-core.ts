@@ -45,3 +45,11 @@ export interface AnimationConfig {
   duration: number;
   easing: Easing;
 }
+
+export interface AnimationRoute {
+  [style: string]: AnimationStyleRoute<unknown>;
+}
+export interface AnimationStyleRoute<Style> {
+  from: Style;
+  to: Style;
+}
