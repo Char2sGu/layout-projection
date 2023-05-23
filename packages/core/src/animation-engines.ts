@@ -1,5 +1,11 @@
-import { animate, Easing, mix } from 'popmotion';
+import { animate, mix } from 'popmotion';
 
+import {
+  AggregationAnimationRef,
+  AnimationConfig,
+  AnimationRef,
+  AnimationResult,
+} from './animation-core.js';
 import { ProjectionNode } from './projection.js';
 import {
   BorderRadiusConfig,
@@ -92,6 +98,20 @@ export class ProjectionNodeAnimationEngine {
   }
 }
 
+export class ProjectionNodeAnimationRef extends AnimationRef {
+  constructor(
+    public node: ProjectionNode,
+    promise: Promise<AnimationResult>,
+    stopper: () => void,
+  ) {
+    super(promise, stopper);
+  }
+}
+
+export interface ProjectionNodeAnimationConfig extends AnimationConfig {
+  route: ProjectionNodeAnimationRoute;
+}
+
 export class ProjectionTreeAnimationEngine {
   protected records = new WeakMap<ProjectionNode, ProjectionTreeAnimationRef>();
 
@@ -126,13 +146,10 @@ export class ProjectionTreeAnimationEngine {
   }
 }
 
-export interface AnimationConfig {
-  duration: number;
-  easing: Easing;
-}
-
-export interface ProjectionNodeAnimationConfig extends AnimationConfig {
-  route: ProjectionNodeAnimationRoute;
+export class ProjectionTreeAnimationRef extends AggregationAnimationRef {
+  constructor(public root: ProjectionNode, refs: ProjectionNodeAnimationRef[]) {
+    super(refs);
+  }
 }
 
 export interface ProjectionTreeAnimationConfig extends AnimationConfig {
@@ -150,60 +167,3 @@ export class ProjectionNodeAnimationRouteMap extends Map<
   ProjectionNode['id'],
   ProjectionNodeAnimationRoute
 > {}
-
-export class AnimationRef implements PromiseLike<AnimationResult> {
-  constructor(
-    private promise: Promise<AnimationResult>,
-    private stopper: () => void,
-  ) {}
-
-  then<TResult1 = AnimationResult, TResult2 = never>(
-    onfulfilled?:
-      | ((value: AnimationResult) => TResult1 | PromiseLike<TResult1>)
-      | null
-      | undefined,
-    onrejected?:
-      | ((reason: any) => TResult2 | PromiseLike<TResult2>)
-      | null
-      | undefined,
-  ): PromiseLike<TResult1 | TResult2> {
-    return this.promise.then(onfulfilled, onrejected);
-  }
-
-  stop(): void {
-    this.stopper();
-  }
-}
-
-export class AggregationAnimationRef extends AnimationRef {
-  constructor(refs: AnimationRef[]) {
-    const promise = Promise.all(refs).then((results) =>
-      results.every((result) => result === AnimationResult.Completed)
-        ? AnimationResult.Completed
-        : AnimationResult.Stopped,
-    );
-    const stopper = () => refs.forEach((ref) => ref.stop());
-    super(promise, stopper);
-  }
-}
-
-export enum AnimationResult {
-  Completed = 'completed',
-  Stopped = 'stopped',
-}
-
-export class ProjectionNodeAnimationRef extends AnimationRef {
-  constructor(
-    public node: ProjectionNode,
-    promise: Promise<AnimationResult>,
-    stopper: () => void,
-  ) {
-    super(promise, stopper);
-  }
-}
-
-export class ProjectionTreeAnimationRef extends AggregationAnimationRef {
-  constructor(public root: ProjectionNode, refs: ProjectionNodeAnimationRef[]) {
-    super(refs);
-  }
-}

@@ -1,4 +1,5 @@
 export * from './animation.js';
+export * from './animation-core.js';
 export * from './animation-engines.js';
 export * from './css.js';
 export * from './measure.js';

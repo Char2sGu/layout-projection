@@ -1,8 +1,7 @@
 import { easeInOut, Easing } from 'popmotion';
 
+import { AnimationRef, AnimationResult } from './animation-core.js';
 import {
-  AnimationRef,
-  AnimationResult,
   ProjectionNodeAnimationRouteMap,
   ProjectionTreeAnimationEngine,
 } from './animation-engines.js';
