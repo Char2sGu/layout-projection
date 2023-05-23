@@ -1,4 +1,3 @@
-import { ElementMeasurer } from './measure.js';
 import { BoundingBox, TransformAxisConfig, TransformConfig } from './shared.js';
 
 export interface ProjectionComponent<Properties extends object> {
@@ -28,7 +27,6 @@ export class ProjectionNode {
 
   constructor(
     public element: HTMLElement,
-    protected measurer: ElementMeasurer,
     protected components: ProjectionComponent<object>[],
   ) {}
 
@@ -84,7 +82,7 @@ export class ProjectionNode {
   }
 
   measure(): void {
-    const boundingBox = this.measurer.measureBoundingBox(this.element);
+    const boundingBox = BoundingBox.from(this.element);
     this.boundingBox = boundingBox;
     this.components.forEach((c) =>
       Object.assign(this, c.measureProperties(this.element, boundingBox)),

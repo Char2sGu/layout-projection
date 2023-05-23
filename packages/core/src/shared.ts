@@ -1,6 +1,10 @@
 import { mix } from 'popmotion';
 
 export class BoundingBox {
+  static from(element: HTMLElement): BoundingBox {
+    return new BoundingBox(element.getBoundingClientRect());
+  }
+
   top: number;
   left: number;
   right: number;
@@ -52,18 +56,4 @@ export class TransformAxisConfig {
     const translated = scaled + this.translate;
     return translated;
   }
-}
-
-// TODO: remove
-export interface BorderRadiusConfig {
-  topLeft: BorderRadiusCornerConfig;
-  topRight: BorderRadiusCornerConfig;
-  bottomLeft: BorderRadiusCornerConfig;
-  bottomRight: BorderRadiusCornerConfig;
-}
-
-// TODO: remove
-export interface BorderRadiusCornerConfig {
-  x: number;
-  y: number;
 }

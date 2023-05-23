@@ -1,9 +1,6 @@
-import { ElementMeasurer } from './measure.js';
 import { MeasuredProjectionNode, ProjectionNode } from './projection.js';
 
 export class ProjectionNodeSnapper {
-  constructor(protected measurer: ElementMeasurer) {}
-
   snapshot(node: ProjectionNode): ProjectionNodeSnapshot {
     if (!node.measured()) throw new Error('Node not measured');
     const result = { ...node };

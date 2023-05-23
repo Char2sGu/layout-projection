@@ -1,9 +1,9 @@
 import { mix } from 'popmotion';
+import * as styleUnits from 'style-value-types';
 
 import { AnimationPlanner, AnimationPlanningContext } from '../animation.js';
 import { AnimationPlan, AnimationRoute } from '../animation-core.js';
 import { AnimationHandler } from '../animation-engines.js';
-import { ElementMeasurer } from '../measure.js';
 import {
   ProjectionComponent,
   ProjectionDistortion,
@@ -27,17 +27,17 @@ export interface BorderRadiusProperties {
   [PROP_NAME]: BorderRadiusConfig;
 }
 
-export class BorderRadiusDistortionCanceller
+export class BorderRadiusProjectionComponent
   implements ProjectionComponent<BorderRadiusProperties>
 {
-  constructor(protected measurer: ElementMeasurer) {}
+  constructor(protected measurer: BorderRadiusMeasurer) {}
 
   measureProperties(
     element: HTMLElement,
     boundingBox: BoundingBox,
   ): BorderRadiusProperties {
     return {
-      borderRadiuses: this.measurer.measureBorderRadiuses(element, boundingBox),
+      borderRadiuses: this.measurer.measure(element, boundingBox),
     };
   }
 
@@ -94,5 +94,48 @@ export class BorderRadiusAnimationComponent
     };
 
     node[PROP_NAME] = radiuses;
+  }
+}
+
+export class BorderRadiusMeasurer {
+  constructor(protected parser: CssBorderRadiusParser) {}
+
+  measure(
+    element: HTMLElement,
+    boundingBox = BoundingBox.from(element),
+  ): BorderRadiusConfig {
+    const style = getComputedStyle(element);
+
+    const parse = (style: string) =>
+      this.parser.parse(style, boundingBox.width(), boundingBox.height());
+
+    return {
+      topLeft: parse(style.borderTopLeftRadius),
+      topRight: parse(style.borderTopRightRadius),
+      bottomLeft: parse(style.borderBottomLeftRadius),
+      bottomRight: parse(style.borderBottomRightRadius),
+    };
+  }
+}
+
+export class CssBorderRadiusParser {
+  parse(
+    style: string,
+    width: number,
+    height: number,
+  ): { x: number; y: number } {
+    if (style.match(/\d.*?px \d.*?px/u)) {
+      const [x, y] = style.split(' ').map((value) => parseFloat(value));
+      return { x, y };
+    }
+    if (styleUnits.percent.test(style)) {
+      const value = parseFloat(style) / 100;
+      return { x: value * width, y: value * height };
+    }
+    if (styleUnits.px.test(style)) {
+      const value = parseFloat(style);
+      return { x: value, y: value };
+    }
+    throw new Error(`Unsupported radius: ${style}`);
   }
 }
