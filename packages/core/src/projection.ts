@@ -25,13 +25,18 @@ export class ProjectionNode {
   boundingBox?: BoundingBox;
   transform?: TransformConfig;
 
+  protected identified = false;
+
   constructor(
     public element: HTMLElement,
     protected components: ProjectionComponent<object>[],
   ) {}
 
   identifyAs(id: string): void {
+    if (this.identified)
+      throw new Error(`Node "${this.id}" already identified`);
     this.id = id;
+    this.identified = true;
   }
 
   activate(): void {
