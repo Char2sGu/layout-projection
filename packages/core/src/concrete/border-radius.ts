@@ -1,5 +1,6 @@
 import { mix } from 'popmotion';
 
+import { AnimationPlanner, AnimationPlanningContext } from '../animation.js';
 import { AnimationPlan, AnimationRoute } from '../animation-core.js';
 import { AnimationHandler } from '../animation-engines.js';
 import {
@@ -44,13 +45,15 @@ export class BorderRadiusDistortionCanceller
   }
 }
 
+const ROUTE_NAME = 'borderRadiuses';
+
 export class BorderRadiusAnimationHandler implements AnimationHandler {
   handleFrame(
     node: ProjectionNode,
     progress: number,
     plan: AnimationPlan,
   ): void {
-    const route = plan['borderRadiuses'] as AnimationRoute<BorderRadiusConfig>;
+    const route = plan[ROUTE_NAME] as AnimationRoute<BorderRadiusConfig>;
     const { from, to } = route;
 
     const mixRadius = (
@@ -70,5 +73,14 @@ export class BorderRadiusAnimationHandler implements AnimationHandler {
     };
 
     node.borderRadiuses = radiuses;
+  }
+}
+
+export class BorderRadiusAnimationPlanner implements AnimationPlanner {
+  plan(context: AnimationPlanningContext): AnimationPlan {
+    const { node, snapshot } = context;
+    const from = snapshot?.borderRadiuses ?? node.borderRadiuses;
+    const to = node.borderRadiuses;
+    return { [ROUTE_NAME]: { from, to } };
   }
 }
