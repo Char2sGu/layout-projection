@@ -4,10 +4,12 @@ import {
   AnimationPlan,
   AnimationRef,
   AnimationResult,
+  AnimationRoute,
 } from './animation-core.js';
 import { ProjectionTreeAnimationEngine } from './animation-engines.js';
 import { CssEasingParser } from './css.js';
-import { ProjectionNode } from './projection.js';
+import { MeasuredProjectionNode, ProjectionNode } from './projection.js';
+import { BoundingBox } from './shared.js';
 import {
   ProjectionNodeSnapper,
   ProjectionNodeSnapshot,
@@ -18,11 +20,10 @@ export interface AnimationPlanner {
   plan(context: AnimationPlanningContext): AnimationPlan;
 }
 export interface AnimationPlanningContext {
-  root: ProjectionNode;
-  node: ProjectionNode;
+  root: MeasuredProjectionNode;
+  node: MeasuredProjectionNode;
   snapshot?: ProjectionNodeSnapshot;
   snapshots: ProjectionNodeSnapshotMap;
-  estimation: boolean;
 }
 
 export class LayoutAnimator {
@@ -74,12 +75,14 @@ export class LayoutAnimator {
         // it should share the same animation config with the new instance.
         if (map.has(node.id) && node.element === snapshot?.element) return;
 
-        const plan = this.planners.reduce(
-          (plan, planner) => ({
-            plan,
-            ...planner.plan({ root, node, snapshots, snapshot, estimation }),
-          }),
-          {},
+        const context: AnimationPlanningContext = {
+          root: root as MeasuredProjectionNode, // root is the first node traversed
+          ...{ node, snapshots, snapshot, estimation },
+        };
+
+        const plan: AnimationPlan = this.planners.reduce(
+          (plan, planner) => ({ plan, ...planner.plan(context) }),
+          { boundingBox: this.getBoundingBoxRoute(context, estimation) },
         );
 
         map.set(node.id, plan);
@@ -88,6 +91,54 @@ export class LayoutAnimator {
     );
 
     return map;
+  }
+
+  protected getBoundingBoxRoute(
+    context: AnimationPlanningContext,
+    estimation: boolean,
+  ): AnimationRoute<BoundingBox> {
+    const { root, node, snapshot, snapshots } = context;
+    const from =
+      snapshot?.boundingBox ||
+      (estimation &&
+        this.estimateBoundingBoxRouteStart(root, node, snapshots)) ||
+      node.boundingBox;
+    const to = node.boundingBox;
+    return { from, to };
+  }
+
+  protected estimateBoundingBoxRouteStart(
+    root: MeasuredProjectionNode,
+    node: MeasuredProjectionNode,
+    snapshots: ProjectionNodeSnapshotMap,
+  ): BoundingBox | undefined {
+    if (!node.measured()) throw new Error('Unknown node');
+
+    let ancestor: ProjectionNode = node;
+    let ancestorSnapshot: ProjectionNodeSnapshot | undefined = undefined;
+    while ((ancestorSnapshot = snapshots.get(ancestor.id)) === undefined) {
+      if (ancestor === root || !ancestor.parent) return;
+      ancestor = ancestor.parent;
+    }
+    if (!ancestor.measured()) throw new Error('Unknown ancestor');
+
+    const transform = ancestor.calculateTransform(ancestorSnapshot.boundingBox);
+    const scale = transform.x.scale;
+
+    return new BoundingBox({
+      top:
+        ancestorSnapshot.boundingBox.top -
+        (ancestor.boundingBox.top - node.boundingBox.top) * scale,
+      left:
+        ancestorSnapshot.boundingBox.left -
+        (ancestor.boundingBox.left - node.boundingBox.left) * scale,
+      right:
+        ancestorSnapshot.boundingBox.right -
+        (ancestor.boundingBox.right - node.boundingBox.right) * scale,
+      bottom:
+        ancestorSnapshot.boundingBox.top -
+        (ancestor.boundingBox.top - node.boundingBox.bottom) * scale,
+    });
   }
 }
 

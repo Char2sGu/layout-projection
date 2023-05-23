@@ -39,17 +39,17 @@ export class ProjectionNodeAnimationEngine {
     const promise = new Promise<AnimationResult>((resolve) => {
       const { duration, easing, plan } = config;
 
-      const animateFrame = (progress: number) =>
-        this.animateFrame(node, plan, progress);
+      const handleFrame = (progress: number) =>
+        this.handleFrame(node, plan, progress);
 
-      animateFrame(0);
+      handleFrame(0);
 
       stopper = animate({
         from: 0,
         to: 1,
         duration,
         ease: easing,
-        onUpdate: animateFrame,
+        onUpdate: handleFrame,
         onComplete: () => resolve(AnimationResult.Completed),
         onStop: () => resolve(AnimationResult.Stopped),
       }).stop;
@@ -60,22 +60,21 @@ export class ProjectionNodeAnimationEngine {
     return ref;
   }
 
-  protected animateFrame(
+  protected handleFrame(
     node: ProjectionNode,
     plan: AnimationPlan,
     progress: number,
   ): void {
-    const boundingBox = this.calculateBoundingBox(plan, progress);
-    const borderRadiuses = this.calculateBorderRadiuses(plan, progress);
+    const boundingBox = this.calcFrameBoundingBox(plan.boundingBox, progress);
+    const borderRadiuses = this.calcBorderRadiuses(plan, progress);
     node.borderRadiuses = borderRadiuses;
     node.project(boundingBox);
   }
 
-  protected calculateBoundingBox(
-    plan: AnimationPlan,
+  protected calcFrameBoundingBox(
+    route: AnimationRoute<BoundingBox>,
     progress: number,
   ): BoundingBox {
-    const route = plan['boundingBox'] as AnimationRoute<BoundingBox>;
     const { from, to } = route;
     return new BoundingBox({
       top: mix(from.top, to.top, progress),
@@ -85,7 +84,7 @@ export class ProjectionNodeAnimationEngine {
     });
   }
 
-  protected calculateBorderRadiuses(
+  protected calcBorderRadiuses(
     plan: AnimationPlan,
     progress: number,
   ): BorderRadiusConfig {
