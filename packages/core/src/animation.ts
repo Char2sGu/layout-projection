@@ -17,12 +17,12 @@ import {
 } from './snapshot.js';
 
 export interface AnimationPlanner {
-  buildPlan(context: AnimationPlanningContext): Partial<AnimationPlan>;
+  buildPlan(context: AnimationPlanningContext<object>): Partial<AnimationPlan>;
 }
-export interface AnimationPlanningContext {
-  root: MeasuredProjectionNode;
-  node: MeasuredProjectionNode;
-  snapshot?: ProjectionNodeSnapshot;
+export interface AnimationPlanningContext<NodeProperties extends object> {
+  root: MeasuredProjectionNode & NodeProperties;
+  node: MeasuredProjectionNode & NodeProperties;
+  snapshot?: ProjectionNodeSnapshot & NodeProperties;
   snapshots: ProjectionNodeSnapshotMap;
 }
 
@@ -75,7 +75,7 @@ export class LayoutAnimator {
         // it should share the same animation config with the new instance.
         if (map.has(node.id) && node.element === snapshot?.element) return;
 
-        const context: AnimationPlanningContext = {
+        const context: AnimationPlanningContext<object> = {
           root: root as MeasuredProjectionNode, // root is the first node traversed
           ...{ node, snapshots, snapshot },
         };
@@ -100,7 +100,7 @@ export class LayoutAnimator {
   }
 
   protected getBoundingBoxRoute(
-    context: AnimationPlanningContext,
+    context: AnimationPlanningContext<object>,
     estimation: boolean,
   ): AnimationRoute<BoundingBox> {
     const { root, node, snapshot, snapshots } = context;
@@ -171,6 +171,7 @@ export class LayoutAnimationEntry {
   }
 
   snapshot(): void {
+    // TODO: measure
     const snapshots = this.snapper.snapshotTree(this.node);
     this.snapshots.merge(snapshots);
   }

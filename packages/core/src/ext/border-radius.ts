@@ -58,11 +58,12 @@ export class BorderRadiusDistortionCanceller
 export class BorderRadiusAnimationComponent
   implements AnimationPlanner, AnimationHandler
 {
-  buildPlan(context: AnimationPlanningContext): Partial<AnimationPlan> {
-    const { snapshot } = context;
-    const node = context.node as ProjectionNode & BorderRadiusProperties;
+  buildPlan(
+    context: AnimationPlanningContext<BorderRadiusProperties>,
+  ): Partial<AnimationPlan> {
+    const { node, snapshot } = context;
     const route: AnimationRoute<BorderRadiusConfig> = {
-      from: snapshot?.borderRadiuses ?? node[PROP_NAME],
+      from: snapshot?.[PROP_NAME] ?? node[PROP_NAME],
       to: node[PROP_NAME],
     };
     return { [PROP_NAME]: route };

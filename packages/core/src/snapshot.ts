@@ -1,21 +1,14 @@
 import { ElementMeasurer } from './measure.js';
-import { ProjectionNode } from './projection.js';
-import { BorderRadiusConfig, BoundingBox } from './shared.js';
+import { MeasuredProjectionNode, ProjectionNode } from './projection.js';
 
 export class ProjectionNodeSnapper {
   constructor(protected measurer: ElementMeasurer) {}
 
   snapshot(node: ProjectionNode): ProjectionNodeSnapshot {
-    const boundingBox = this.measurer.measureBoundingBox(node.element);
-    const borderRadiuses = this.measurer.measureBorderRadiuses(
-      node.element,
-      boundingBox,
-    );
-    return {
-      element: node.element,
-      boundingBox,
-      borderRadiuses,
-    };
+    if (!node.measured()) throw new Error('Node not measured');
+    const result = { ...node };
+    result.children = new Set(node.children);
+    return result;
   }
 
   snapshotTree(
@@ -38,11 +31,11 @@ export class ProjectionNodeSnapper {
   }
 }
 
-export interface ProjectionNodeSnapshot {
-  element: HTMLElement;
-  boundingBox: BoundingBox;
-  borderRadiuses: BorderRadiusConfig;
-}
+export type ProjectionNodeSnapshot = {
+  [K in keyof MeasuredProjectionNode as MeasuredProjectionNode[K] extends Function
+    ? never
+    : K]: MeasuredProjectionNode[K];
+};
 
 export class ProjectionNodeSnapshotMap extends Map<
   ProjectionNode['id'],

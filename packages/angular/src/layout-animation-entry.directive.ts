@@ -41,6 +41,7 @@ export class LayoutAnimationEntryDirective extends LayoutAnimationEntry {
   }
 
   override snapshot(): void {
+    // TODO: measure
     const filter = this.nodeRegistry?.has.bind(this.nodeRegistry);
     const snapshots = this.snapper.snapshotTree(this.node, filter);
     this.snapshots.merge(snapshots);
