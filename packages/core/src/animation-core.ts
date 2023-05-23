@@ -46,10 +46,10 @@ export interface AnimationConfig {
   easing: Easing;
 }
 
-export interface AnimationRoute {
-  [style: string]: AnimationStyleRoute<unknown>;
+export interface AnimationPlan {
+  [name: string]: AnimationRoute<unknown>;
 }
-export interface AnimationStyleRoute<Style> {
-  from: Style;
-  to: Style;
+export interface AnimationRoute<Value> {
+  from: Value;
+  to: Value;
 }

@@ -3,9 +3,10 @@ import { animate, mix } from 'popmotion';
 import {
   AggregationAnimationRef,
   AnimationConfig,
+  AnimationPlan,
   AnimationRef,
   AnimationResult,
-  AnimationStyleRoute,
+  AnimationRoute,
 } from './animation-core.js';
 import { ProjectionNode } from './projection.js';
 import {
@@ -26,10 +27,10 @@ export class ProjectionNodeAnimationEngine {
     let stopper: () => void;
 
     const promise = new Promise<AnimationResult>((resolve) => {
-      const { duration, easing, route } = config;
+      const { duration, easing, plan } = config;
 
       const animateFrame = (progress: number) =>
-        this.animateFrame(node, route, progress);
+        this.animateFrame(node, plan, progress);
 
       animateFrame(0);
 
@@ -51,20 +52,21 @@ export class ProjectionNodeAnimationEngine {
 
   protected animateFrame(
     node: ProjectionNode,
-    route: ProjectionNodeAnimationRoute,
+    plan: AnimationPlan,
     progress: number,
   ): void {
-    const boundingBox = this.calculateBoundingBox(route, progress);
-    const borderRadiuses = this.calculateBorderRadiuses(route, progress);
+    const boundingBox = this.calculateBoundingBox(plan, progress);
+    const borderRadiuses = this.calculateBorderRadiuses(plan, progress);
     node.borderRadiuses = borderRadiuses;
     node.project(boundingBox);
   }
 
   protected calculateBoundingBox(
-    route: ProjectionNodeAnimationRoute,
+    plan: AnimationPlan,
     progress: number,
   ): BoundingBox {
-    const { from, to } = route.boundingBox;
+    const route = plan['boundingBox'] as AnimationRoute<BoundingBox>;
+    const { from, to } = route;
     return new BoundingBox({
       top: mix(from.top, to.top, progress),
       left: mix(from.left, to.left, progress),
@@ -74,10 +76,11 @@ export class ProjectionNodeAnimationEngine {
   }
 
   protected calculateBorderRadiuses(
-    route: ProjectionNodeAnimationRoute,
+    plan: AnimationPlan,
     progress: number,
   ): BorderRadiusConfig {
-    const { from, to } = route.borderRadiuses;
+    const route = plan['borderRadiuses'] as AnimationRoute<BorderRadiusConfig>;
+    const { from, to } = route;
 
     const mixRadius = (
       from: BorderRadiusCornerConfig,
@@ -108,7 +111,7 @@ export class ProjectionNodeAnimationRef extends AnimationRef {
 }
 
 export interface ProjectionNodeAnimationConfig extends AnimationConfig {
-  route: ProjectionNodeAnimationRoute;
+  plan: AnimationPlan;
 }
 
 export class ProjectionTreeAnimationEngine {
@@ -121,17 +124,17 @@ export class ProjectionTreeAnimationEngine {
     config: ProjectionTreeAnimationConfig,
   ): ProjectionTreeAnimationRef {
     this.records.get(root)?.stop();
-    const { duration, easing, routes } = config;
+    const { duration, easing, plans } = config;
 
     const animations: ProjectionNodeAnimationRef[] = [];
     root.traverse(
       (node) => {
-        const route = routes.get(node.id);
-        if (!route) throw new Error('Unknown node');
+        const plan = plans.get(node.id);
+        if (!plan) throw new Error('Unknown node');
         const config: ProjectionNodeAnimationConfig = {
           duration,
           easing,
-          route,
+          plan,
         };
         const animation = this.engine.animate(node, config);
         animations.push(animation);
@@ -152,15 +155,5 @@ export class ProjectionTreeAnimationRef extends AggregationAnimationRef {
 }
 
 export interface ProjectionTreeAnimationConfig extends AnimationConfig {
-  routes: ProjectionNodeAnimationRouteMap;
+  plans: Map<ProjectionNode['id'], AnimationPlan>;
 }
-
-export interface ProjectionNodeAnimationRoute {
-  boundingBox: AnimationStyleRoute<BoundingBox>;
-  borderRadiuses: AnimationStyleRoute<BorderRadiusConfig>;
-}
-
-export class ProjectionNodeAnimationRouteMap extends Map<
-  ProjectionNode['id'],
-  ProjectionNodeAnimationRoute
-> {}

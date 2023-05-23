@@ -1,10 +1,11 @@
 import { easeInOut, Easing } from 'popmotion';
 
-import { AnimationRef, AnimationResult } from './animation-core.js';
 import {
-  ProjectionNodeAnimationRouteMap,
-  ProjectionTreeAnimationEngine,
-} from './animation-engines.js';
+  AnimationPlan,
+  AnimationRef,
+  AnimationResult,
+} from './animation-core.js';
+import { ProjectionTreeAnimationEngine } from './animation-engines.js';
 import { CssEasingParser } from './css.js';
 import { ElementMeasurer } from './measure.js';
 import { ProjectionNode } from './projection.js';
@@ -29,8 +30,8 @@ export class LayoutAnimator {
     const { duration = 225, easing = easeInOut } = config;
 
     this.initialize(root);
-    const routes = this.getAnimationRouteMap(root, snapshots, estimation);
-    const ref = this.engine.animate(root, { duration, easing, routes });
+    const plans = this.getAnimationPlans(root, snapshots, estimation);
+    const ref = this.engine.animate(root, { duration, easing, plans });
 
     ref.then((result) => {
       if (result === AnimationResult.Completed)
@@ -48,12 +49,12 @@ export class LayoutAnimator {
     root.traverse((node) => node.measure(), { includeSelf: true });
   }
 
-  protected getAnimationRouteMap(
+  protected getAnimationPlans(
     root: ProjectionNode,
     snapshots: ProjectionNodeSnapshotMap,
     estimation: boolean,
-  ): ProjectionNodeAnimationRouteMap {
-    const map = new ProjectionNodeAnimationRouteMap();
+  ): Map<ProjectionNode['id'], AnimationPlan> {
+    const map = new Map<ProjectionNode['id'], AnimationPlan>();
 
     root.traverse(
       (node) => {
