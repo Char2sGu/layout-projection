@@ -22,20 +22,31 @@ export interface BorderRadiusCornerConfig {
   y: number;
 }
 
+const PROP_NAME = 'borderRadiuses';
+export interface BorderRadiusProperties {
+  borderRadiuses: BorderRadiusConfig;
+}
+
 export class BorderRadiusDistortionCanceller
-  implements DistortionCanceler<BorderRadiusConfig>
+  implements DistortionCanceler<BorderRadiusProperties>
 {
   constructor(protected measurer: ElementMeasurer) {}
 
-  measure(element: HTMLElement, boundingBox: BoundingBox): BorderRadiusConfig {
-    return this.measurer.measureBorderRadiuses(element, boundingBox);
+  measure(
+    element: HTMLElement,
+    boundingBox: BoundingBox,
+  ): BorderRadiusProperties {
+    return {
+      borderRadiuses: this.measurer.measureBorderRadiuses(element, boundingBox),
+    };
   }
 
   cancel(
     element: HTMLElement,
-    context: DistortionCancellationContext<BorderRadiusConfig>,
+    context: DistortionCancellationContext<BorderRadiusProperties>,
   ): void {
-    const { measured: radiuses, scaleX, scaleY } = context;
+    const { scaleX, scaleY } = context;
+    const radiuses = context.measured.borderRadiuses;
     const radiusStyle = (radius: BorderRadiusCornerConfig) =>
       `${radius.x / scaleX}px ${radius.y / scaleY}px`;
     element.style.borderTopLeftRadius = radiusStyle(radiuses.topLeft);
@@ -45,15 +56,22 @@ export class BorderRadiusDistortionCanceller
   }
 }
 
-const ROUTE_NAME = 'borderRadiuses';
+export class BorderRadiusAnimationComponent
+  implements AnimationPlanner, AnimationHandler
+{
+  plan(context: AnimationPlanningContext): Partial<AnimationPlan> {
+    const { node, snapshot } = context;
+    const from = snapshot?.borderRadiuses ?? node[PROP_NAME];
+    const to = node[PROP_NAME];
+    return { [PROP_NAME]: { from, to } };
+  }
 
-export class BorderRadiusAnimationHandler implements AnimationHandler {
   handleFrame(
     node: ProjectionNode,
     progress: number,
     plan: AnimationPlan,
   ): void {
-    const route = plan[ROUTE_NAME] as AnimationRoute<BorderRadiusConfig>;
+    const route = plan[PROP_NAME] as AnimationRoute<BorderRadiusConfig>;
     const { from, to } = route;
 
     const mixRadius = (
@@ -72,15 +90,6 @@ export class BorderRadiusAnimationHandler implements AnimationHandler {
       bottomRight: mixRadius(from.bottomRight, to.bottomRight, progress),
     };
 
-    node.borderRadiuses = radiuses;
-  }
-}
-
-export class BorderRadiusAnimationPlanner implements AnimationPlanner {
-  plan(context: AnimationPlanningContext): AnimationPlan {
-    const { node, snapshot } = context;
-    const from = snapshot?.borderRadiuses ?? node.borderRadiuses;
-    const to = node.borderRadiuses;
-    return { [ROUTE_NAME]: { from, to } };
+    node[PROP_NAME] = radiuses;
   }
 }

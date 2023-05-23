@@ -17,7 +17,7 @@ import {
 } from './snapshot.js';
 
 export interface AnimationPlanner {
-  plan(context: AnimationPlanningContext): AnimationPlan;
+  plan(context: AnimationPlanningContext): Partial<AnimationPlan>;
 }
 export interface AnimationPlanningContext {
   root: MeasuredProjectionNode;
@@ -77,13 +77,19 @@ export class LayoutAnimator {
 
         const context: AnimationPlanningContext = {
           root: root as MeasuredProjectionNode, // root is the first node traversed
-          ...{ node, snapshots, snapshot, estimation },
+          ...{ node, snapshots, snapshot },
         };
 
-        const plan: AnimationPlan = this.planners.reduce(
-          (plan, planner) => ({ plan, ...planner.plan(context) }),
-          { boundingBox: this.getBoundingBoxRoute(context, estimation) },
-        );
+        const plan: AnimationPlan = {
+          ...this.planners.reduce(
+            (plan, planner) => ({
+              ...plan,
+              ...planner.plan(context),
+            }),
+            {},
+          ),
+          boundingBox: this.getBoundingBoxRoute(context, estimation),
+        };
 
         map.set(node.id, plan);
       },

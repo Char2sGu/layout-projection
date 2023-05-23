@@ -9,11 +9,7 @@ import {
   AnimationRoute,
 } from './animation-core.js';
 import { ProjectionNode } from './projection.js';
-import {
-  BorderRadiusConfig,
-  BorderRadiusCornerConfig,
-  BoundingBox,
-} from './shared.js';
+import { BoundingBox } from './shared.js';
 
 export interface AnimationHandler {
   handleFrame(
@@ -66,8 +62,7 @@ export class ProjectionNodeAnimationEngine {
     progress: number,
   ): void {
     const boundingBox = this.calcFrameBoundingBox(plan.boundingBox, progress);
-    const borderRadiuses = this.calcBorderRadiuses(plan, progress);
-    node.borderRadiuses = borderRadiuses;
+    this.handlers.forEach((h) => h.handleFrame(node, progress, plan));
     node.project(boundingBox);
   }
 
@@ -82,30 +77,6 @@ export class ProjectionNodeAnimationEngine {
       right: mix(from.right, to.right, progress),
       bottom: mix(from.bottom, to.bottom, progress),
     });
-  }
-
-  protected calcBorderRadiuses(
-    plan: AnimationPlan,
-    progress: number,
-  ): BorderRadiusConfig {
-    const route = plan['borderRadiuses'] as AnimationRoute<BorderRadiusConfig>;
-    const { from, to } = route;
-
-    const mixRadius = (
-      from: BorderRadiusCornerConfig,
-      to: BorderRadiusCornerConfig,
-      progress: number,
-    ): BorderRadiusCornerConfig => ({
-      x: mix(from.x, to.x, progress),
-      y: mix(from.y, to.y, progress),
-    });
-
-    return {
-      topLeft: mixRadius(from.topLeft, to.topLeft, progress),
-      topRight: mixRadius(from.topRight, to.topRight, progress),
-      bottomLeft: mixRadius(from.bottomLeft, to.bottomLeft, progress),
-      bottomRight: mixRadius(from.bottomRight, to.bottomRight, progress),
-    };
   }
 }
 

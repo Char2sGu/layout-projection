@@ -1,11 +1,9 @@
-import { ElementMeasurer } from './measure.js';
 import {
-  BorderRadiusConfig,
-  BorderRadiusCornerConfig,
-  BoundingBox,
-  TransformAxisConfig,
-  TransformConfig,
-} from './shared.js';
+  DistortionCanceler,
+  DistortionCancellationContext,
+} from './distortion.js';
+import { ElementMeasurer } from './measure.js';
+import { BoundingBox, TransformAxisConfig, TransformConfig } from './shared.js';
 
 /**
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
@@ -21,12 +19,12 @@ export class ProjectionNode {
   children = new Set<ProjectionNode>();
 
   boundingBox?: BoundingBox;
-  borderRadiuses?: BorderRadiusConfig;
   transform?: TransformConfig;
 
   constructor(
     public element: HTMLElement,
     protected measurer: ElementMeasurer,
+    protected distortionCancelers: DistortionCanceler<object>[],
   ) {}
 
   identifyAs(id: string): void {
@@ -81,14 +79,14 @@ export class ProjectionNode {
   }
 
   measure(): void {
-    this.boundingBox = this.measurer.measureBoundingBox(this.element);
-    this.borderRadiuses = this.measurer.measureBorderRadiuses(
-      this.element,
-      this.boundingBox,
+    const boundingBox = this.measurer.measureBoundingBox(this.element);
+    this.boundingBox = boundingBox;
+    this.distortionCancelers.forEach((c) =>
+      Object.assign(this, c.measure(this.element, boundingBox)),
     );
   }
   measured(): this is MeasuredProjectionNode {
-    return !!this.boundingBox && !!this.borderRadiuses;
+    return !!this.boundingBox;
   }
 
   project(destBoundingBox: BoundingBox): void {
@@ -104,28 +102,20 @@ export class ProjectionNode {
       ancestorTotalScale.y *= ancestor.transform.y.scale;
     }
 
-    const style = this.element.style;
-
     const transform = this.transform;
     const translateX = transform.x.translate / ancestorTotalScale.x;
     const translateY = transform.y.translate / ancestorTotalScale.y;
-    style.transform = [
+    this.element.style.transform = [
       `translate3d(${translateX}px, ${translateY}px, 0)`,
       `scale(${transform.x.scale}, ${transform.y.scale})`,
     ].join(' ');
 
-    const totalScale = {
-      x: ancestorTotalScale.x * this.transform.x.scale,
-      y: ancestorTotalScale.y * this.transform.y.scale,
+    const context: DistortionCancellationContext<object> = {
+      measured: this,
+      scaleX: ancestorTotalScale.x * this.transform.x.scale,
+      scaleY: ancestorTotalScale.y * this.transform.y.scale,
     };
-
-    const radiuses = this.borderRadiuses;
-    const radiusStyle = (radius: BorderRadiusCornerConfig) =>
-      `${radius.x / totalScale.x}px ${radius.y / totalScale.y}px`;
-    style.borderTopLeftRadius = radiusStyle(radiuses.topLeft);
-    style.borderTopRightRadius = radiusStyle(radiuses.topRight);
-    style.borderBottomLeftRadius = radiusStyle(radiuses.bottomLeft);
-    style.borderBottomRightRadius = radiusStyle(radiuses.bottomRight);
+    this.distortionCancelers.forEach((c) => c.cancel(this.element, context));
   }
 
   calculateTransform(destBoundingBox: BoundingBox): TransformConfig {
@@ -168,10 +158,12 @@ export class ProjectionNode {
     }
     return boundingBox;
   }
+
+  [prop: PropertyKey]: unknown;
 }
 
 export type MeasuredProjectionNode = ProjectionNode &
-  Required<Pick<ProjectionNode, 'boundingBox' | 'borderRadiuses'>>;
+  Required<Pick<ProjectionNode, 'boundingBox'>>;
 
 export interface ProjectionNodeTraverseOptions {
   includeSelf?: boolean;
