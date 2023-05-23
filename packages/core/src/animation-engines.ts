@@ -15,8 +15,18 @@ import {
   BoundingBox,
 } from './shared.js';
 
+export interface AnimationHandler {
+  handleFrame(
+    node: ProjectionNode,
+    progress: number,
+    plan: AnimationPlan,
+  ): void;
+}
+
 export class ProjectionNodeAnimationEngine {
   protected records = new WeakMap<ProjectionNode, ProjectionNodeAnimationRef>();
+
+  constructor(protected handlers: AnimationHandler[]) {}
 
   animate(
     node: ProjectionNode,
