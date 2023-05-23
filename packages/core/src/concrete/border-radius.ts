@@ -2,11 +2,11 @@ import { mix } from 'popmotion';
 
 import { AnimationPlan, AnimationRoute } from '../animation-core.js';
 import { AnimationHandler } from '../animation-engines.js';
-import { CssBorderRadiusParser } from '../css.js';
 import {
   DistortionCanceler,
   DistortionCancellationContext,
 } from '../distortion.js';
+import { ElementMeasurer } from '../measure.js';
 import { ProjectionNode } from '../projection.js';
 import { BoundingBox } from '../shared.js';
 
@@ -24,18 +24,10 @@ export interface BorderRadiusCornerConfig {
 export class BorderRadiusDistortionCanceller
   implements DistortionCanceler<BorderRadiusConfig>
 {
-  constructor(protected parser: CssBorderRadiusParser) {}
+  constructor(protected measurer: ElementMeasurer) {}
 
   measure(element: HTMLElement, boundingBox: BoundingBox): BorderRadiusConfig {
-    const style = getComputedStyle(element);
-    const parse = (style: string) =>
-      this.parser.parse(style, boundingBox.width(), boundingBox.height());
-    return {
-      topLeft: parse(style.borderTopLeftRadius),
-      topRight: parse(style.borderTopRightRadius),
-      bottomLeft: parse(style.borderBottomLeftRadius),
-      bottomRight: parse(style.borderBottomRightRadius),
-    };
+    return this.measurer.measureBorderRadiuses(element, boundingBox);
   }
 
   cancel(
