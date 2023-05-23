@@ -28,6 +28,13 @@
     "@typescript-eslint/no-duplicate-imports": "error",
     "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
     "@typescript-eslint/method-signature-style": ["error", "method"],
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": { "Function": false },
+        "extendDefaults": true
+      }
+    ],
     "@typescript-eslint/explicit-member-accessibility": [
       "error",
       { "accessibility": "no-public" }
