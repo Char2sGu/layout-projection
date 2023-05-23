@@ -1,6 +1,7 @@
 import { CssBorderRadiusParser } from './css.js';
 import { BorderRadiusConfig, BoundingBox } from './shared.js';
 
+// TODO: remove
 export class ElementMeasurer {
   constructor(protected borderRadiusParser: CssBorderRadiusParser) {}
 

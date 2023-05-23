@@ -3,12 +3,12 @@ import { mix } from 'popmotion';
 import { AnimationPlanner, AnimationPlanningContext } from '../animation.js';
 import { AnimationPlan, AnimationRoute } from '../animation-core.js';
 import { AnimationHandler } from '../animation-engines.js';
-import {
-  DistortionCanceler,
-  DistortionCancellationContext,
-} from '../distortion.js';
 import { ElementMeasurer } from '../measure.js';
-import { ProjectionNode } from '../projection.js';
+import {
+  ProjectionComponent,
+  ProjectionDistortion,
+  ProjectionNode,
+} from '../projection.js';
 import { BoundingBox } from '../shared.js';
 
 export interface BorderRadiusConfig {
@@ -24,15 +24,15 @@ export interface BorderRadiusCornerConfig {
 
 const PROP_NAME = 'borderRadiuses';
 export interface BorderRadiusProperties {
-  borderRadiuses: BorderRadiusConfig;
+  [PROP_NAME]: BorderRadiusConfig;
 }
 
 export class BorderRadiusDistortionCanceller
-  implements DistortionCanceler<BorderRadiusProperties>
+  implements ProjectionComponent<BorderRadiusProperties>
 {
   constructor(protected measurer: ElementMeasurer) {}
 
-  measure(
+  measureProperties(
     element: HTMLElement,
     boundingBox: BoundingBox,
   ): BorderRadiusProperties {
@@ -41,12 +41,11 @@ export class BorderRadiusDistortionCanceller
     };
   }
 
-  cancel(
+  cancelDistortion(
     element: HTMLElement,
-    context: DistortionCancellationContext<BorderRadiusProperties>,
+    { borderRadiuses: radiuses }: BorderRadiusProperties,
+    { scaleX, scaleY }: ProjectionDistortion,
   ): void {
-    const { scaleX, scaleY } = context;
-    const radiuses = context.measured.borderRadiuses;
     const radiusStyle = (radius: BorderRadiusCornerConfig) =>
       `${radius.x / scaleX}px ${radius.y / scaleY}px`;
     element.style.borderTopLeftRadius = radiusStyle(radiuses.topLeft);
@@ -59,11 +58,14 @@ export class BorderRadiusDistortionCanceller
 export class BorderRadiusAnimationComponent
   implements AnimationPlanner, AnimationHandler
 {
-  plan(context: AnimationPlanningContext): Partial<AnimationPlan> {
-    const { node, snapshot } = context;
-    const from = snapshot?.borderRadiuses ?? node[PROP_NAME];
-    const to = node[PROP_NAME];
-    return { [PROP_NAME]: { from, to } };
+  buildPlan(context: AnimationPlanningContext): Partial<AnimationPlan> {
+    const { snapshot } = context;
+    const node = context.node as ProjectionNode & BorderRadiusProperties;
+    const route: AnimationRoute<BorderRadiusConfig> = {
+      from: snapshot?.borderRadiuses ?? node[PROP_NAME],
+      to: node[PROP_NAME],
+    };
+    return { [PROP_NAME]: route };
   }
 
   handleFrame(

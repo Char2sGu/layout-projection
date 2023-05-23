@@ -17,7 +17,7 @@ import {
 } from './snapshot.js';
 
 export interface AnimationPlanner {
-  plan(context: AnimationPlanningContext): Partial<AnimationPlan>;
+  buildPlan(context: AnimationPlanningContext): Partial<AnimationPlan>;
 }
 export interface AnimationPlanningContext {
   root: MeasuredProjectionNode;
@@ -84,7 +84,7 @@ export class LayoutAnimator {
           ...this.planners.reduce(
             (plan, planner) => ({
               ...plan,
-              ...planner.plan(context),
+              ...planner.buildPlan(context),
             }),
             {},
           ),

@@ -1,9 +1,14 @@
-import {
-  DistortionCanceler,
-  DistortionCancellationContext,
-} from './distortion.js';
 import { ElementMeasurer } from './measure.js';
 import { BoundingBox, TransformAxisConfig, TransformConfig } from './shared.js';
+
+export interface ProjectionComponent<Properties extends object> {
+  measureProperties(element: HTMLElement, boundingBox: BoundingBox): Properties;
+  cancelDistortion(
+    element: HTMLElement,
+    measured: Properties,
+    distortion: ProjectionDistortion,
+  ): void;
+}
 
 /**
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
@@ -24,7 +29,7 @@ export class ProjectionNode {
   constructor(
     public element: HTMLElement,
     protected measurer: ElementMeasurer,
-    protected distortionCancelers: DistortionCanceler<object>[],
+    protected components: ProjectionComponent<object>[],
   ) {}
 
   identifyAs(id: string): void {
@@ -81,8 +86,8 @@ export class ProjectionNode {
   measure(): void {
     const boundingBox = this.measurer.measureBoundingBox(this.element);
     this.boundingBox = boundingBox;
-    this.distortionCancelers.forEach((c) =>
-      Object.assign(this, c.measure(this.element, boundingBox)),
+    this.components.forEach((c) =>
+      Object.assign(this, c.measureProperties(this.element, boundingBox)),
     );
   }
   measured(): this is MeasuredProjectionNode {
@@ -110,12 +115,13 @@ export class ProjectionNode {
       `scale(${transform.x.scale}, ${transform.y.scale})`,
     ].join(' ');
 
-    const context: DistortionCancellationContext<object> = {
-      measured: this,
+    const distortion: ProjectionDistortion = {
       scaleX: ancestorTotalScale.x * this.transform.x.scale,
       scaleY: ancestorTotalScale.y * this.transform.y.scale,
     };
-    this.distortionCancelers.forEach((c) => c.cancel(this.element, context));
+    this.components.forEach((c) => {
+      c.cancelDistortion(this.element, this, distortion);
+    });
   }
 
   calculateTransform(destBoundingBox: BoundingBox): TransformConfig {
@@ -161,11 +167,14 @@ export class ProjectionNode {
 
   [prop: PropertyKey]: unknown;
 }
-
 export type MeasuredProjectionNode = ProjectionNode &
   Required<Pick<ProjectionNode, 'boundingBox'>>;
-
 export interface ProjectionNodeTraverseOptions {
   includeSelf?: boolean;
   includeDeactivated?: boolean;
+}
+
+export interface ProjectionDistortion {
+  scaleX: number;
+  scaleY: number;
 }

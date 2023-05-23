@@ -54,6 +54,7 @@ export class TransformAxisConfig {
   }
 }
 
+// TODO: remove
 export interface BorderRadiusConfig {
   topLeft: BorderRadiusCornerConfig;
   topRight: BorderRadiusCornerConfig;
@@ -61,6 +62,7 @@ export interface BorderRadiusConfig {
   bottomRight: BorderRadiusCornerConfig;
 }
 
+// TODO: remove
 export interface BorderRadiusCornerConfig {
   x: number;
   y: number;
