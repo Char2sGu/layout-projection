@@ -4,7 +4,7 @@ import {
   TransformConfig,
 } from './projection-core.js';
 
-export interface ProjectionComponent<Properties extends object> {
+export interface ProjectionComponent<Properties extends object = object> {
   measureProperties(element: HTMLElement, boundingBox: BoundingBox): Properties;
   cancelDistortion(
     element: HTMLElement,
@@ -33,7 +33,7 @@ export class ProjectionNode {
 
   constructor(
     public element: HTMLElement,
-    protected components: ProjectionComponent<object>[],
+    protected components: ProjectionComponent[],
   ) {}
 
   identifyAs(id: string): void {
