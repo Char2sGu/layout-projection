@@ -1,12 +1,15 @@
 import {
   Directive,
   ElementRef,
+  Inject,
   Input,
   OnDestroy,
   Optional,
   SkipSelf,
 } from '@angular/core';
-import { ElementMeasurer, ProjectionNode } from '@layout-projection/core';
+import { ProjectionComponent, ProjectionNode } from '@layout-projection/core';
+
+import { PROJECTION_COMPONENTS } from './layout-projection.module';
 
 @Directive({
   selector: '[lpjNode]',
@@ -34,10 +37,10 @@ export class ProjectionNodeDirective
 
   constructor(
     elementRef: ElementRef<HTMLElement>,
-    measurer: ElementMeasurer,
+    @Inject(PROJECTION_COMPONENTS) components: ProjectionComponent[],
     @SkipSelf() @Optional() parent?: ProjectionNode,
   ) {
-    super(elementRef.nativeElement, measurer);
+    super(elementRef.nativeElement, components);
     if (parent) this.attach(parent);
   }
 

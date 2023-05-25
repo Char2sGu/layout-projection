@@ -84,7 +84,7 @@ export class LayoutAnimationTriggerDirective implements OnInit {
   }
 
   snapshot(): void {
-    this.resolveTargets().forEach((entry) => entry.snapshot());
+    this.resolveTargets().forEach((entry) => entry.snapshot({ measure: true }));
   }
 
   animate(): AnimationRef {

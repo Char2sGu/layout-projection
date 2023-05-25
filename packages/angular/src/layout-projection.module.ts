@@ -1,9 +1,16 @@
-import { inject, ModuleWithProviders, NgModule, Provider } from '@angular/core';
 import {
-  CssBorderRadiusParser,
+  inject,
+  InjectionToken,
+  ModuleWithProviders,
+  NgModule,
+  Provider,
+} from '@angular/core';
+import {
+  AnimationHandler,
+  AnimationPlanner,
   CssEasingParser,
-  ElementMeasurer,
   LayoutAnimator,
+  ProjectionComponent,
   ProjectionNodeAnimationEngine,
   ProjectionNodeSnapper,
   ProjectionTreeAnimationEngine,
@@ -29,6 +36,19 @@ const DIRECTIVES = [
   LayoutAnimationSelfTriggerDirective,
 ];
 
+export const PROJECTION_COMPONENTS = new InjectionToken<ProjectionComponent[]>(
+  'PROJECTION_COMPONENTS',
+  { factory: () => [] },
+);
+export const ANIMATION_HANDLERS = new InjectionToken<AnimationHandler[]>(
+  'ANIMATION_HANDLERS',
+  { factory: () => [] },
+);
+export const ANIMATION_PLANNERS = new InjectionToken<AnimationPlanner[]>(
+  'ANIMATION_PLANNERS',
+  { factory: () => [] },
+);
+
 @NgModule({
   imports: DIRECTIVES,
   exports: DIRECTIVES,
@@ -48,13 +68,14 @@ const PROVIDERS: Provider[] = [
     useFactory: () =>
       new LayoutAnimator(
         inject(ProjectionTreeAnimationEngine),
-        inject(ElementMeasurer),
         inject(CssEasingParser),
+        inject(ANIMATION_PLANNERS),
       ),
   },
   {
     provide: ProjectionNodeAnimationEngine,
-    useFactory: () => new ProjectionNodeAnimationEngine(),
+    useFactory: () =>
+      new ProjectionNodeAnimationEngine(inject(ANIMATION_HANDLERS)),
   },
   {
     provide: ProjectionTreeAnimationEngine,
@@ -62,19 +83,11 @@ const PROVIDERS: Provider[] = [
       new ProjectionTreeAnimationEngine(inject(ProjectionNodeAnimationEngine)),
   },
   {
-    provide: ElementMeasurer,
-    useFactory: () => new ElementMeasurer(inject(CssBorderRadiusParser)),
+    provide: CssEasingParser,
+    useFactory: () => new CssEasingParser(),
   },
   {
     provide: ProjectionNodeSnapper,
-    useFactory: () => new ProjectionNodeSnapper(inject(ElementMeasurer)),
-  },
-  {
-    provide: CssBorderRadiusParser,
-    useFactory: () => new CssBorderRadiusParser(),
-  },
-  {
-    provide: CssEasingParser,
-    useFactory: () => new CssEasingParser(),
+    useFactory: () => new ProjectionNodeSnapper(),
   },
 ];

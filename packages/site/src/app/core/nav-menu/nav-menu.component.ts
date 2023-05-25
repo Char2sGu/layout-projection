@@ -102,7 +102,7 @@ export class NavMenuComponent {
   }
 
   initiateLayoutAnimation(): void {
-    this.animationEntry.snapshot();
+    this.animationEntry.snapshot({ measure: true });
     requestAnimationFrame(() => {
       this.animationEntry.animate({
         duration: 125,

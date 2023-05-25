@@ -2,7 +2,7 @@ import { MeasuredProjectionNode, ProjectionNode } from './projection.js';
 
 export class ProjectionNodeSnapper {
   snapshot(node: ProjectionNode): ProjectionNodeSnapshot {
-    if (!node.measured()) throw new Error('Node not measured');
+    if (!node.measured()) throw new Error(`Node "${node.id}" not measured`);
     const result = { ...node };
     result.children = new Set(node.children);
     return result;

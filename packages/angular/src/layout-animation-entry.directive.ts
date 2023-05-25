@@ -6,6 +6,7 @@ import {
   ProjectionNode,
   ProjectionNodeSnapper,
   ProjectionNodeSnapshotMap,
+  ProjectionTreeSnapshotOptions,
 } from '@layout-projection/core';
 
 import { LayoutAnimationScopeNodeRegistry } from './layout-animation-scope.providers';
@@ -40,10 +41,13 @@ export class LayoutAnimationEntryDirective extends LayoutAnimationEntry {
     super({ node, deps: [animator, snapper], storage: snapshots });
   }
 
-  override snapshot(): void {
-    // TODO: measure
-    const filter = this.nodeRegistry?.has.bind(this.nodeRegistry);
-    const snapshots = this.snapper.snapshotTree(this.node, filter);
+  override snapshot(options?: ProjectionTreeSnapshotOptions): void {
+    if (this.nodeRegistry && options?.filter) {
+      const filter = options.filter;
+      const registry = this.nodeRegistry;
+      options.filter = (node) => registry.has(node) && filter(node);
+    }
+    const snapshots = this.snapper.snapshotTree(this.node, options);
     this.snapshots.merge(snapshots);
   }
 }

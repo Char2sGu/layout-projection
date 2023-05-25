@@ -1,5 +1,5 @@
 import { Directive, ElementRef, inject, OnDestroy } from '@angular/core';
-import { ElementMeasurer } from '@layout-projection/core';
+import { BoundingBox } from '@layout-projection/core';
 
 @Directive({
   selector: '[lpjFixLayoutOnDestroy]',
@@ -7,10 +7,9 @@ import { ElementMeasurer } from '@layout-projection/core';
 })
 export class FixLayoutOnDestroyDirective implements OnDestroy {
   private element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
-  private measurer = inject(ElementMeasurer);
 
   ngOnDestroy(): void {
-    const boundingBox = this.measurer.measureBoundingBox(this.element);
+    const boundingBox = BoundingBox.from(this.element);
 
     // TODO: safer parsing
     const styles = getComputedStyle(this.element);
