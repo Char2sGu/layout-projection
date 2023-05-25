@@ -19,6 +19,7 @@ import {
   ProjectionNodeSnapper,
   ProjectionNodeSnapshot,
   ProjectionNodeSnapshotMap,
+  ProjectionTreeSnapshotOptions,
 } from './snapshot.js';
 
 export interface AnimationPlanner {
@@ -175,9 +176,8 @@ export class LayoutAnimationEntry {
     this.animationConfig = config.animation ?? {};
   }
 
-  snapshot(): void {
-    // TODO: measure
-    const snapshots = this.snapper.snapshotTree(this.node);
+  snapshot(options?: ProjectionTreeSnapshotOptions): void {
+    const snapshots = this.snapper.snapshotTree(this.node, options);
     this.snapshots.merge(snapshots);
   }
 

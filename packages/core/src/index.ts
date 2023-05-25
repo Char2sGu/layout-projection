@@ -4,4 +4,3 @@ export * from './animation-engines.js';
 export * from './projection.js';
 export * from './projection-core.js';
 export * from './snapshot.js';
-// TODO: use plugins for calibrations
