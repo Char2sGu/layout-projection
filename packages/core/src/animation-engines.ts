@@ -3,13 +3,11 @@ import { animate, mix } from 'popmotion';
 import {
   AggregationAnimationRef,
   AnimationConfig,
-  AnimationPlan,
   AnimationRef,
   AnimationResult,
-  AnimationRoute,
 } from './animation-core.js';
 import { ProjectionNode } from './projection.js';
-import { BoundingBox } from './shared.js';
+import { BoundingBox } from './projection-core.js';
 
 export interface AnimationHandler {
   handleFrame(
@@ -136,4 +134,13 @@ export class ProjectionTreeAnimationRef extends AggregationAnimationRef {
 
 export interface ProjectionTreeAnimationConfig extends AnimationConfig {
   plans: Map<ProjectionNode['id'], AnimationPlan>;
+}
+
+export interface AnimationPlan {
+  boundingBox: AnimationRoute<BoundingBox>;
+  [name: string]: AnimationRoute<unknown>;
+}
+export interface AnimationRoute<Value> {
+  from: Value;
+  to: Value;
 }

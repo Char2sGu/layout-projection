@@ -1,4 +1,8 @@
-import { BoundingBox, TransformAxisConfig, TransformConfig } from './shared.js';
+import {
+  BoundingBox,
+  TransformAxisConfig,
+  TransformConfig,
+} from './projection-core.js';
 
 export interface ProjectionComponent<Properties extends object> {
   measureProperties(element: HTMLElement, boundingBox: BoundingBox): Properties;

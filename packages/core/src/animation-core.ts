@@ -1,7 +1,5 @@
 import { Easing } from 'popmotion';
 
-import { BoundingBox } from './shared.js';
-
 export class AnimationRef implements PromiseLike<AnimationResult> {
   constructor(
     private promise: Promise<AnimationResult>,
@@ -46,13 +44,4 @@ export enum AnimationResult {
 export interface AnimationConfig {
   duration: number;
   easing: Easing;
-}
-
-export interface AnimationPlan {
-  boundingBox: AnimationRoute<BoundingBox>;
-  [name: string]: AnimationRoute<unknown>;
-}
-export interface AnimationRoute<Value> {
-  from: Value;
-  to: Value;
 }

@@ -2,25 +2,17 @@ import { mix } from 'popmotion';
 import * as styleUnits from 'style-value-types';
 
 import { AnimationPlanner, AnimationPlanningContext } from '../animation.js';
-import { AnimationPlan, AnimationRoute } from '../animation-core.js';
-import { AnimationHandler } from '../animation-engines.js';
+import {
+  AnimationHandler,
+  AnimationPlan,
+  AnimationRoute,
+} from '../animation-engines.js';
 import {
   ProjectionComponent,
   ProjectionDistortion,
   ProjectionNode,
 } from '../projection.js';
-import { BoundingBox } from '../shared.js';
-
-export interface BorderRadiusConfig {
-  topLeft: BorderRadiusCornerConfig;
-  topRight: BorderRadiusCornerConfig;
-  bottomLeft: BorderRadiusCornerConfig;
-  bottomRight: BorderRadiusCornerConfig;
-}
-export interface BorderRadiusCornerConfig {
-  x: number;
-  y: number;
-}
+import { BoundingBox } from '../projection-core.js';
 
 const PROP_NAME = 'borderRadiuses';
 export interface BorderRadiusProperties {
@@ -123,7 +115,7 @@ export class CssBorderRadiusParser {
     style: string,
     width: number,
     height: number,
-  ): { x: number; y: number } {
+  ): BorderRadiusCornerConfig {
     if (style.match(/\d.*?px \d.*?px/u)) {
       const [x, y] = style.split(' ').map((value) => parseFloat(value));
       return { x, y };
@@ -138,4 +130,15 @@ export class CssBorderRadiusParser {
     }
     throw new Error(`Unsupported radius: ${style}`);
   }
+}
+
+export interface BorderRadiusConfig {
+  topLeft: BorderRadiusCornerConfig;
+  topRight: BorderRadiusCornerConfig;
+  bottomLeft: BorderRadiusCornerConfig;
+  bottomRight: BorderRadiusCornerConfig;
+}
+export interface BorderRadiusCornerConfig {
+  x: number;
+  y: number;
 }

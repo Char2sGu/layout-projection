@@ -7,15 +7,14 @@ import {
   linear,
 } from 'popmotion';
 
+import { AnimationRef, AnimationResult } from './animation-core.js';
 import {
   AnimationPlan,
-  AnimationRef,
-  AnimationResult,
   AnimationRoute,
-} from './animation-core.js';
-import { ProjectionTreeAnimationEngine } from './animation-engines.js';
+  ProjectionTreeAnimationEngine,
+} from './animation-engines.js';
 import { MeasuredProjectionNode, ProjectionNode } from './projection.js';
-import { BoundingBox } from './shared.js';
+import { BoundingBox } from './projection-core.js';
 import {
   ProjectionNodeSnapper,
   ProjectionNodeSnapshot,
