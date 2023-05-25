@@ -201,7 +201,7 @@ export interface LayoutAnimationEntryConfig {
 export interface LayoutAnimationEntryAnimationConfig
   extends Omit<LayoutAnimationConfig, 'root' | 'from'> {}
 
-class CssEasingParser {
+export class CssEasingParser {
   parse(easing: string): Easing {
     if (easing === 'linear') {
       return linear;
