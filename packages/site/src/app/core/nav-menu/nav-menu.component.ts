@@ -23,12 +23,11 @@ import {
   mergeWith,
   Observable,
   shareReplay,
-  startWith,
-  switchMap,
 } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
 import { NavItem, NavItemGroup } from '../nav.models';
+import { NavContentActivationDetector } from '../nav-content-activation-detector.service';
 
 @Component({
   selector: 'lpj-nav-menu',
@@ -45,6 +44,7 @@ import { NavItem, NavItemGroup } from '../nav.models';
 export class NavMenuComponent {
   animationEntry = inject(LayoutAnimationEntry);
   private router = inject(Router);
+  private activationDetector = inject(NavContentActivationDetector);
 
   // prettier-ignore
   @Input({ alias: 'content', required: true })
@@ -64,16 +64,11 @@ export class NavMenuComponent {
 
   itemMouseEnter = new EventEmitter<NavItem>();
 
-  itemActive$: Observable<NavItem | undefined> = this.itemGroups$.pipe(
-    filter((groups) => !!groups.length),
-    switchMap((groups) =>
-      this.router.events.pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map(() => groups),
-        startWith(groups),
-      ),
-    ),
-    map((groups) => this.matchActiveItemByRoute(groups) ?? undefined),
+  itemActive$: Observable<NavItem | undefined> = merge(
+    this.itemGroups$,
+    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)),
+  ).pipe(
+    map(() => this.detectActiveItem()),
     shareReplay(1),
   );
   itemActive = toSignal(this.itemActive$);
@@ -111,18 +106,7 @@ export class NavMenuComponent {
     });
   }
 
-  matchActiveItemByRoute(groups: NavItemGroup[]): NavItem | null {
-    for (const group of groups) {
-      const item = group.items.find((item) =>
-        this.router.isActive(`guides/${item.path}`, {
-          paths: 'exact',
-          fragment: 'ignored',
-          matrixParams: 'ignored',
-          queryParams: 'ignored',
-        }),
-      );
-      if (item) return item;
-    }
-    return null;
+  detectActiveItem(): NavItem | undefined {
+    return this.activationDetector.detect()?.item;
   }
 }

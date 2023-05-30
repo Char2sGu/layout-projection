@@ -1,9 +1,11 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, first, map } from 'rxjs';
 
 import { AnimationCurve } from '../../common/animation';
 import { NAV_CONTENT } from '../nav.models';
+import { NavContentActivationDetector } from '../nav-content-activation-detector.service';
 
 @Component({
   selector: 'lpj-nav',
@@ -27,9 +29,22 @@ import { NAV_CONTENT } from '../nav.models';
 })
 export class NavComponent {
   private content = inject(NAV_CONTENT);
+  private contentActivationDetector = inject(NavContentActivationDetector);
+  private router = inject(Router);
 
   tabs = Object.keys(this.content);
   tabActive$ = new BehaviorSubject(this.tabs[0]);
 
   items$ = this.tabActive$.pipe(map((tab) => this.content[tab]));
+
+  constructor() {
+    this.router.events
+      .pipe(first((e) => e instanceof NavigationEnd))
+      .subscribe(() => this.activateRouteTab());
+  }
+
+  activateRouteTab(): void {
+    const tab = this.contentActivationDetector.detect()?.tab;
+    if (tab) this.tabActive$.next(tab);
+  }
 }
