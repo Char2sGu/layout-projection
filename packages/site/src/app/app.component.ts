@@ -39,7 +39,7 @@ export class AppComponent {
   headerState$: Observable<string> = this.documentScrollTop$.pipe(
     pairwise(),
     map(([prev, curr]) => {
-      if (curr > prev) return 'collapsed';
+      if (curr > 50 && curr > prev) return 'collapsed';
       if (curr > 10) return 'detached';
       return 'regular';
     }),
