@@ -6,7 +6,7 @@ Framework-agnostic **Layout Projection** and **Layout-Projection-powered** layou
 
 # Getting Started
 
-- [Getting started](https://thenightmarex.github.io/layout-projection/)
+- [Getting started](https://char2sgu.github.io/layout-projection/)
 - [Getting started with Angular](./packages/angular/README.md)
 
 # What is it?
