@@ -7,7 +7,11 @@ import {
   Optional,
   SkipSelf,
 } from '@angular/core';
-import { ProjectionComponent, ProjectionNode } from '@layout-projection/core';
+import {
+  AnimationTag,
+  ProjectionComponent,
+  ProjectionNode,
+} from '@layout-projection/core';
 
 import { PROJECTION_COMPONENTS } from './layout-projection.module';
 
@@ -42,6 +46,8 @@ export class ProjectionNodeDirective
   ) {
     super(elementRef.nativeElement, components);
     if (parent) this.attach(parent);
+    this.addTag(AnimationTag.AnimateSize);
+    this.addTag(AnimationTag.AnimatePosition);
   }
 
   ngOnDestroy(): void {
