@@ -5,6 +5,7 @@ import {
   AnimationConfig,
   AnimationRef,
   AnimationResult,
+  AnimationTag,
 } from './animation-core.js';
 import { ProjectionNode } from './projection.js';
 import { BoundingBox } from './projection-core.js';
@@ -59,7 +60,10 @@ export class ProjectionNodeAnimationEngine {
     plan: AnimationPlan,
     progress: number,
   ): void {
-    const boundingBox = this.calcFrameBoundingBox(plan.boundingBox, progress);
+    const boundingBox = this.calcFrameBoundingBox(plan.boundingBox, progress, {
+      position: node.hasTag(AnimationTag.AnimatePosition),
+      size: node.hasTag(AnimationTag.AnimateSize),
+    });
     this.handlers.forEach((h) => h.handleFrame(node, progress, plan));
     node.project(boundingBox);
   }
@@ -67,14 +71,34 @@ export class ProjectionNodeAnimationEngine {
   protected calcFrameBoundingBox(
     route: AnimationRoute<BoundingBox>,
     progress: number,
+    config: { position: boolean; size: boolean },
   ): BoundingBox {
     const { from, to } = route;
-    return new BoundingBox({
-      top: mix(from.top, to.top, progress),
-      left: mix(from.left, to.left, progress),
-      right: mix(from.right, to.right, progress),
-      bottom: mix(from.bottom, to.bottom, progress),
-    });
+    if (config.position && config.size) {
+      return new BoundingBox({
+        top: mix(from.top, to.top, progress),
+        left: mix(from.left, to.left, progress),
+        right: mix(from.right, to.right, progress),
+        bottom: mix(from.bottom, to.bottom, progress),
+      });
+    } else if (config.position) {
+      const top = mix(from.top, to.top, progress);
+      const left = mix(from.left, to.left, progress);
+      return new BoundingBox({
+        top,
+        left,
+        right: left + to.width(),
+        bottom: top + to.height(),
+      });
+    } else if (config.size) {
+      return new BoundingBox({
+        top: to.top,
+        left: to.left,
+        right: to.left + mix(from.width(), to.width(), progress),
+        bottom: to.top + mix(from.height(), to.height(), progress),
+      });
+    }
+    return to;
   }
 }
 

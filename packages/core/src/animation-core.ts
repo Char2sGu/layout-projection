@@ -1,5 +1,19 @@
 import { Easing } from 'popmotion';
 
+/**
+ * ProjectionNode tags that are used within animations.
+ */
+export enum AnimationTag {
+  /**
+   * Enables animation on position related properties.
+   */
+  AnimatePosition = 'AnimatePosition',
+  /**
+   * Enables animation on size related properties.
+   */
+  AnimateSize = 'AnimateSize',
+}
+
 export class AnimationRef implements PromiseLike<AnimationResult> {
   constructor(
     private promise: Promise<AnimationResult>,

@@ -31,11 +31,17 @@ export class ProjectionNode {
 
   protected identified = false;
 
+  private readonly tags = new Set<string>();
+
   constructor(
     public element: HTMLElement,
     protected components: ProjectionComponent[],
   ) {}
 
+  /**
+   * Assign a ID to this projection node. The ID cannot be assigned again.
+   * @throws Error if an ID has already been assigned.
+   */
   identifyAs(id: string): void {
     if (this.identified)
       throw new Error(`Node "${this.id}" already identified`);
@@ -50,16 +56,54 @@ export class ProjectionNode {
     this.activated = false;
   }
 
+  /**
+   * Attach this node as a child of the given parent node.
+   * One projection node can only have one parent.
+   * @param parent another projection node
+   */
   attach(parent: ProjectionNode): void {
     this.parent = parent;
     parent.children.add(this);
   }
+  /**
+   * Detach this node from its current parent.
+   * @throws Error if no parent.
+   *
+   * @remarks
+   * A node must be detached from its parent on disposal, or memory
+   * leak will occur.
+   */
   detach(): void {
     if (!this.parent) throw new Error('Missing parent');
     this.parent.children.delete(this);
     this.parent = undefined;
   }
 
+  /**
+   * Add an arbitrary string tag to this projection node.
+   * @see `AnimationTag` for tags related to animations.
+   */
+  addTag(tag: string): void {
+    this.tags.add(tag);
+  }
+  /**
+   * Delete a tag from this projection node.
+   * Do nothing if the tag does not exist.
+   */
+  delTag(tag: string): void {
+    this.tags.delete(tag);
+  }
+  /**
+   * Returns whether this projection node has the given tag.
+   */
+  hasTag(tag: string): boolean {
+    return this.tags.has(tag);
+  }
+
+  /**
+   * Traverse down the node tree starting from this node.
+   * @param callback invoked on each node
+   */
   traverse(
     callback: (node: ProjectionNode) => void,
     options: ProjectionNodeTraverseOptions = {},
@@ -74,6 +118,12 @@ export class ProjectionNode {
       child.traverse(callback, { ...options, includeSelf: true });
     });
   }
+
+  /**
+   * Track the path from the root node to this node.
+   * @returns an array of nodes, where the first element is the root node and
+   * the last element is this node.
+   */
   track(): ProjectionNode[] {
     const path = [];
     let ancestor = this.parent;
@@ -84,9 +134,13 @@ export class ProjectionNode {
     return path;
   }
 
+  /**
+   * Reset any transform applied to the element.
+   */
   reset(): void {
     this.transform = undefined;
     this.element.style.transform = '';
+    // TODO: should delegate to ProjectionComponent
     this.element.style.borderRadius = '';
   }
 
@@ -176,8 +230,16 @@ export class ProjectionNode {
 }
 export type MeasuredProjectionNode = ProjectionNode &
   Required<Pick<ProjectionNode, 'boundingBox'>>;
+
 export interface ProjectionNodeTraverseOptions {
+  /**
+   * Whether to include the given node itself in the traversal.
+   */
   includeSelf?: boolean;
+
+  /**
+   * Whether to include deactivated nodes in the traversal.
+   */
   includeDeactivated?: boolean;
 }
 
