@@ -25,6 +25,7 @@ import {
 export interface AnimationPlanner {
   buildPlan(context: AnimationPlanningContext<object>): Partial<AnimationPlan>;
 }
+
 export interface AnimationPlanningContext<NodeProperties extends object> {
   root: MeasuredProjectionNode & NodeProperties;
   node: MeasuredProjectionNode & NodeProperties;

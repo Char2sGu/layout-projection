@@ -4,8 +4,27 @@ import {
   TransformConfig,
 } from './projection-core.js';
 
+/**
+ * During a projection, aside from the bounding box, many other CSS properties
+ * might be distorted too, such as border radius, box shadow, etc.
+ * A ProjectionComponent is responsible for handling such additional CSS properties
+ * of an element for projection.
+ */
 export interface ProjectionComponent<Properties extends object = object> {
+  /**
+   * Measures the target properties of the given element.
+   * @param element target element
+   * @param boundingBox current bounding box of the element
+   * @returns the measured properties
+   */
   measureProperties(element: HTMLElement, boundingBox: BoundingBox): Properties;
+
+  /**
+   * Update the given element to cancel the distortion during projection.
+   * @param element target element
+   * @param measured measured properties before the projection, usually by `measureProperties`
+   * @param distortion the distortion to cancel
+   */
   cancelDistortion(
     element: HTMLElement,
     measured: Properties,
