@@ -1,34 +1,6 @@
 import { NavContent } from './core/nav.models';
 
 export const APP_NAV_CONTENT: NavContent = {
-  ['Angular']: [
-    {
-      name: 'Getting Started',
-      items: [
-        {
-          name: 'Overview',
-          path: 'angular/README',
-        },
-      ],
-    },
-    {
-      name: 'References',
-      items: [
-        {
-          name: 'Projection Tree',
-          path: 'angular/references/projection-tree',
-        },
-        {
-          name: 'Animation Directives',
-          path: 'angular/references/animation-directives',
-        },
-        {
-          name: 'Animation Scope',
-          path: 'angular/references/animation-scope',
-        },
-      ],
-    },
-  ],
   ['Core']: [
     {
       name: 'Getting Started',
@@ -57,6 +29,34 @@ export const APP_NAV_CONTENT: NavContent = {
         {
           name: 'Standalone Usage',
           path: 'core/references/standalone-usage',
+        },
+      ],
+    },
+  ],
+  ['Angular']: [
+    {
+      name: 'Getting Started',
+      items: [
+        {
+          name: 'Overview',
+          path: 'angular/README',
+        },
+      ],
+    },
+    {
+      name: 'References',
+      items: [
+        {
+          name: 'Projection Tree',
+          path: 'angular/references/projection-tree',
+        },
+        {
+          name: 'Animation Directives',
+          path: 'angular/references/animation-directives',
+        },
+        {
+          name: 'Animation Scope',
+          path: 'angular/references/animation-scope',
         },
       ],
     },
