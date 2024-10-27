@@ -1,11 +1,11 @@
 import {
-  BoundingBox,
+  Layout,
   TransformAxisConfig,
   TransformConfig,
 } from './projection-core.js';
 
 /**
- * During a projection, aside from the bounding box, many other CSS properties
+ * During a projection, aside from the layout, many other CSS properties
  * might be distorted too, such as border radius, box shadow, etc.
  * A ProjectionComponent is responsible for handling such additional CSS properties
  * of an element for projection.
@@ -14,10 +14,10 @@ export interface ProjectionComponent<Properties extends object = object> {
   /**
    * Measures the target properties of the given element.
    * @param element target element
-   * @param boundingBox current bounding box of the element
+   * @param layout current layout of the element
    * @returns the measured properties
    */
-  measureProperties(element: HTMLElement, boundingBox: BoundingBox): Properties;
+  measureProperties(element: HTMLElement, layout: Layout): Properties;
 
   /**
    * Update the given element to cancel the distortion during projection.
@@ -45,7 +45,7 @@ export class ProjectionNode {
   parent?: ProjectionNode;
   children = new Set<ProjectionNode>();
 
-  boundingBox?: BoundingBox;
+  layout?: Layout;
   transform?: TransformConfig;
 
   protected identified = false;
@@ -164,20 +164,20 @@ export class ProjectionNode {
   }
 
   measure(): void {
-    const boundingBox = BoundingBox.from(this.element);
-    this.boundingBox = boundingBox;
+    const layout = Layout.from(this.element);
+    this.layout = layout;
     this.components.forEach((c) =>
-      Object.assign(this, c.measureProperties(this.element, boundingBox)),
+      Object.assign(this, c.measureProperties(this.element, layout)),
     );
   }
   measured(): this is MeasuredProjectionNode {
-    return !!this.boundingBox;
+    return !!this.layout;
   }
 
-  project(destBoundingBox: BoundingBox): void {
+  project(destLayout: Layout): void {
     if (!this.measured()) throw new Error('Node not measured');
 
-    this.transform = this.calculateTransform(destBoundingBox);
+    this.transform = this.calculateTransform(destLayout);
 
     const ancestorTotalScale = { x: 1, y: 1 };
     const ancestors = this.track();
@@ -204,20 +204,20 @@ export class ProjectionNode {
     });
   }
 
-  calculateTransform(destBoundingBox: BoundingBox): TransformConfig {
-    const currBoundingBox = this.calculateTransformedBoundingBox();
-    const currMidpoint = currBoundingBox.midpoint();
-    const destMidpoint = destBoundingBox.midpoint();
+  calculateTransform(destLayout: Layout): TransformConfig {
+    const currLayout = this.calculateTransformedLayout();
+    const currMidpoint = currLayout.midpoint();
+    const destMidpoint = destLayout.midpoint();
 
     const transform: TransformConfig = {
       x: new TransformAxisConfig({
         origin: currMidpoint.x,
-        scale: destBoundingBox.width() / currBoundingBox.width(),
+        scale: destLayout.width() / currLayout.width(),
         translate: destMidpoint.x - currMidpoint.x,
       }),
       y: new TransformAxisConfig({
         origin: currMidpoint.y,
-        scale: destBoundingBox.height() / currBoundingBox.height(),
+        scale: destLayout.height() / currLayout.height(),
         translate: destMidpoint.y - currMidpoint.y,
       }),
     };
@@ -229,26 +229,26 @@ export class ProjectionNode {
     return transform;
   }
 
-  calculateTransformedBoundingBox(): BoundingBox {
+  calculateTransformedLayout(): Layout {
     if (!this.measured()) throw new Error('Node not measured');
-    let boundingBox = this.boundingBox;
+    let layout = this.layout;
     for (const ancestor of this.track()) {
-      if (!ancestor.boundingBox || !ancestor.transform) continue;
+      if (!ancestor.layout || !ancestor.transform) continue;
       const transform = ancestor.transform;
-      boundingBox = new BoundingBox({
-        top: transform.y.apply(boundingBox.top),
-        left: transform.x.apply(boundingBox.left),
-        right: transform.x.apply(boundingBox.right),
-        bottom: transform.y.apply(boundingBox.bottom),
+      layout = new Layout({
+        top: transform.y.apply(layout.top),
+        left: transform.x.apply(layout.left),
+        right: transform.x.apply(layout.right),
+        bottom: transform.y.apply(layout.bottom),
       });
     }
-    return boundingBox;
+    return layout;
   }
 
   [prop: PropertyKey]: unknown;
 }
 export type MeasuredProjectionNode = ProjectionNode &
-  Required<Pick<ProjectionNode, 'boundingBox'>>;
+  Required<Pick<ProjectionNode, 'layout'>>;
 
 export interface ProjectionNodeTraverseOptions {
   /**

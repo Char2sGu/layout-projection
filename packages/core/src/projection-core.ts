@@ -10,12 +10,12 @@ export class Point {
 /**
  * Combination of position and size.
  */
-export class BoundingBox {
+export class Layout {
   /**
    * Construct from the current bounding box of a DOM element.
    */
-  static from(element: HTMLElement): BoundingBox {
-    return new BoundingBox(element.getBoundingClientRect());
+  static from(element: HTMLElement): Layout {
+    return new Layout(element.getBoundingClientRect());
   }
 
   readonly top: number;
@@ -23,7 +23,7 @@ export class BoundingBox {
   readonly right: number;
   readonly bottom: number;
 
-  constructor(data: Pick<BoundingBox, BorderName>) {
+  constructor(data: Pick<Layout, BorderName>) {
     this.top = data.top;
     this.left = data.left;
     this.right = data.right;

@@ -14,7 +14,7 @@ import {
   ProjectionTreeAnimationEngine,
 } from './animation-engines.js';
 import { MeasuredProjectionNode, ProjectionNode } from './projection.js';
-import { BoundingBox } from './projection-core.js';
+import { Layout } from './projection-core.js';
 import {
   ProjectionNodeSnapper,
   ProjectionNodeSnapshot,
@@ -95,7 +95,7 @@ export class LayoutAnimator {
             }),
             {},
           ),
-          boundingBox: this.getBoundingBoxRoute(context, estimation),
+          layout: this.getLayoutRoute(context, estimation),
         };
 
         map.set(node.id, plan);
@@ -106,25 +106,24 @@ export class LayoutAnimator {
     return map;
   }
 
-  protected getBoundingBoxRoute(
+  protected getLayoutRoute(
     context: AnimationPlanningContext<object>,
     estimation: boolean,
-  ): AnimationRoute<BoundingBox> {
+  ): AnimationRoute<Layout> {
     const { root, node, snapshot, snapshots } = context;
     const from =
-      snapshot?.boundingBox ||
-      (estimation &&
-        this.estimateBoundingBoxRouteStart(root, node, snapshots)) ||
-      node.boundingBox;
-    const to = node.boundingBox;
+      snapshot?.layout ||
+      (estimation && this.estimateLayoutRouteStart(root, node, snapshots)) ||
+      node.layout;
+    const to = node.layout;
     return { from, to };
   }
 
-  protected estimateBoundingBoxRouteStart(
+  protected estimateLayoutRouteStart(
     root: MeasuredProjectionNode,
     node: MeasuredProjectionNode,
     snapshots: ProjectionNodeSnapshotMap,
-  ): BoundingBox | undefined {
+  ): Layout | undefined {
     if (!node.measured()) throw new Error('Unknown node');
 
     let ancestor: ProjectionNode = node;
@@ -135,22 +134,22 @@ export class LayoutAnimator {
     }
     if (!ancestor.measured()) throw new Error('Unknown ancestor');
 
-    const transform = ancestor.calculateTransform(ancestorSnapshot.boundingBox);
+    const transform = ancestor.calculateTransform(ancestorSnapshot.layout);
     const scale = transform.x.scale;
 
-    return new BoundingBox({
+    return new Layout({
       top:
-        ancestorSnapshot.boundingBox.top -
-        (ancestor.boundingBox.top - node.boundingBox.top) * scale,
+        ancestorSnapshot.layout.top -
+        (ancestor.layout.top - node.layout.top) * scale,
       left:
-        ancestorSnapshot.boundingBox.left -
-        (ancestor.boundingBox.left - node.boundingBox.left) * scale,
+        ancestorSnapshot.layout.left -
+        (ancestor.layout.left - node.layout.left) * scale,
       right:
-        ancestorSnapshot.boundingBox.right -
-        (ancestor.boundingBox.right - node.boundingBox.right) * scale,
+        ancestorSnapshot.layout.right -
+        (ancestor.layout.right - node.layout.right) * scale,
       bottom:
-        ancestorSnapshot.boundingBox.top -
-        (ancestor.boundingBox.top - node.boundingBox.bottom) * scale,
+        ancestorSnapshot.layout.top -
+        (ancestor.layout.top - node.layout.bottom) * scale,
     });
   }
 }

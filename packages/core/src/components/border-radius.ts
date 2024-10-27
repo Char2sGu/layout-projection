@@ -12,7 +12,7 @@ import {
   ProjectionDistortion,
   ProjectionNode,
 } from '../projection.js';
-import { BoundingBox } from '../projection-core.js';
+import { Layout } from '../projection-core.js';
 
 const PROP_NAME = 'borderRadiuses';
 export interface BorderRadiusProperties {
@@ -26,10 +26,10 @@ export class BorderRadiusProjectionComponent
 
   measureProperties(
     element: HTMLElement,
-    boundingBox: BoundingBox,
+    layout: Layout,
   ): BorderRadiusProperties {
     return {
-      borderRadiuses: this.measurer.measure(element, boundingBox),
+      borderRadiuses: this.measurer.measure(element, layout),
     };
   }
 
@@ -94,12 +94,12 @@ export class BorderRadiusMeasurer {
 
   measure(
     element: HTMLElement,
-    boundingBox = BoundingBox.from(element),
+    layout = Layout.from(element),
   ): BorderRadiusConfig {
     const style = getComputedStyle(element);
 
     const parse = (style: string) =>
-      this.parser.parse(style, boundingBox.width(), boundingBox.height());
+      this.parser.parse(style, layout.width(), layout.height());
 
     return {
       topLeft: parse(style.borderTopLeftRadius),

@@ -8,7 +8,7 @@ import {
   AnimationTag,
 } from './animation-core.js';
 import { ProjectionNode } from './projection.js';
-import { BoundingBox } from './projection-core.js';
+import { Layout } from './projection-core.js';
 
 export interface AnimationHandler {
   handleFrame(
@@ -60,22 +60,22 @@ export class ProjectionNodeAnimationEngine {
     plan: AnimationPlan,
     progress: number,
   ): void {
-    const boundingBox = this.calcFrameBoundingBox(plan.boundingBox, progress, {
+    const layout = this.calcFrameLayout(plan.layout, progress, {
       position: node.hasTag(AnimationTag.AnimatePosition),
       size: node.hasTag(AnimationTag.AnimateSize),
     });
     this.handlers.forEach((h) => h.handleFrame(node, progress, plan));
-    node.project(boundingBox);
+    node.project(layout);
   }
 
-  protected calcFrameBoundingBox(
-    route: AnimationRoute<BoundingBox>,
+  protected calcFrameLayout(
+    route: AnimationRoute<Layout>,
     progress: number,
     config: { position: boolean; size: boolean },
-  ): BoundingBox {
+  ): Layout {
     const { from, to } = route;
     if (config.position && config.size) {
-      return new BoundingBox({
+      return new Layout({
         top: mix(from.top, to.top, progress),
         left: mix(from.left, to.left, progress),
         right: mix(from.right, to.right, progress),
@@ -84,14 +84,14 @@ export class ProjectionNodeAnimationEngine {
     } else if (config.position) {
       const top = mix(from.top, to.top, progress);
       const left = mix(from.left, to.left, progress);
-      return new BoundingBox({
+      return new Layout({
         top,
         left,
         right: left + to.width(),
         bottom: top + to.height(),
       });
     } else if (config.size) {
-      return new BoundingBox({
+      return new Layout({
         top: to.top,
         left: to.left,
         right: to.left + mix(from.width(), to.width(), progress),
@@ -161,7 +161,7 @@ export interface ProjectionTreeAnimationConfig extends AnimationConfig {
 }
 
 export interface AnimationPlan {
-  boundingBox: AnimationRoute<BoundingBox>;
+  layout: AnimationRoute<Layout>;
   [name: string]: AnimationRoute<unknown>;
 }
 export interface AnimationRoute<Value> {
