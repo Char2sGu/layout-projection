@@ -54,7 +54,7 @@ export class ProjectionNode {
 
   constructor(
     public element: HTMLElement,
-    protected components: ProjectionComponent[],
+    protected components: ProjectionComponent[] = [],
   ) {}
 
   /**
