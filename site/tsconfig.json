@@ -10,6 +10,7 @@
       "@layout-projection/angular": ["../packages/angular/dist"]
     }
   },
+  "files": ["./src/main.ts"],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,

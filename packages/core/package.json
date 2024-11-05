@@ -4,10 +4,6 @@
   "description": "",
   "type": "module",
   "main": "dist/index.js",
-  "exports": {
-    ".": "./dist/index.js",
-    "./components/border-radius": "./dist/components/border-radius.js"
-  },
   "author": "Char2s <char2s@outlook.com>",
   "license": "Apache-2.0",
   "scripts": {
