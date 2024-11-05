@@ -1,4 +1,16 @@
 {
-  "name": "@layout-projection/angular",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json"
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "angular",
+  "projectType": "library",
+  "sourceRoot": "packages/angular/src",
+  "prefix": "lpj",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "options": {
+        "project": "{projectRoot}/ng-package.json",
+        "tsConfig": "{projectRoot}/tsconfig.json"
+      }
+    }
+  }
 }

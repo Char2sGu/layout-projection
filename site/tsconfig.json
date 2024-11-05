@@ -1,11 +1,8 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "module": "ES2022",
-    "moduleResolution": "node", // TODO: use "bundler" once Typescript 5.0 is supported by Angular
     "outDir": "./dist",
     "rootDir": "./src",
-    "composite": false,
     "paths": {
       "@layout-projection/angular": ["../packages/angular/dist"]
     }
