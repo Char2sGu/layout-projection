@@ -6,9 +6,6 @@
   "main": "dist/index.js",
   "author": "Char2s <char2s@outlook.com>",
   "license": "Apache-2.0",
-  "scripts": {
-    "test": "jest"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TheNightmareX/layout-projection.git"

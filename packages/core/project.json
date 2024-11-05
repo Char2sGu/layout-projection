@@ -7,6 +7,9 @@
     "build": {
       "command": "tsc -p {projectRoot}/tsconfig.json"
     },
+    "test": {
+      "command": "jest"
+    },
     "nx-release-publish": {
       "dependsOn": ["build", "^nx-release-publish"]
     }
