@@ -4,27 +4,22 @@
     "build": {
       "dependsOn": ["^build"],
       "cache": true,
-      "inputs": ["production", "^production"],
+      "inputs": ["projectAssets", "^projectAssets"],
       "outputs": ["{projectRoot}/dist"]
     },
     "test": {
       "dependsOn": ["^test"],
       "cache": true,
-      "inputs": ["production", "^production"]
+      "inputs": ["projectAssets", "^projectAssets"]
     }
   },
   "defaultBase": "master",
   "namedInputs": {
-    "sharedGlobals": [
+    "globalAssets": [
       "{workspaceRoot}/package.json",
-      "{workspaceRoot}/tsconfig.json"
+      "{workspaceRoot}/tsconfig.base.json"
     ],
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "production": [
-      "default",
-      "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/**/*.spec.[jt]s"
-    ]
+    "projectAssets": ["{projectRoot}/**/*", "globalAssets"]
   },
   "release": {
     "projects": ["packages/*"],

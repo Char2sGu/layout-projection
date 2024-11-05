@@ -5,8 +5,7 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "command": "tsc -p {projectRoot}/tsconfig.json",
-      "outputs": ["{projectRoot}/dist"]
+      "command": "tsc -p {projectRoot}/tsconfig.json"
     }
   }
 }
