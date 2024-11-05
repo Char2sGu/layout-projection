@@ -1,11 +1,14 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "name": "core",
-  "sourceRoot": "packages/core/src",
   "projectType": "library",
+  "sourceRoot": "packages/core/src",
   "targets": {
     "build": {
       "command": "tsc -p {projectRoot}/tsconfig.json"
+    },
+    "nx-release-publish": {
+      "dependsOn": ["build", "^nx-release-publish"]
     }
   }
 }

@@ -1,5 +1,13 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "master",
+  "namedInputs": {
+    "globalAssets": [
+      "{workspaceRoot}/package.json",
+      "{workspaceRoot}/tsconfig.base.json"
+    ],
+    "projectAssets": ["{projectRoot}/**/*", "globalAssets"]
+  },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
@@ -13,22 +21,9 @@
       "inputs": ["projectAssets", "^projectAssets"]
     }
   },
-  "defaultBase": "master",
-  "namedInputs": {
-    "globalAssets": [
-      "{workspaceRoot}/package.json",
-      "{workspaceRoot}/tsconfig.base.json"
-    ],
-    "projectAssets": ["{projectRoot}/**/*", "globalAssets"]
-  },
   "release": {
     "projects": ["packages/*"],
-    "git": {
-      "commitMessage": "build: release v{version}"
-    },
-    "version": {
-      "preVersionCommand": "npx nx run-many -t build"
-    }
+    "git": { "commitMessage": "build: release v{version}" }
   },
   "generators": {
     "@schematics/angular:component": {

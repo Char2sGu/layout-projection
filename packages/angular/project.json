@@ -11,6 +11,12 @@
         "project": "{projectRoot}/ng-package.json",
         "tsConfig": "{projectRoot}/tsconfig.json"
       }
+    },
+    "nx-release-publish": {
+      "dependsOn": ["build", "^nx-release-publish"],
+      "options": {
+        "packageRoot": "{projectRoot}/dist"
+      }
     }
   }
 }
