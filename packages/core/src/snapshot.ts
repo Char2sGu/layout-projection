@@ -1,4 +1,4 @@
-import { MeasuredProjectionNode, ProjectionNode } from './projection.js';
+import { MeasuredProjectionNode, ProjectionNode } from './projection-node.js';
 
 export class ProjectionNodeSnapper {
   snapshot(node: ProjectionNode): ProjectionNodeSnapshot {

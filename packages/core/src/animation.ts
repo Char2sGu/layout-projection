@@ -13,8 +13,8 @@ import {
   AnimationRoute,
   ProjectionTreeAnimationEngine,
 } from './animation-engines.js';
-import { MeasuredProjectionNode, ProjectionNode } from './projection.js';
-import { Layout } from './projection-core.js';
+import { Layout } from './layout.js';
+import { MeasuredProjectionNode, ProjectionNode } from './projection-node.js';
 import {
   ProjectionNodeSnapper,
   ProjectionNodeSnapshot,

@@ -7,8 +7,8 @@ import {
   AnimationResult,
   AnimationTag,
 } from './animation-core.js';
-import { ProjectionNode } from './projection.js';
-import { Layout } from './projection-core.js';
+import { Layout } from './layout.js';
+import { ProjectionNode } from './projection-node.js';
 
 export interface AnimationHandler {
   handleFrame(

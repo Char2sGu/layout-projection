@@ -7,12 +7,9 @@ import {
   AnimationPlan,
   AnimationRoute,
 } from '../animation-engines.js';
-import {
-  ProjectionComponent,
-  ProjectionDistortion,
-  ProjectionNode,
-} from '../projection.js';
-import { Layout } from '../projection-core.js';
+import { Layout } from '../layout.js';
+import { ProjectionComponent,ProjectionDistortion  } from '../projection-component.js';
+import { ProjectionNode } from '../projection-node.js';
 
 const PROP_NAME = 'borderRadiuses';
 export interface BorderRadiusProperties {
