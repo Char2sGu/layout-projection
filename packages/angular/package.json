@@ -25,12 +25,5 @@
     "@angular/core": "15.x - 16.x",
     "@layout-projection/core": "*",
     "rxjs": "7.x"
-  },
-  "devDependencies": {
-    "@angular/common": "^16.0.0",
-    "@angular/core": "^16.0.0",
-    "@layout-projection/core": "file:../core",
-    "ng-packagr": "^16.0.0",
-    "rxjs": "^7.8.0"
   }
 }
