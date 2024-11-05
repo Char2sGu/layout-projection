@@ -1,4 +1,3 @@
-/* eslint-disable max-params */
 import GitHubSlugger from 'github-slugger';
 import { MarkedRenderer } from 'ngx-markdown';
 

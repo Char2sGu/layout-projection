@@ -35,7 +35,9 @@ export interface ProjectionTreeSnapshotOptions {
 }
 
 export type ProjectionNodeSnapshot = {
-  [K in keyof MeasuredProjectionNode as MeasuredProjectionNode[K] extends Function
+  [K in keyof MeasuredProjectionNode as MeasuredProjectionNode[K] extends (
+    ...args: any[]
+  ) => any
     ? never
     : K]: MeasuredProjectionNode[K];
 };
