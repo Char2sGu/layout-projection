@@ -3,7 +3,9 @@ pre-commit:
   commands:
     lint:eslint:
       glob: '*.ts'
-      run: 'npx eslint --cache --fix {staged_files}'
+      run: npx eslint --cache --fix {staged_files}
+      stage_fixed: true
     lint:prettier:
       glob: '*.{html,css,less,scss,sass,ts,js,json,md}'
-      run: 'npx prettier --write {staged_files}'
+      run: npx prettier --write {staged_files}
+      stage_fixed: true
