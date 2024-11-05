@@ -21,8 +21,8 @@
     "tslib": "^2.5.0"
   },
   "peerDependencies": {
-    "@angular/common": "15.x - 16.x",
-    "@angular/core": "15.x - 16.x",
+    "@angular/common": ">=17",
+    "@angular/core": ">=17",
     "@layout-projection/core": "*",
     "rxjs": "7.x"
   }

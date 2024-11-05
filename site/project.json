@@ -6,13 +6,14 @@
   "prefix": "lpj",
   "targets": {
     "build": {
-      "executor": "@angular-devkit/build-angular:browser-esbuild",
+      "executor": "@angular/build:application",
       "options": {
-        "outputPath": "{projectRoot}/dist/",
-        "index": "{projectRoot}/src/index.html",
-        "main": "{projectRoot}/src/main.ts",
+        "outputPath": {
+          "base": "site/dist/"
+        },
+        "index": "site/src/index.html",
         "polyfills": ["zone.js"],
-        "tsConfig": "{projectRoot}/tsconfig.json",
+        "tsConfig": "site/tsconfig.json",
         "assets": [
           {
             "glob": "**/*",
@@ -40,8 +41,9 @@
             "output": "assets/docs/angular/guides"
           }
         ],
-        "styles": ["{projectRoot}/src/styles.less"],
-        "scripts": []
+        "styles": ["site/src/styles.less"],
+        "scripts": [],
+        "browser": "site/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -60,9 +62,7 @@
           "outputHashing": "all"
         },
         "development": {
-          "buildOptimizer": false,
           "optimization": false,
-          "vendorChunk": true,
           "extractLicenses": false,
           "sourceMap": true,
           "namedChunks": true
@@ -75,7 +75,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@angular-devkit/build-angular:dev-server",
+      "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
           "browserTarget": "site:build:production"

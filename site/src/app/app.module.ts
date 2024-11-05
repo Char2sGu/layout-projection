@@ -1,4 +1,8 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import {
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { inject, NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -41,11 +45,11 @@ import { RerenderOnChangeDirective } from './shared/rerender-on-change.directive
     NavTabsComponent,
     RerenderOnChangeDirective,
   ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     EventPluginsModule,
-    HttpClientModule,
     LayoutProjectionModule.forRoot(),
     MarkdownElementsModule,
     MarkdownModule.forRoot({
@@ -66,7 +70,9 @@ import { RerenderOnChangeDirective } from './shared/rerender-on-change.directive
     TuiScrollbarModule,
     FixLayoutOnDestroyDirective,
   ],
-  providers: [{ provide: NAV_CONTENT, useValue: APP_NAV_CONTENT }],
-  bootstrap: [AppComponent],
+  providers: [
+    { provide: NAV_CONTENT, useValue: APP_NAV_CONTENT },
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
 })
 export class AppModule {}
