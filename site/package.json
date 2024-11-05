@@ -1,9 +1,9 @@
 {
-  "name": "@layout-projection/site",
+  "name": "layout-projection-site",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "ng serve -o",
+    "start": "ng serve",
     "build": "ng build",
     "deploy": "ng deploy --base-href=/layout-projection/"
   },

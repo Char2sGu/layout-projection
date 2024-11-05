@@ -1,5 +1,5 @@
 {
-  "$schema": "../../node_modules/@angular/cli/lib/config/schema.json",
+  "$schema": "../node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -48,27 +48,27 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "../../node_modules/@taiga-ui/icons/src",
+                "input": "../node_modules/@taiga-ui/icons/src",
                 "output": "assets/taiga-ui/icons"
               },
               {
                 "glob": "README.md",
-                "input": "../core",
+                "input": "../packages/core",
                 "output": "assets/docs/core"
               },
               {
                 "glob": "**/*",
-                "input": "../core/guides",
+                "input": "../packages/core/guides",
                 "output": "assets/docs/core/guides"
               },
               {
                 "glob": "README.md",
-                "input": "../angular",
+                "input": "../packages/angular",
                 "output": "assets/docs/angular"
               },
               {
                 "glob": "**/*",
-                "input": "../angular/guides",
+                "input": "../packages/angular/guides",
                 "output": "assets/docs/angular/guides"
               }
             ],

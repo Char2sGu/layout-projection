@@ -13,9 +13,9 @@
     "lint:prettier": "prettier --write \"{packages/*/src/**/*,*}.{html,css,less,scss,sass,js,json,md}\"",
     "release:minor": "npm version minor -w packages/core -w packages/angular && npm run build && npm publish -w packages/core && cd packages/angular/dist && npm publish",
     "release:patch": "npm version patch -w packages/core -w packages/angular && npm run build && npm publish -w packages/core && cd packages/angular/dist && npm publish",
-    "site:start": "npm start -w packages/site",
-    "site:build": "npm run build -w packages/site",
-    "site:deploy": "npm run deploy -w packages/site"
+    "site:start": "npm start -w ./site",
+    "site:build": "npm run build -w ./site",
+    "site:deploy": "npm run deploy -w ./site"
   },
   "keywords": [],
   "repository": {
@@ -77,6 +77,7 @@
     "zone.js": "^0.13.0"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "site"
   ]
 }
