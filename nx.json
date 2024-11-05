@@ -3,11 +3,14 @@
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
-      "cache": true
+      "cache": true,
+      "inputs": ["production", "^production"],
+      "outputs": ["{projectRoot}/dist"]
     },
     "test": {
       "dependsOn": ["^test"],
-      "cache": true
+      "cache": true,
+      "inputs": ["production", "^production"]
     }
   },
   "defaultBase": "master",
@@ -27,6 +30,9 @@
     "projects": ["packages/*"],
     "git": {
       "commitMessage": "build: release v{version}"
+    },
+    "version": {
+      "preVersionCommand": "npx nx run-many -t build"
     }
   },
   "generators": {

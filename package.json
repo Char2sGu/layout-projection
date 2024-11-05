@@ -54,6 +54,7 @@
     "@types/dompurify": "2.2.3",
     "@types/jest": "^29.5.0",
     "@types/marked": "6",
+    "@types/node": "18.16.9",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
     "angular-cli-ghpages": "^2.0.3",
