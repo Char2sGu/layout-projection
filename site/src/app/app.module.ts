@@ -3,7 +3,7 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
-import { inject, NgModule, SecurityContext } from '@angular/core';
+import { NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutProjectionModule } from '@layout-projection/angular';
@@ -15,7 +15,7 @@ import {
   TuiScrollbarModule,
 } from '@taiga-ui/core';
 import { EventPluginsModule } from '@tinkoff/ng-event-plugins';
-import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
+import { MarkdownModule, MARKED_OPTIONS, MarkedOptions } from 'ngx-markdown';
 
 import { AppComponent } from './app.component';
 import { APP_NAV_CONTENT } from './app.nav-content';
@@ -29,7 +29,7 @@ import { NavItemGroupComponent } from './core/nav-item-group/nav-item-group.comp
 import { NavMenuComponent } from './core/nav-menu/nav-menu.component';
 import { NavTabsComponent } from './core/nav-tabs/nav-tabs.component';
 import { MarkdownElementsModule } from './markdown-elements/markdown-elements.module';
-import { MarkdownElementsRenderer } from './markdown-elements/markdown-elements.renderer';
+import { MARKDOWN_ELEMENTS_RENDERER } from './markdown-elements/markdown-elements.renderer';
 import { FixLayoutOnDestroyDirective } from './shared/fix-layout-on-destroy.directive';
 import { RerenderOnChangeDirective } from './shared/rerender-on-change.directive';
 
@@ -56,9 +56,9 @@ import { RerenderOnChangeDirective } from './shared/rerender-on-change.directive
       loader: HttpClient,
       sanitize: SecurityContext.NONE,
       markedOptions: {
-        provide: MarkedOptions,
+        provide: MARKED_OPTIONS,
         useFactory: (): MarkedOptions => ({
-          renderer: inject(MarkdownElementsRenderer),
+          renderer: MARKDOWN_ELEMENTS_RENDERER,
         }),
       },
     }),

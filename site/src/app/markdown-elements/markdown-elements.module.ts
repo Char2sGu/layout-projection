@@ -12,7 +12,6 @@ import { IframeComponent } from './iframe/iframe.component';
 import { LinkComponent } from './link/link.component';
 import { ListComponent } from './list/list.component';
 import { ListItemComponent } from './list-item/list-item.component';
-import { MarkdownElementsRenderer } from './markdown-elements.renderer';
 import { ParagraphComponent } from './paragraph/paragraph.component';
 import { NgElementComponentInjector } from './shared/ng-element';
 
@@ -31,7 +30,7 @@ const COMPONENTS = [
 @NgModule({
   declarations: [...COMPONENTS],
   imports: [CommonModule, RouterModule, TuiButtonModule, SafeValuePipe],
-  providers: [MarkdownElementsRenderer, NgElementComponentInjector],
+  providers: [NgElementComponentInjector],
 })
 export class MarkdownElementsModule {
   constructor(injector: NgElementComponentInjector) {

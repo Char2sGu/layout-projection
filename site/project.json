@@ -8,12 +8,10 @@
     "build": {
       "executor": "@angular/build:application",
       "options": {
-        "outputPath": {
-          "base": "site/dist/"
-        },
-        "index": "site/src/index.html",
+        "outputPath": "{projectRoot}/dist/",
+        "index": "{projectRoot}/src/index.html",
         "polyfills": ["zone.js"],
-        "tsConfig": "site/tsconfig.json",
+        "tsConfig": "{projectRoot}/tsconfig.json",
         "assets": [
           {
             "glob": "**/*",
@@ -41,9 +39,9 @@
             "output": "assets/docs/angular/guides"
           }
         ],
-        "styles": ["site/src/styles.less"],
+        "styles": ["{projectRoot}/src/styles.less"],
         "scripts": [],
-        "browser": "site/src/main.ts"
+        "browser": "{projectRoot}/src/main.ts"
       },
       "configurations": {
         "production": {
@@ -78,10 +76,10 @@
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "site:build:production"
+          "buildTarget": "site:build:production"
         },
         "development": {
-          "browserTarget": "site:build:development"
+          "buildTarget": "site:build:development"
         }
       },
       "defaultConfiguration": "development"

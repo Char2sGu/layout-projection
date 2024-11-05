@@ -12,8 +12,8 @@ import {
   Output,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MarkdownModule, MarkdownService, MarkedOptions } from 'ngx-markdown';
-import { BehaviorSubject, delay, filter, map } from 'rxjs';
+import { MarkdownModule, MarkdownService, MARKED_OPTIONS } from 'ngx-markdown';
+import { BehaviorSubject, delay, filter, switchMap } from 'rxjs';
 
 import { NgElementComponentInjector } from '../../markdown-elements/shared/ng-element';
 
@@ -33,12 +33,10 @@ export class MarkdownArticleComponent {
 
   html$ = this.content$.pipe(
     filter(Boolean),
-    map((content) => {
+    switchMap(async (content) => {
       const cache = this.cache.get(content);
       if (cache) return cache;
-      const result = this.markdownService.parse(content, {
-        markedOptions: this.markdownRenderConfig,
-      });
+      const result = await this.markdownService.parse(content);
       this.cache.set(content, result);
       return result;
     }),
@@ -48,7 +46,7 @@ export class MarkdownArticleComponent {
 
   private element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   private markdownService = inject(MarkdownService);
-  private markdownRenderConfig = inject(MarkedOptions);
+  private markdownRenderConfig = inject(MARKED_OPTIONS);
   private cache = inject(MarkdownArticleCache);
   private elementInjector = inject(NgElementComponentInjector);
   private currentInjector = inject(Injector);
