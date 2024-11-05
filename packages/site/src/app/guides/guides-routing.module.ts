@@ -23,7 +23,7 @@ const routesFactory = (): Routes => [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'angular/README',
+        redirectTo: 'core/README',
       },
       ...generateRoutesFromNavContent(inject(NAV_CONTENT)),
     ],

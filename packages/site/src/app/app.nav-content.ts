@@ -12,23 +12,23 @@ export const APP_NAV_CONTENT: NavContent = {
       ],
     },
     {
-      name: 'References',
+      name: 'Guides',
       items: [
         {
           name: 'Layout Projection',
-          path: 'core/references/layout-projection',
+          path: 'core/guides/layout-projection',
         },
         {
           name: 'Layout Animation',
-          path: 'core/references/layout-animation',
+          path: 'core/guides/layout-animation',
         },
         {
           name: 'Snapshot APIs',
-          path: 'core/references/snapshots',
+          path: 'core/guides/snapshots',
         },
         {
           name: 'Standalone Usage',
-          path: 'core/references/standalone-usage',
+          path: 'core/guides/standalone-usage',
         },
       ],
     },
@@ -44,19 +44,19 @@ export const APP_NAV_CONTENT: NavContent = {
       ],
     },
     {
-      name: 'References',
+      name: 'Guides',
       items: [
         {
           name: 'Projection Tree',
-          path: 'angular/references/projection-tree',
+          path: 'angular/guides/projection-tree',
         },
         {
           name: 'Animation Directives',
-          path: 'angular/references/animation-directives',
+          path: 'angular/guides/animation-directives',
         },
         {
           name: 'Animation Scope',
-          path: 'angular/references/animation-scope',
+          path: 'angular/guides/animation-scope',
         },
       ],
     },

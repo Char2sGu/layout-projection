@@ -1,6 +1,6 @@
 # Layout Animation
 
-With the Layout Projection technique, developers can now create **GPU-accelerated** layout animations for elements without the constraints of the DOM structure.
+Thanks to the Layout Projection technique, GPU-accelerated layout animations are made possible.
 
 Several services are built into `@layout-projection/core` to allow developers to easily create smooth layout animations based on the Layout Projection technique.
 
@@ -8,7 +8,7 @@ Through this guide, you will learn about the animation API of `@layout-projectio
 
 ## Prerequisites
 
-To make sure you can get the most out of this guide, you need to first go through these prerequisite guides:
+To make sure this guide is easy to comprehend, it is recommended to go through the following topics first:
 
 - [Layout Projection](./layout-projection.md)
 

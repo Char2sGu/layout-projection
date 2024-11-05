@@ -1,37 +1,35 @@
 # Layout Projection
 
-A Layout Projection projects an element from it's browser-computed layout (size + position) to an arbitrary destination layout by applying CSS `transform`s, while ensuring that the element is not distorted because of the effect of CSS `transform`s applied on parent elements, enabling nested Layout Projections.
+A Layout Projection projects an element from it's browser-computed layout (position + size) to an arbitrary destination layout by applying CSS `transform`s, while ensuring that the element is not distorted because of the effect of CSS `transform`s applied on parent elements, enabling nested Layout Projections.
 
-Based on this technique, developers can implement **GPU accelerated** high frame rate animations by continuously projecting an element from one layout to another in each frame.
+Based on this technique, developers can implement **GPU accelerated** smooth animations by continuously projecting an element from one layout to another in each frame.
 
-This guide introduces you the basic mechanism of Layout Projection with some fundamental APIs of `@layout-projection/core` for performing Layout Projections.
+This guide introduces the basic mechanism of Layout Projection with some fundamental APIs of `@layout-projection/core` for performing Layout Projections.
 
 ## Projection Tree
 
-The Projection Tree serves as the infrastructure for Layout Projections. It is an abstract concept referring to a tree of Projection Nodes in a hierarchy based on the DOM tree.
+The Projection Tree is a tree of Projection Nodes constructed in a hierarchial structure that is synchronized with the DOM tree, serving as the foundation of Layout Projections.
 
-A Projection Node is a piece of content that can be projected, which is represented by the `ProjectionNode` class. A `ProjectionNode` instance is bound to a specific DOM element, responsible for performing Layout Projection for the element, where the states of its parents in the Projection Tree are involved to cancel the side effect of parent Layout Projections.
-
-Instantiate a `ProjectionNode` for a DOM element and attach it to a parent node to add the element into the Projection Tree. The following example constructs a Projection Tree consisting of two Projection Nodes:
+The Projection Tree consists of Projection Nodes. Each Projection Node is a piece of content that can be projected, represented by the `ProjectionNode` class. A `ProjectionNode` instance is strictly bound to a specific DOM element, responsible for performing Layout Projection for that element:
 
 ```ts
-const root = new ProjectionNode(rootElement, ...);
-const child = new ProjectionNode(childElement, ...);
-child.attach(root);
+const parent = new ProjectionNode(rootElement);
+const child = new ProjectionNode(childElement);
+child.attach(parent);
 ```
 
-It is strongly recommended to construct only one Projection Tree throughout the DOM for performance and stability, which means that:
+The purpose of the Projection Tree is to keep track of the layout information of the DOM elements, and to provide the necessary information for Layout Projections. The Projection Tree does not need to include every DOM elements. Only the elements that are useful for Layout Projections need to be added to the Projection Tree.
 
-- there should be only one root node that doesn't have a parent
+<!-- There should be only one Projection Tree for each application:
+
+- there should be only one root node - any other nodes should be attached to a parent
 - there shouldn't be more than one nodes referring to a same DOM element at the same time.
 
-The Projection Tree do not need to include every DOM elements. You may want to add a DOM element to the Projection Tree only when a Layout Projection needs to be performed on it.
+The Projection Tree do not need to include every DOM elements. You may want to add a DOM element to the Projection Tree only when a Layout Projection needs to be performed on it. -->
 
-### DOM Synchronization
+The Projection Tree needs to be strictly synchronized with the DOM tree in order to ensure the correctness of Layout Projections and prevent memory leaks:
 
-The Projection Tree needs to be strictly synchronized with the DOM tree in order to ensure the correctness of Layout Projections and prevent memory leaks, which means that:
-
-- Once a `ProjectionNode` is instantiated, it should be attached to a correct parent, which should be the nearest Projection Node corresponding to an ancestor of the element.
+- Once a `ProjectionNode` is instantiated, it should be attached to an appropriate parent based on the DOM tree, which should be the `ProjectionNode` instance of the nearest ancestor DOM element.
 - Once a DOM element in the Projection Tree is removed from the DOM tree, its corresponding Projection Node (if exists) should be immediately detached from its parent and references of the `ProjectionNode` instance should be eliminated.
 
 Framework adapters should be able to construct and synchronize the Projection Tree with the DOM tree automatically and declaratively.
@@ -47,9 +45,9 @@ Projection Nodes are always identified by their unique ids instead of `Projectio
 By default, a random id is generated for each new `ProjectionNode` instance. If a Projection Node is represented by more than one `ProjectionNode` instances, you'll need to explicitly identify these `ProjectionNode` instances using a same unique id:
 
 ```ts
-const oldNode = new ProjectionNode(oldElement, ...deps);
+const oldNode = new ProjectionNode(oldElement);
 oldNode.identifyAs('the-same-and-unique-id');
-const newNode = new ProjectionNode(newElement, ...deps);
+const newNode = new ProjectionNode(newElement);
 newNode.identifyAs('the-same-and-unique-id');
 ```
 
@@ -95,8 +93,21 @@ A Layout Projection on a specific Projection Node generally involves these steps
 
 As long as the measured layouts are up-to-date, developers can accurately project any elements within the Projection Tree into any layouts using pure CSS `transform`s, which is GPU-accelerated by the browser.
 
-## What's Next
+## Calibrating Styles
 
-When supplied with a plan of what layout each element should be projected into in each frame, it's now possible to animate elements throughout the viewport without the constraint of the DOM structure.
+During a projection, the element's logical layout remains unchanged. It is the CSS transforms that makes the element appear to be of a different size and position. In case the projected layout has a different size or aspect ratio, some CSS styles will be distorted. For example, when a 100x100 element with a 10px border radius is projected to a 200x200 layout, the border radius will be distorted to 20px. Therefore, it is necessary to calibrate such styles to make them consistent with the projected layout.
 
-Checkout the [Layout Animation guide](./layout-animation.md) for the built-in animation support based on the Layout Projection technique.
+The `ProjectionNode` constructor accepts a second parameter: an array of `ProjectionComponent` instances. Each `ProjectionComponent` is responsible for calibrating specific CSS properties. `@layout-projection/core` provides some built-in `ProjectionComponent` implementations for calibrating common CSS properties, such as `BorderRadiusProjectionComponent` for border radiuses:
+
+```ts
+const projectionComponents = [
+  new BorderRadiusProjectionComponent(
+    new BorderRadiusMeasurer(new CssBorderRadiusParser()), // dependencies of ths component
+  ),
+];
+const node = new ProjectionNode(element, projectionComponents);
+```
+
+> The built-in `ProjectionComponent` implementations are not enabled by default. You need to explicitly add them to the `ProjectionNode` constructor. This is to allow developers to have full control over the calibration process.
+
+Developers are encouraged to implement any additional `ProjectionComponent` classes for any additional CSS properties. See the source code of built-in `ProjectionComponent` classes for reference.
