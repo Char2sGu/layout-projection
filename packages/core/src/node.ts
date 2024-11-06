@@ -33,6 +33,19 @@ export interface Node<Self extends Node<Self>> {
   detach(): void;
 
   /**
+   * Append a child node to this node.
+   * @param child
+   */
+  appendChild(child: Self): void;
+
+  /**
+   * Remove a child node from this node.
+   * Do nothing if the given node is not a child.
+   * @param child
+   */
+  removeChild(child: Self): void;
+
+  /**
    * Return the parent node of this projection node.
    */
   parent(): Self | null;
@@ -88,14 +101,22 @@ export class BasicNode<Self extends BasicNode<Self>> implements Node<Self> {
 
   attach(parent: Self): void {
     if (this.#parent !== null) throw new Error('Node already has a parent.');
+    parent.appendChild(this as unknown as Self);
     this.#parent = parent;
-    parent.#children.add(this as unknown as Self);
   }
 
   detach(): void {
     if (this.#parent === null) throw new Error('Node has no parent.');
-    this.#parent.#children.delete(this as unknown as Self);
+    this.#parent.removeChild(this as unknown as Self);
     this.#parent = null;
+  }
+
+  appendChild(child: Self): void {
+    this.#children.add(child);
+  }
+
+  removeChild(child: Self): void {
+    this.#children.delete(child);
   }
 
   parent(): Self | null {
