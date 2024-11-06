@@ -1,0 +1,32 @@
+{
+  "name": "@layout-projection/animation",
+  "version": "0.14.0",
+  "description": "",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "default": "./dist/index.js"
+    }
+  },
+  "author": "Char2s <char2s@outlook.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheNightmareX/layout-projection.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheNightmareX/layout-projection/issues"
+  },
+  "homepage": "https://github.com/TheNightmareX/layout-projection#readme",
+  "dependencies": {
+    "popmotion": "^11.0.5",
+    "style-value-types": "^5.1.2",
+    "tslib": "^2.5.0"
+  },
+  "files": [
+    "/dist",
+    "/src",
+    "README.md"
+  ]
+}

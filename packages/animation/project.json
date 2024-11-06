@@ -1,0 +1,17 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "animation",
+  "projectType": "library",
+  "sourceRoot": "packages/animation/src",
+  "targets": {
+    "build": {
+      "command": "tsc -p {projectRoot}/tsconfig.json"
+    },
+    "test": {
+      "command": "jest"
+    },
+    "nx-release-publish": {
+      "dependsOn": ["build", "^nx-release-publish"]
+    }
+  }
+}
