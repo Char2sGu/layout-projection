@@ -4,6 +4,14 @@
   "description": "",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "default": "./dist/index.js"
+    },
+    "./behaviors": {
+      "default": "./dist/behaviors/index.js"
+    }
+  },
   "author": "Char2s <char2s@outlook.com>",
   "license": "Apache-2.0",
   "repository": {

@@ -2,6 +2,11 @@
 import { AfterViewInit, Component, ElementRef, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { experimental as e, Layout } from '@layout-projection/core';
+import {
+  BorderRadiusMeasurer,
+  CalibrateBorderRadius,
+  CssBorderRadiusParser,
+} from '@layout-projection/core/behaviors';
 
 @Component({
   selector: 'lpj-root',
@@ -15,8 +20,8 @@ export class AppComponent implements AfterViewInit {
   content = viewChild.required<ElementRef<HTMLElement>>('content');
 
   ngAfterViewInit(): void {
-    const container = new e.BasicProjectionNode(this.container().nativeElement);
-    const content = new e.BasicProjectionNode(this.content().nativeElement);
+    const container = this.createNode(this.container().nativeElement);
+    const content = this.createNode(this.content().nativeElement);
     content.attach(container);
     container.measure();
     content.measure();
@@ -31,12 +36,21 @@ export class AppComponent implements AfterViewInit {
     console.log(
       content.project(
         new Layout({
-          top: window.innerHeight / 2,
+          top: window.innerHeight - 100,
           left: window.innerWidth / 2,
           right: window.innerWidth,
           bottom: window.innerHeight,
         }),
       ),
     );
+  }
+
+  createNode(element: HTMLElement): e.ProjectionNode {
+    let node: e.ProjectionNode = new e.BasicProjectionNode(element);
+    node = new CalibrateBorderRadius(
+      node,
+      new BorderRadiusMeasurer(new CssBorderRadiusParser()),
+    );
+    return node;
   }
 }
