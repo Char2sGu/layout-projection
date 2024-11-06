@@ -35,8 +35,15 @@ export interface ProjectionNode extends Node<ProjectionNode> {
    * Projects the element to the given layout.
    * Requires this projection node to be measured.
    * @param dest the destination layout
+   * @returns information about the performed projection
    */
   project(dest: Layout): Projection;
+
+  /**
+   * Return the information about the current projection, or null
+   * if no projection has been performed yet.
+   */
+  projection(): Projection | null;
 }
 
 /**
@@ -117,6 +124,10 @@ export class BasicProjectionNode
     return this.#projection;
   }
 
+  projection(): Projection | null {
+    return this.#projection ?? null;
+  }
+
   private computeTransform(
     currLayout: Layout,
     destLayout: Layout,
@@ -151,9 +162,10 @@ export class BasicProjectionNode
     const parent = this.parent();
 
     if (!parent) return { x: transformX, y: transformY };
-    if (!parent.#projection) throw new Error('Parent not projected');
+    const parentProjection = parent.projection();
+    if (!parentProjection) throw new Error('Parent not projected');
 
-    const { transform, distortion } = parent.#projection;
+    const { transform, distortion } = parentProjection;
     transformX.translate += distortion.x.translate + transform.x.translate;
     transformY.translate += distortion.y.translate + transform.y.translate;
     transformX.scale *= distortion.x.scale * transform.x.scale;
