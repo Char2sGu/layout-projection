@@ -1,4 +1,4 @@
-import { CssBorderRadiusParser } from './border-radius.js';
+import { CssBorderRadiusParser } from './parser.js';
 
 describe('CssBorderRadiusParser', () => {
   let parser: CssBorderRadiusParser;

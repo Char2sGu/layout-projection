@@ -1,9 +1,5 @@
 import { Layout } from './layout.js';
-import {
-  Measurement,
-  Projection,
-  ProjectionNode,
-} from './projection-node-experimental.js';
+import { Measurement, Projection, ProjectionNode } from './projection-node.js';
 
 /**
  * Decorator for a projection node that modifies behaviors.

@@ -1,10 +1,10 @@
 import { Layout } from '../../layout.js';
-import { ProjectionNodeBehavior } from '../../projection-node-behavior.js';
 import {
   Measurement,
   Projection,
   ProjectionNode,
-} from '../../projection-node-experimental.js';
+} from '../../projection-node.js';
+import { ProjectionNodeBehavior } from '../../projection-node-behavior.js';
 import { BorderRadiusConfig, BorderRadiusCornerConfig } from './config.js';
 import { BorderRadiusMeasurer } from './measurer.js';
 
