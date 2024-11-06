@@ -22,6 +22,7 @@
   "dependencies": {
     "popmotion": "^11.0.5",
     "style-value-types": "^5.1.2",
+    "@layout-projection/core": "*",
     "tslib": "^2.5.0"
   },
   "files": [
