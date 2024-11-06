@@ -1,0 +1,22 @@
+{
+  "name": "layout-projection-playground",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "*",
+    "@angular/cdk": "*",
+    "@angular/common": "*",
+    "@angular/compiler": "*",
+    "@angular/core": "*",
+    "@angular/elements": "*",
+    "@angular/forms": "*",
+    "@angular/platform-browser": "*",
+    "@angular/platform-browser-dynamic": "*",
+    "@angular/router": "*",
+    "@layout-projection/angular": "*",
+    "@layout-projection/core": "*",
+    "rxjs": "*",
+    "tslib": "*",
+    "zone.js": "*"
+  }
+}
