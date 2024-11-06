@@ -3,8 +3,11 @@
  */
 export interface Node<Self extends Node<Self>> {
   /**
-   * Assign a ID to this node. The ID cannot be assigned again.
+   * Assign a ID to this node.
+   * A node can only be identified once, and can only be identified
+   * before {@link identity} is called.
    * @throws Error if an ID has already been assigned.
+   * @throws Error if the ID has already been read.
    */
   identifyAs(id: string): void;
 
@@ -15,7 +18,7 @@ export interface Node<Self extends Node<Self>> {
 
   /**
    * Returns the ID of this node.
-   * Might be a random string if no ID has been assigned.
+   * A random and unique ID is assigned if not identified.
    */
   identity(): string;
 
@@ -86,6 +89,8 @@ export class BasicNode<Self extends BasicNode<Self>> implements Node<Self> {
 
   identifyAs(id: string): void {
     if (this.#identified) throw new Error('Node already identified.');
+    if (this.#id !== null)
+      throw new Error('A random ID has already been assigned.');
     this.#id = id;
     this.#identified = true;
   }
