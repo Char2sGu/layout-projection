@@ -1,11 +1,16 @@
 /* eslint-disable no-console */
 import { AfterViewInit, Component, ElementRef, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { experimental as e, Layout } from '@layout-projection/core';
+import {
+  BasicProjectionNode,
+  Layout,
+  ProjectionNode,
+} from '@layout-projection/core';
 import {
   BorderRadiusMeasurer,
   CalibrateBorderRadius,
   CssBorderRadiusParser,
+  MeasureBorderRadius,
 } from '@layout-projection/core/behaviors';
 
 @Component({
@@ -45,12 +50,13 @@ export class AppComponent implements AfterViewInit {
     );
   }
 
-  createNode(element: HTMLElement): e.ProjectionNode {
-    let node: e.ProjectionNode = new e.BasicProjectionNode(element);
-    node = new CalibrateBorderRadius(
+  createNode(element: HTMLElement): ProjectionNode {
+    let node: ProjectionNode = new BasicProjectionNode(element);
+    node = new MeasureBorderRadius(
       node,
       new BorderRadiusMeasurer(new CssBorderRadiusParser()),
     );
+    node = new CalibrateBorderRadius(node);
     return node;
   }
 }

@@ -1,36 +1,26 @@
 import { Layout } from '../../layout.js';
-import {
-  Measurement,
-  Projection,
-  ProjectionNode,
-} from '../../projection-node.js';
+import { Projection, ProjectionNode } from '../../projection-node.js';
 import { ProjectionNodeBehavior } from '../../projection-node-behavior.js';
-import { BorderRadiusConfig, BorderRadiusCornerConfig } from './config.js';
-import { BorderRadiusMeasurer } from './measurer.js';
+import { BorderRadiusCornerConfig } from './config.js';
+import { isBorderRadiusesMeasured } from './measurement.js';
 
-interface ExtendedMeasurement extends Measurement {
-  borderRadiuses: BorderRadiusConfig;
-}
-
+/**
+ * A behavior that additionally calibrates the distortion of the border radius
+ * styles of the element when projecting.
+ * Requires the measurement to satisfy {@link MeasurementWithBorderRadiuses}.
+ * Noop otherwise.
+ */
 export class CalibrateBorderRadius extends ProjectionNodeBehavior {
-  constructor(kernel: ProjectionNode, private measurer: BorderRadiusMeasurer) {
+  constructor(kernel: ProjectionNode) {
     super(kernel);
-  }
-
-  override measure(): ExtendedMeasurement {
-    const result = super.measure() as ExtendedMeasurement;
-    result.borderRadiuses = this.measurer.measure(this.kernel.element());
-    return result;
-  }
-
-  override measurement(): ExtendedMeasurement | null {
-    return super.measurement() as ExtendedMeasurement | null;
   }
 
   override project(dest: Layout): Projection {
     const projection = super.project(dest);
-    const radiuses = this.measurement()?.borderRadiuses;
-    if (!radiuses) throw new Error('Measurement not found');
+    const measurement = this.measurement();
+    if (!measurement) throw new Error('Measurement not found');
+    if (!isBorderRadiusesMeasured(measurement)) return projection;
+    const radiuses = measurement.borderRadiuses;
     const scaleX = projection.transform.x.scale;
     const scaleY = projection.transform.y.scale;
     const radiusStyle = (radius: BorderRadiusCornerConfig) =>
