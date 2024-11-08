@@ -7,8 +7,8 @@ export interface ProjectionNodeSnapshot {
   readonly id: string;
   readonly element: HTMLElement;
   readonly measurement: Measurement | null;
-  readonly parent: ProjectionNode | null;
-  readonly children: ReadonlySet<ProjectionNode>;
+  readonly parent: string | null;
+  readonly children: ReadonlySet<string>;
 }
 
 /**
@@ -19,8 +19,8 @@ export function createSnapshot(node: ProjectionNode): ProjectionNodeSnapshot {
     id: node.identity(),
     element: node.element(),
     measurement: node.measurement(),
-    parent: node.parent(),
-    children: node.children(),
+    parent: node.parent()?.identity() ?? null,
+    children: new Set([...node.children()].map((child) => child.identity())),
   };
 }
 
