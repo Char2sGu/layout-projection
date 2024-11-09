@@ -5,10 +5,21 @@ import { AnimationResult } from './animation-result.js';
  * A promise-like object that resolves when the animation completes or is stopped.
  * Exposes an additional `stop` method to stop the animation.
  */
-export interface AnimationRef extends PromiseLike<AnimationResult> {
+export abstract class AnimationRef implements PromiseLike<AnimationResult> {
+  abstract then<TResult1 = AnimationResult, TResult2 = never>(
+    onfulfilled?:
+      | ((value: AnimationResult) => TResult1 | PromiseLike<TResult1>)
+      | null
+      | undefined,
+    onrejected?:
+      | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+      | null
+      | undefined,
+  ): PromiseLike<TResult1 | TResult2>;
+
   /**
    * Stops the animation.
    * Noop if the animation is already completed or stopped.
    */
-  stop(): void;
+  abstract stop(): void;
 }

@@ -7,12 +7,12 @@ import { ProjectionNodeSnapshot } from './projection-node-snapshot.js';
 /**
  * Animator of a single projection node.
  */
-export interface ProjectionNodeAnimator {
+export abstract class ProjectionNodeAnimator {
   /**
    * Animate the projection node from one snapshot to another.
    * @param config
    */
-  animate(config: ProjectionNodeAnimationConfig): AnimationRef;
+  abstract animate(config: ProjectionNodeAnimationConfig): AnimationRef;
 }
 
 export interface ProjectionNodeAnimationConfig extends AnimationConfig {

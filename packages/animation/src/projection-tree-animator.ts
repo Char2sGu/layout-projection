@@ -7,14 +7,14 @@ import { ProjectionNodeSnapshot } from './projection-node-snapshot.js';
 /**
  * Animator of a tree of projection nodes.
  */
-export interface ProjectionTreeAnimator {
+export abstract class ProjectionTreeAnimator {
   /**
    * Animate a tree of projection nodes starting from a given root.
    * The animation of a node will be skipped if its snapshot is not found
    * in any of the snapshot maps.
    * @param config
    */
-  animate(config: ProjectioNTreeAnimationConfig): AnimationRef;
+  abstract animate(config: ProjectioNTreeAnimationConfig): AnimationRef;
 }
 
 export interface ProjectioNTreeAnimationConfig extends AnimationConfig {

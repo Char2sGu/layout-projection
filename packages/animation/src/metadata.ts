@@ -17,18 +17,22 @@ export class MetadataToken<T> {
 /**
  * Manager of metadata for an object.
  */
-export interface MetadataManager {
+export abstract class MetadataManager {
   /**
    * Defines a value for a metadata token on the given object.
    * Duplicate definitions overwrites the previous value.
    */
-  define<T>(target: object, token: MetadataToken<T>, value: NoInfer<T>): void;
+  abstract define<T>(
+    target: object,
+    token: MetadataToken<T>,
+    value: NoInfer<T>,
+  ): void;
 
   /**
    * Resolves the value of a metadata token on the given object.
    * @returns the value of the token or null if not defined
    */
-  resolve<T>(target: object, token: MetadataToken<T>): T | null;
+  abstract resolve<T>(target: object, token: MetadataToken<T>): T | null;
 }
 
 /**

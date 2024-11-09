@@ -9,6 +9,6 @@ export interface ProjectionNodeAnimationFrameContext {
   progress: number;
 }
 
-export interface ProjectionNodeAnimationHandler {
-  handleFrame(context: ProjectionNodeAnimationFrameContext): void;
+export abstract class ProjectionNodeAnimationHandler {
+  abstract handleFrame(context: ProjectionNodeAnimationFrameContext): void;
 }
