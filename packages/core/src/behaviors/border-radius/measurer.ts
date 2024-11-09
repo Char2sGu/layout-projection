@@ -7,7 +7,7 @@ export class BorderRadiusMeasurer {
 
   measure(
     element: HTMLElement,
-    layout = Layout.from(element),
+    layout = Layout.fromElement(element),
   ): BorderRadiusConfig {
     const style = getComputedStyle(element);
 

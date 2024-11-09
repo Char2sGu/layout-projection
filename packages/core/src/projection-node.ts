@@ -1,6 +1,6 @@
 import { Layout } from './layout.js';
 import { BasicNode, Node } from './node.js';
-import { TransformAxisConfig, TransformConfig } from './transform.js';
+import { Transform2D } from './transform.js';
 
 /**
  * A node that is bound to a DOM element and can be projected to a new layout.
@@ -61,13 +61,24 @@ export interface Measurement {
  */
 export interface Projection {
   /**
-   * The final transform applied to the target element.
+   * The layout of the element before this projection, potentially
+   * distorted by parent projection.
    */
-  readonly transform: TransformConfig;
+  readonly layoutFrom: Layout;
   /**
-   * The aggregated transform from all ancestor elements.
+   * The destination layout the element was projected to.
    */
-  readonly distortion: TransformConfig;
+  readonly layoutDest: Layout;
+  /**
+   * The actual transform applied on the element to project it from the
+   * current (potentially distorted) layout to the destination layout.
+   */
+  readonly transformApplied: Transform2D;
+  /**
+   * The intended transform to project the element from its original, undistorted
+   * layout to the destination layout.
+   */
+  readonly transformIntended: Transform2D;
 }
 
 export class BasicProjectionNode
@@ -95,7 +106,7 @@ export class BasicProjectionNode
   }
 
   measure(): Measurement {
-    const layout = Layout.from(this.#element);
+    const layout = Layout.fromElement(this.#element);
     this.#measurement = { layout };
     return this.#measurement;
   }
@@ -106,71 +117,44 @@ export class BasicProjectionNode
 
   project(dest: Layout): Projection {
     if (!this.#measurement) throw new Error('Node not measured');
-    const distortion = this.aggregateAncestorTransforms();
-    const transform = this.computeTransform(this.#measurement.layout, dest);
-    transform.x.translate -= distortion.x.translate;
-    transform.x.translate /= distortion.x.scale;
-    transform.y.translate -= distortion.y.translate;
-    transform.y.translate /= distortion.y.scale;
-    transform.x.scale /= distortion.x.scale;
-    transform.y.scale /= distortion.y.scale;
+    const parent = this.parent();
+    const parentLayout = parent?.measurement()?.layout;
+    const parentProjection = this.parent()?.projection();
+
+    let curr = this.#measurement.layout;
+    if (parentLayout && parentProjection)
+      curr = curr.transform(
+        parentProjection.transformIntended,
+        parentLayout.midpoint(),
+      );
+
+    let transform = curr.transformFor(dest);
+    if (parentProjection) {
+      const translateX =
+        transform.x.translate / parentProjection.transformIntended.x.scale;
+      const translateY =
+        transform.y.translate / parentProjection.transformIntended.y.scale;
+      transform = Transform2D.config({
+        x: { translate: translateX, scale: transform.x.scale },
+        y: { translate: translateY, scale: transform.y.scale },
+      });
+    }
 
     this.#element.style.transform = [
       `translate3d(${transform.x.translate}px, ${transform.y.translate}px, 0)`,
       `scale(${transform.x.scale}, ${transform.y.scale})`,
     ].join(' ');
 
-    this.#projection = { transform, distortion };
+    this.#projection = {
+      layoutFrom: curr,
+      layoutDest: dest,
+      transformApplied: transform,
+      transformIntended: this.#measurement.layout.transformFor(dest),
+    };
     return this.#projection;
   }
 
   projection(): Projection | null {
     return this.#projection ?? null;
-  }
-
-  private computeTransform(
-    currLayout: Layout,
-    destLayout: Layout,
-  ): TransformConfig {
-    const currMidpoint = currLayout.midpoint();
-    const destMidpoint = destLayout.midpoint();
-
-    const transform: TransformConfig = {
-      x: new TransformAxisConfig({
-        origin: currMidpoint.x,
-        translate: destMidpoint.x - currMidpoint.x,
-        scale: destLayout.width() / currLayout.width(),
-      }),
-      y: new TransformAxisConfig({
-        origin: currMidpoint.y,
-        translate: destMidpoint.y - currMidpoint.y,
-        scale: destLayout.height() / currLayout.height(),
-      }),
-    };
-
-    // edge case: invisible element (width/height is 0)
-    if (isNaN(transform.x.scale)) transform.x.scale = 1;
-    if (isNaN(transform.y.scale)) transform.y.scale = 1;
-
-    return transform;
-  }
-
-  private aggregateAncestorTransforms(): TransformConfig {
-    const transformX = TransformAxisConfig.identity();
-    const transformY = TransformAxisConfig.identity();
-
-    const parent = this.parent();
-
-    if (!parent) return { x: transformX, y: transformY };
-    const parentProjection = parent.projection();
-    if (!parentProjection) throw new Error('Parent not projected');
-
-    const { transform, distortion } = parentProjection;
-    transformX.translate += distortion.x.translate + transform.x.translate;
-    transformY.translate += distortion.y.translate + transform.y.translate;
-    transformX.scale *= distortion.x.scale * transform.x.scale;
-    transformY.scale *= distortion.y.scale * transform.y.scale;
-
-    return { x: transformX, y: transformY };
   }
 }

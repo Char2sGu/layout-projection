@@ -26,8 +26,8 @@ export class CalibrateBorderRadius extends ProjectionNodeBehavior {
     if (!measurement) throw new Error('Measurement not found');
     if (!isBorderRadiusesMeasured(measurement)) return projection;
     const radiuses = measurement.borderRadiuses;
-    const scaleX = projection.transform.x.scale;
-    const scaleY = projection.transform.y.scale;
+    const scaleX = projection.transformApplied.x.scale;
+    const scaleY = projection.transformApplied.y.scale;
     const radiusStyle = (radius: BorderRadiusCornerConfig) =>
       `${radius.x / scaleX}px ${radius.y / scaleY}px`;
     const element = this.element();

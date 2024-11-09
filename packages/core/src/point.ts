@@ -1,6 +1,6 @@
 /**
- * A point in 2D space.
+ * A coordinate in 2D space.
  */
-export class Point {
+export class Coordinate {
   constructor(readonly x: number, readonly y: number) {}
 }
