@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/TheNightmareX/layout-projection#readme",
   "dependencies": {
-    "popmotion": "^11.0.5",
     "style-value-types": "^5.1.2",
     "tslib": "^2.5.0"
   },
