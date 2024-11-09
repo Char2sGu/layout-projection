@@ -7,29 +7,29 @@ import { TransformAxisConfig, TransformConfig } from './transform.js';
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
  * @see https://gist.github.com/TheNightmareX/f5bf72e81d2667f6036e91cf81270ef7 Layout Projection - Matt Perry
  */
-export interface ProjectionNode extends Node<ProjectionNode> {
+export abstract class ProjectionNode extends Node<ProjectionNode> {
   /**
    * Returns the element of this projection node.
    */
-  element(): HTMLElement;
+  abstract element(): HTMLElement;
 
   /**
    * Reset the node and the element to its initial state, to get ready
    * for a new round of projection.
    */
-  reset(): void;
+  abstract reset(): void;
 
   /**
    * Measure the current layout and relevant styles of the element.
    * The result can be accessed via {@link measurement}.
    * @returns the measurement result
    */
-  measure(): Measurement;
+  abstract measure(): Measurement;
 
   /**
    * Return the {@link measure} result of this projection node.
    */
-  measurement(): Measurement | null;
+  abstract measurement(): Measurement | null;
 
   /**
    * Projects the element to the given layout.
@@ -37,13 +37,13 @@ export interface ProjectionNode extends Node<ProjectionNode> {
    * @param dest the destination layout
    * @returns information about the performed projection
    */
-  project(dest: Layout): Projection;
+  abstract project(dest: Layout): Projection;
 
   /**
    * Return the information about the current projection, or null
    * if no projection has been performed yet.
    */
-  projection(): Projection | null;
+  abstract projection(): Projection | null;
 }
 
 /**

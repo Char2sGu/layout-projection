@@ -1,7 +1,7 @@
 /**
  * A node in a tree structure.
  */
-export interface Node<Self extends Node<Self>> {
+export abstract class Node<Self extends Node<Self>> {
   /**
    * Assign a ID to this node.
    * A node can only be identified once, and can only be identified
@@ -9,74 +9,74 @@ export interface Node<Self extends Node<Self>> {
    * @throws Error if an ID has already been assigned.
    * @throws Error if the ID has already been read.
    */
-  identifyAs(id: string): void;
+  abstract identifyAs(id: string): void;
 
   /**
    * Returns whether an ID has been assigned to this node.
    */
-  identified(): boolean;
+  abstract identified(): boolean;
 
   /**
    * Returns the ID of this node.
    * A random and unique ID is assigned if not identified.
    */
-  identity(): string;
+  abstract identity(): string;
 
   /**
    * Attach this node as a child of the given parent node.
    * One node can only have one parent.
    * @param parent another node
    */
-  attach(parent: Self): void;
+  abstract attach(parent: Self): void;
 
   /**
    * Detach this node from its current parent.
    * @throws Error if no parent.
    */
-  detach(): void;
+  abstract detach(): void;
 
   /**
    * Append a child node to this node.
    * @param child
    */
-  appendChild(child: Self): void;
+  abstract appendChild(child: Self): void;
 
   /**
    * Remove a child node from this node.
    * Do nothing if the given node is not a child.
    * @param child
    */
-  removeChild(child: Self): void;
+  abstract removeChild(child: Self): void;
 
   /**
    * Return the parent node of this projection node.
    */
-  parent(): Self | null;
+  abstract parent(): Self | null;
 
   /**
    * Return the child nodes of this projection node.
    */
-  children(): ReadonlySet<Self>;
+  abstract children(): ReadonlySet<Self>;
 
   /**
    * Dispose this node and all its children.
    * Must be invoked when the node is no longer needed.
    * Duplicate invocations have no effect.
    */
-  dispose(): void;
+  abstract dispose(): void;
 
   /**
    * Traverse down the node tree starting from this node.
    * @param consumer invoked on each node
    */
-  traverse(consumer: (node: Self) => void): void;
+  abstract traverse(consumer: (node: Self) => void): void;
 
   /**
    * Track the path from the this node to the root.
    * @returns an iterable object, where the first value is parent of the current node
    * and the last value is the root node.
    */
-  track(): Iterable<Self>;
+  abstract track(): Iterable<Self>;
 }
 
 export class BasicNode<Self extends BasicNode<Self>> implements Node<Self> {
