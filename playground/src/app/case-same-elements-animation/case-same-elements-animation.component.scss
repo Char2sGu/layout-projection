@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  height: 100vh;
+  background: red;
+  &[flag='false'] {
+    align-items: center;
+    justify-content: flex-start;
+  }
+  &[flag='true'] {
+    align-items: stretch;
+    justify-content: flex-end;
+  }
+}
+
+.outer-box {
+  display: flex;
+  width: 30vw;
+  min-height: 30vh;
+  background: blue;
+  [flag='false'] & {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  [flag='true'] & {
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+}
+
+.inner-box {
+  width: 10vw;
+  height: 10vh;
+  background: yellow;
+}

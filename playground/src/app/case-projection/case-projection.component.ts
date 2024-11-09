@@ -16,6 +16,8 @@ import {
   MeasureBorderRadius,
 } from '@layout-projection/core/behaviors';
 
+import { paintLayout } from '../debugger';
+
 @Component({
   selector: 'lpj-case-projection',
   standalone: true,
@@ -30,6 +32,8 @@ export class CaseProjectionComponent {
   container = viewChild.required<ElementRef<HTMLElement>>('container');
   content = viewChild.required<ElementRef<HTMLElement>>('content');
 
+  painted = new Set<HTMLElement>();
+
   ngAfterViewInit(): void {
     const container = this.createNode(this.container().nativeElement);
     const content = this.createNode(this.content().nativeElement);
@@ -41,7 +45,7 @@ export class CaseProjectionComponent {
       container.measure();
       content.measure();
 
-      container.project(
+      const containerProjection = container.project(
         new Layout({
           top: 50,
           left: 50,
@@ -49,7 +53,7 @@ export class CaseProjectionComponent {
           bottom: window.innerHeight,
         }),
       );
-      content.project(
+      const contentProjection = content.project(
         new Layout({
           top: window.innerHeight - 100,
           left: window.innerWidth / 2,
@@ -57,6 +61,13 @@ export class CaseProjectionComponent {
           bottom: window.innerHeight,
         }),
       );
+
+      this.painted.forEach((e) => e.remove());
+
+      this.painted.add(paintLayout(containerProjection.layoutFrom));
+      this.painted.add(paintLayout(containerProjection.layoutDest));
+      this.painted.add(paintLayout(contentProjection.layoutFrom));
+      this.painted.add(paintLayout(contentProjection.layoutDest));
     });
   }
 

@@ -15,6 +15,7 @@
     "@angular/router": "*",
     "@layout-projection/core": "*",
     "@layout-projection/animation": "*",
+    "popmotion": "*",
     "rxjs": "*",
     "tslib": "*",
     "zone.js": "*"
