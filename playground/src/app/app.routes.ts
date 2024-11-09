@@ -1,3 +1,10 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+import { CaseProjectionComponent } from './case-projection/case-projection.component';
+
+export const routes: Routes = [
+  {
+    path: 'case-projection',
+    component: CaseProjectionComponent,
+  },
+];
