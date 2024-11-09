@@ -50,9 +50,7 @@ export class HandlerBasedProjectionNodeAnimator
  * Decorator of a {@link ProjectionNodeAnimator} that stops the previous animation
  * of the same node before starting a new one.
  */
-export class PreventDuplicateProjectionNodeAnimatorBehavior
-  implements ProjectionNodeAnimator
-{
+export class PreventPreemptiveNodeAnimation implements ProjectionNodeAnimator {
   private readonly refs = new WeakMap<ProjectionNode, AnimationRef>();
 
   constructor(private readonly kernel: ProjectionNodeAnimator) {}

@@ -44,9 +44,7 @@ export class AggregationProjectionTreeAnimator
  * Decorator of a {@link ProjectionTreeAnimator} that
  * stops the previous animation of the same root node before starting a new one.
  */
-export class PreventDuplicateProjectionTreeAnimatorBehavior
-  implements ProjectionTreeAnimator
-{
+export class PreventPreemptiveTreeAnimation implements ProjectionTreeAnimator {
   private readonly refs = new WeakMap<ProjectionNode, AnimationRef>();
 
   constructor(private readonly kernel: ProjectionTreeAnimator) {}
@@ -67,9 +65,7 @@ export class PreventDuplicateProjectionTreeAnimatorBehavior
  * This is useful for animating layout changes where some new nodes are added and
  * some existing nodes are removed.
  */
-export class EstimateLayoutProjectionTreeAnimatorBehavior
-  implements ProjectionTreeAnimator
-{
+export class EstimateLayoutForAnimation implements ProjectionTreeAnimator {
   constructor(private readonly kernel: ProjectionTreeAnimator) {}
 
   animate(config: ProjectioNTreeAnimationConfig): AnimationRef {
