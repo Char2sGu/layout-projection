@@ -13,8 +13,8 @@
     "@angular/platform-browser": "*",
     "@angular/platform-browser-dynamic": "*",
     "@angular/router": "*",
-    "@layout-projection/angular": "*",
     "@layout-projection/core": "*",
+    "@layout-projection/animation": "*",
     "rxjs": "*",
     "tslib": "*",
     "zone.js": "*"
