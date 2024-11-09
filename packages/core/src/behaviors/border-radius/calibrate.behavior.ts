@@ -15,6 +15,11 @@ export class CalibrateBorderRadius extends ProjectionNodeBehavior {
     super(kernel);
   }
 
+  override reset(): void {
+    super.reset();
+    this.element().style.borderRadius = '';
+  }
+
   override project(dest: Layout): Projection {
     const projection = super.project(dest);
     const measurement = this.measurement();
