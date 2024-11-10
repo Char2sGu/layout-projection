@@ -21,6 +21,7 @@
     "@angular/core": ">=17",
     "@layout-projection/core": "*",
     "@layout-projection/animation": "*",
+    "popmotion": ">=11",
     "rxjs": "7.x"
   }
 }

@@ -4,6 +4,7 @@
     "module": "ES2022",
     "moduleResolution": "Bundler",
     "outDir": "./dist",
-    "rootDir": "./src"
-  }
+    "rootDir": "./"
+  },
+  "exclude": ["dist"]
 }
