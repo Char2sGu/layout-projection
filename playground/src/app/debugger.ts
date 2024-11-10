@@ -5,7 +5,7 @@ export function paintLayout(layout: Layout, name?: string): HTMLElement {
 
   if (name) box.setAttribute('name', name);
   box.style.position = 'fixed';
-  box.style.border = '2px solid red';
+  box.style.border = '2px solid white';
   box.style.top = `${layout.top}px`;
   box.style.left = `${layout.left}px`;
   box.style.width = `${layout.right - layout.left}px`;

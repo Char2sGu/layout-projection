@@ -1,0 +1,21 @@
+:host {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 40px;
+  padding: 40px;
+  height: 100%;
+}
+
+.card {
+  position: relative;
+  background: red;
+}
+
+::ng-deep {
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: gray;
+    opacity: 50%;
+  }
+}

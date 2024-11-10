@@ -1,15 +1,31 @@
 import { Routes } from '@angular/router';
 
-import { CaseProjectionComponent } from './case-projection/case-projection.component';
-import { CaseSameElementsAnimationComponent } from './case-same-elements-animation/case-same-elements-animation.component';
+import { AdapterSingleElementComponent } from './adapter-single-element/adapter-single-element.component';
+import { CoreSharedElementsComponent } from './case-shared-elements/core-shared-elements.component';
+import { CoreProjectionComponent } from './core-projection/core-projection.component';
+import { CoreSameElementsComponent } from './core-same-elements/core-same-elements.component';
+import { OverviewComponent } from './overview/overview.component';
 
 export const routes: Routes = [
   {
-    path: 'case-projection',
-    component: CaseProjectionComponent,
+    path: '',
+    pathMatch: 'full',
+    component: OverviewComponent,
   },
   {
-    path: 'case-same-elements-animation',
-    component: CaseSameElementsAnimationComponent,
+    path: 'core-projection',
+    component: CoreProjectionComponent,
+  },
+  {
+    path: 'core-same-elements',
+    component: CoreSameElementsComponent,
+  },
+  {
+    path: 'core-shared-element',
+    component: CoreSharedElementsComponent,
+  },
+  {
+    path: 'adapter-single-element',
+    component: AdapterSingleElementComponent,
   },
 ];

@@ -26,7 +26,7 @@ import { linear } from 'popmotion';
 import { paintLayout } from '../debugger';
 
 @Component({
-  selector: 'lpj-case-same-elements-animation',
+  selector: 'lpj-core-same-elements',
   standalone: true,
   imports: [],
   providers: [
@@ -51,11 +51,11 @@ import { paintLayout } from '../debugger';
       },
     },
   ],
-  templateUrl: './case-same-elements-animation.component.html',
-  styleUrl: './case-same-elements-animation.component.scss',
+  templateUrl: './core-same-elements.component.html',
+  styleUrl: './core-same-elements.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CaseSameElementsAnimationComponent {
+export class CoreSameElementsComponent {
   private animator = inject(ProjectionTreeAnimator);
   private borderRadiusMeasurer = inject(BorderRadiusMeasurer);
 
@@ -93,11 +93,8 @@ export class CaseSameElementsAnimationComponent {
         e.remove();
       });
       container.traverse((n) => {
-        let layout = from.get(n.identity())!.measurement!.layout;
-        let painted = paintLayout(layout);
-        this.painted.add(painted);
-        layout = to.get(n.identity())!.measurement!.layout;
-        painted = paintLayout(layout);
+        const layout = from.get(n.identity())!.measurement!.layout;
+        const painted = paintLayout(layout);
         this.painted.add(painted);
       });
 

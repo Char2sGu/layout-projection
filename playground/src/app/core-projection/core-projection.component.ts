@@ -19,14 +19,14 @@ import {
 import { paintLayout } from '../debugger';
 
 @Component({
-  selector: 'lpj-case-projection',
+  selector: 'lpj-core-projection',
   standalone: true,
   imports: [],
-  templateUrl: './case-projection.component.html',
-  styleUrl: './case-projection.component.scss',
+  templateUrl: './core-projection.component.html',
+  styleUrl: './core-projection.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CaseProjectionComponent {
+export class CoreProjectionComponent {
   private borderRadiusMeasurer = inject(BorderRadiusMeasurer);
 
   container = viewChild.required<ElementRef<HTMLElement>>('container');
