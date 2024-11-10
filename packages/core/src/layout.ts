@@ -1,6 +1,6 @@
 import { mix } from 'popmotion';
 
-import { Coordinate } from './point.js';
+import { Coordinate } from './coordinate.js';
 import { Transform2D } from './transform.js';
 
 /**

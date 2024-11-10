@@ -1,4 +1,4 @@
-import { Coordinate } from './point.js';
+import { Coordinate } from './coordinate.js';
 
 /**
  * A linear transform. First translate, and then scale.
