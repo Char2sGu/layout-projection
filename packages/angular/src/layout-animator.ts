@@ -11,7 +11,7 @@ import {
   ProjectionNodeSnapshot,
   ProjectionTreeAnimator,
 } from '@layout-projection/animation';
-import { ProjectionNode } from '@layout-projection/core';
+import { Measurement, ProjectionNode } from '@layout-projection/core';
 
 import { StringEasingParser } from './string-easing-parser';
 
@@ -45,6 +45,7 @@ export class LayoutAnimator {
         const previous = this.#previousDest;
         this.#previousDest = current;
         if (!previous) return;
+        if (this.#snapshotsEqual(previous, current)) return;
         await this.#animator.animate({
           root: this.#node,
           from: previous,
@@ -54,5 +55,37 @@ export class LayoutAnimator {
         });
       },
     });
+  }
+
+  #snapshotsEqual(
+    a: ReadonlyMap<string, ProjectionNodeSnapshot>,
+    b: ReadonlyMap<string, ProjectionNodeSnapshot>,
+  ) {
+    if (a.size !== b.size) return false;
+    for (const [key, value] of a)
+      if (!b.has(key) || !this.#snapshotEqual(value, b.get(key)!)) return false;
+    return true;
+  }
+
+  #snapshotEqual(a: ProjectionNodeSnapshot, b: ProjectionNodeSnapshot) {
+    return (
+      a.id === b.id &&
+      a.parent === b.parent &&
+      this.#measurementEqual(a.measurement, b.measurement) &&
+      a.children.size === b.children.size &&
+      [...a.children].every((c) => b.children.has(c))
+    );
+  }
+
+  #measurementEqual(a: Measurement | null, b: Measurement | null) {
+    return (
+      a === b ||
+      (a !== null &&
+        b !== null &&
+        a.layout.top === b.layout.top &&
+        a.layout.left === b.layout.left &&
+        a.layout.right === b.layout.right &&
+        a.layout.bottom === b.layout.bottom)
+    );
   }
 }
