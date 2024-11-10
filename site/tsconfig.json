@@ -4,15 +4,6 @@
     "module": "ES2022",
     "moduleResolution": "Bundler",
     "outDir": "./dist",
-    "rootDir": "./src",
-    "paths": {
-      "@layout-projection/angular": ["../packages/angular/dist"]
-    }
-  },
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "rootDir": "./src"
   }
 }
