@@ -9,7 +9,7 @@ export class FixLayoutOnDestroyDirective implements OnDestroy {
   private element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
 
   ngOnDestroy(): void {
-    const layout = Layout.from(this.element);
+    const layout = Layout.fromElement(this.element);
 
     // TODO: safer parsing
     const styles = getComputedStyle(this.element);

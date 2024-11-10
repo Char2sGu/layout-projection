@@ -28,6 +28,8 @@ import { NavContentActivationDetector } from '../nav-content-activation-detector
   ],
 })
 export class NavComponent {
+  readonly AnimationCurve = AnimationCurve;
+
   private content = inject(NAV_CONTENT);
   private contentActivationDetector = inject(NavContentActivationDetector);
   private router = inject(Router);

@@ -6,6 +6,8 @@
   [items]="tabs"
   [itemActive]="tabActive$.value"
   (itemActiveChange)="tabActive$.next($event)"
+  [duration]="225"
+  [easing]="AnimationCurve.Standard"
 ></lpj-nav-tabs>
 <tui-scrollbar class="nav-menu-wrapper">
   <ng-container *ngIf="items$ | async as items">
@@ -14,6 +16,8 @@
       *lpjRerenderOnChange="items"
       lpjFixLayoutOnDestroy
       [content]="items"
+      [duration]="125"
+      [easing]="AnimationCurve.Standard"
       @navMenu
     ></lpj-nav-menu>
   </ng-container>

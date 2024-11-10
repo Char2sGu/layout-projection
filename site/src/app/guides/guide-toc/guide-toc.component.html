@@ -1,21 +1,22 @@
-<ng-container *lpjAnimationScope>
-  <ng-container
-    *lpjAnimationTrigger="itemActive; for: 'activation-indicator'"
-  ></ng-container>
-  <div class="overline">Contents</div>
-  <ul class="nav-list">
-    <li
-      class="nav-item"
-      *ngFor="let item of items; let index = index"
-      style="--indent: {{ item.level }}"
-    >
-      <div
-        class="activation-indicator"
-        *ngIf="itemActive !== undefined ? itemActive === item : index === 0"
-        lpjNode="activation-indicator"
-        [lpjAnimation]="{ duration: 125, easing: AnimationCurve.Standard }"
-      ></div>
-      <a [routerLink]="[]" [fragment]="item.id">{{ item.title }}</a>
-    </li>
-  </ul>
-</ng-container>
+<div class="overline">Contents</div>
+<ul
+  class="nav-list"
+  layout
+  animate
+  [duration]="125"
+  [easing]="AnimationCurve.Standard"
+>
+  <li
+    class="nav-item"
+    *ngFor="let item of items; let index = index"
+    style="--indent: {{ item.level }}"
+  >
+    <div
+      class="activation-indicator"
+      *ngIf="itemActive !== undefined ? itemActive === item : index === 0"
+      id="guide-toc-activation-indicator"
+      layout
+    ></div>
+    <a [routerLink]="[]" [fragment]="item.id">{{ item.title }}</a>
+  </li>
+</ul>

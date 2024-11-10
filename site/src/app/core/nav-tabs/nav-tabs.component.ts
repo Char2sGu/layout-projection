@@ -5,6 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { LayoutAnimator, LayoutNode } from '@layout-projection/angular';
 
 import { AnimationCurve } from '../../common/animation';
 
@@ -13,6 +14,15 @@ import { AnimationCurve } from '../../common/animation';
   templateUrl: './nav-tabs.component.html',
   styleUrls: ['./nav-tabs.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  hostDirectives: [
+    {
+      directive: LayoutNode,
+    },
+    {
+      directive: LayoutAnimator,
+      inputs: ['duration', 'easing'],
+    },
+  ],
 })
 export class NavTabsComponent {
   AnimationCurve = AnimationCurve;

@@ -6,7 +6,8 @@ import {
 import { NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LayoutProjectionModule } from '@layout-projection/angular';
+import { LayoutAnimator, LayoutNode } from '@layout-projection/angular';
+import { provideLayoutProjectionBuiltinSetup } from '@layout-projection/angular/setup';
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import {
@@ -50,7 +51,6 @@ import { RerenderOnChangeDirective } from './shared/rerender-on-change.directive
     BrowserModule,
     BrowserAnimationsModule,
     EventPluginsModule,
-    LayoutProjectionModule.forRoot(),
     MarkdownElementsModule,
     MarkdownModule.forRoot({
       loader: HttpClient,
@@ -69,10 +69,13 @@ import { RerenderOnChangeDirective } from './shared/rerender-on-change.directive
     TuiActiveZoneModule,
     TuiScrollbarModule,
     FixLayoutOnDestroyDirective,
+    LayoutNode,
+    LayoutAnimator,
   ],
   providers: [
     { provide: NAV_CONTENT, useValue: APP_NAV_CONTENT },
     provideHttpClient(withInterceptorsFromDi()),
+    provideLayoutProjectionBuiltinSetup(),
   ],
 })
 export class AppModule {}

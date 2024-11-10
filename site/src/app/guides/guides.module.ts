@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { LayoutProjectionModule } from '@layout-projection/angular';
+import { LayoutAnimator, LayoutNode } from '@layout-projection/angular';
 
 import { MarkdownArticleComponent } from '../shared/markdown-article/markdown-article.component';
 import { PreferUndefinedPipe } from '../shared/prefer-undefined.pipe';
@@ -22,9 +22,10 @@ import { GuideTocItemsFromHeadingsPipe } from './shared/guide-toc-items-from-hea
   imports: [
     CommonModule,
     GuidesRoutingModule,
-    LayoutProjectionModule,
     MarkdownArticleComponent,
     PreferUndefinedPipe,
+    LayoutNode,
+    LayoutAnimator,
   ],
 })
 export class GuidesModule {}

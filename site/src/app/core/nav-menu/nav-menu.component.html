@@ -8,15 +8,14 @@
       <div
         class="active-overlay"
         *ngIf="itemActive() === item"
-        lpjNode="nav-item-active-overlay"
+        id="nav-item-active-overlay"
+        layout
       ></div>
       <div
         class="hover-overlay"
         *ngIf="itemLastHovered() === item"
-        lpjNode="nav-item-hover-overlay"
-        [@overlay]="
-          animationEntry.snapshots.has('nav-item-hover-overlay') || 'initial'
-        "
+        id="nav-item-hover-overlay"
+        layout
       ></div>
     </lpj-nav-item>
   </a>
