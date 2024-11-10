@@ -5,7 +5,6 @@ import { Measurement } from '@layout-projection/core';
  */
 export interface ProjectionNodeSnapshot {
   readonly id: string;
-  readonly element: HTMLElement;
   readonly measurement: Measurement | null;
   readonly parent: string | null;
   readonly children: ReadonlySet<string>;

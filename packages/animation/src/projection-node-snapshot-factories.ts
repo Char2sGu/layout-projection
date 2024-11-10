@@ -8,7 +8,6 @@ import { ProjectionNodeSnapshot } from './projection-node-snapshot.js';
 export function createSnapshot(node: ProjectionNode): ProjectionNodeSnapshot {
   return {
     id: node.identity(),
-    element: node.element(),
     measurement: node.measurement(),
     parent: node.parent()?.identity() ?? null,
     children: new Set([...node.children()].map((child) => child.identity())),
