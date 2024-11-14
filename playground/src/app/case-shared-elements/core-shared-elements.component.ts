@@ -62,12 +62,10 @@ export class CoreSharedElementsComponent {
   overlay?: ProjectionNode;
 
   ngAfterViewInit(): void {
-    const container = this.createNode(this.container.nativeElement);
-    container.identifyAs('container');
+    const container = this.createNode(this.container.nativeElement, 'root');
 
     this.cards().forEach((elementRef, index) => {
-      const card = this.createNode(elementRef.nativeElement);
-      card.identifyAs('card-' + index);
+      const card = this.createNode(elementRef.nativeElement, 'card-' + index);
       card.attach(container);
 
       card.element().addEventListener('click', async () => {
@@ -78,9 +76,11 @@ export class CoreSharedElementsComponent {
 
         this.overlay?.element().remove();
         this.overlay?.dispose();
-        this.overlay = this.createNode(document.createElement('div'));
+        this.overlay = this.createNode(
+          document.createElement('div'),
+          'overlay',
+        );
         this.overlay.element().classList.add('overlay');
-        this.overlay.identifyAs('overlay');
         this.overlay.attach(card);
         card.element().appendChild(this.overlay.element());
 
@@ -100,8 +100,8 @@ export class CoreSharedElementsComponent {
     });
   }
 
-  createNode(element: HTMLElement): ProjectionNode {
-    let node: ProjectionNode = new BasicProjectionNode(element);
+  createNode(element: HTMLElement, id: string): ProjectionNode {
+    let node: ProjectionNode = new BasicProjectionNode(element, id);
 
     node = new MeasureBorderRadius(node, this.borderRadiusMeasurer);
     node = new CalibrateBorderRadius(node);

@@ -68,13 +68,10 @@ export class CoreSameElementsComponent {
   ngAfterViewInit(): void {
     let flag = false;
 
-    const container = this.createNode(this.container().nativeElement);
-    container.identifyAs('container');
-    const outerBox = this.createNode(this.outerBox().nativeElement);
-    outerBox.identifyAs('outerBox');
+    const container = this.createNode(this.container().nativeElement, 'root');
+    const outerBox = this.createNode(this.outerBox().nativeElement, 'outerBox');
     outerBox.attach(container);
-    const innerBox = this.createNode(this.innerBox().nativeElement);
-    innerBox.identifyAs('innerBox');
+    const innerBox = this.createNode(this.innerBox().nativeElement, 'innerBox');
     innerBox.attach(outerBox);
 
     container.element().setAttribute('flag', String(flag));
@@ -109,8 +106,8 @@ export class CoreSameElementsComponent {
     });
   }
 
-  createNode(element: HTMLElement): ProjectionNode {
-    let node: ProjectionNode = new BasicProjectionNode(element);
+  createNode(element: HTMLElement, id: string): ProjectionNode {
+    let node: ProjectionNode = new BasicProjectionNode(element, id);
 
     node = new MeasureBorderRadius(node, this.borderRadiusMeasurer);
     node = new CalibrateBorderRadius(node);

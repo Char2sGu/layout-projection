@@ -35,8 +35,8 @@ export class CoreProjectionComponent {
   painted = new Set<HTMLElement>();
 
   ngAfterViewInit(): void {
-    const container = this.createNode(this.container().nativeElement);
-    const content = this.createNode(this.content().nativeElement);
+    const container = this.createNode(this.container().nativeElement, 'parent');
+    const content = this.createNode(this.content().nativeElement, 'child');
     content.attach(container);
 
     this.container().nativeElement.addEventListener('click', () => {
@@ -71,8 +71,8 @@ export class CoreProjectionComponent {
     });
   }
 
-  createNode(element: HTMLElement): ProjectionNode {
-    let node: ProjectionNode = new BasicProjectionNode(element);
+  createNode(element: HTMLElement, id: string): ProjectionNode {
+    let node: ProjectionNode = new BasicProjectionNode(element, id);
 
     node = new MeasureBorderRadius(node, this.borderRadiusMeasurer);
     node = new CalibrateBorderRadius(node);
