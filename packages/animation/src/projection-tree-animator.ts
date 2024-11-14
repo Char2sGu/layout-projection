@@ -14,10 +14,10 @@ export abstract class ProjectionTreeAnimator {
    * in any of the snapshot maps.
    * @param config
    */
-  abstract animate(config: ProjectioNTreeAnimationConfig): AnimationRef;
+  abstract animate(config: ProjectionTreeAnimationConfig): AnimationRef;
 }
 
-export interface ProjectioNTreeAnimationConfig extends AnimationConfig {
+export interface ProjectionTreeAnimationConfig extends AnimationConfig {
   /**
    * The root node of the projection tree to animate.
    */

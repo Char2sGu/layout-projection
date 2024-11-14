@@ -4,7 +4,7 @@ import { AnimationRef } from './animation-ref.js';
 import { AggregationAnimationRef } from './animation-refs.js';
 import { ProjectionNodeAnimator } from './projection-node-animator.js';
 import {
-  ProjectioNTreeAnimationConfig,
+  ProjectionTreeAnimationConfig,
   ProjectionTreeAnimator,
 } from './projection-tree-animator.js';
 
@@ -18,7 +18,7 @@ export class AggregationProjectionTreeAnimator
 {
   constructor(private readonly nodeAnimator: ProjectionNodeAnimator) {}
 
-  animate(config: ProjectioNTreeAnimationConfig): AnimationRef {
+  animate(config: ProjectionTreeAnimationConfig): AnimationRef {
     const { root, from, to, duration, easing } = config;
 
     const refs: AnimationRef[] = [];
@@ -49,7 +49,7 @@ export class PreventPreemptiveTreeAnimation implements ProjectionTreeAnimator {
 
   constructor(private readonly kernel: ProjectionTreeAnimator) {}
 
-  animate(config: ProjectioNTreeAnimationConfig): AnimationRef {
+  animate(config: ProjectionTreeAnimationConfig): AnimationRef {
     this.refs.get(config.root)?.stop();
     const ref = this.kernel.animate(config);
     this.refs.set(config.root, ref);
@@ -68,7 +68,7 @@ export class PreventPreemptiveTreeAnimation implements ProjectionTreeAnimator {
 export class EstimateLayoutForAnimation implements ProjectionTreeAnimator {
   constructor(private readonly kernel: ProjectionTreeAnimator) {}
 
-  animate(config: ProjectioNTreeAnimationConfig): AnimationRef {
+  animate(config: ProjectionTreeAnimationConfig): AnimationRef {
     // TODO: Implement the behavior.
     return this.kernel.animate(config);
   }
