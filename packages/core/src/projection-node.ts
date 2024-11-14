@@ -90,8 +90,8 @@ export class BasicProjectionNode
   #projection?: Projection;
   #measurement?: Measurement;
 
-  constructor(element: HTMLElement) {
-    super();
+  constructor(element: HTMLElement, id: string) {
+    super(id);
     this.#element = element;
   }
 

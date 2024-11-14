@@ -10,12 +10,20 @@ import {
 @Injectable({ providedIn: 'root' })
 export class BasicProjectionNodeFactory implements ProjectionNodeFactory {
   #borderRadiusMeasurer = inject(BorderRadiusMeasurer);
+  #nextAnonymousId = 1;
 
-  create(element: HTMLElement): ProjectionNode {
+  create(element: HTMLElement, id?: string): ProjectionNode {
+    id ??= this.#generateAnonymousId(element);
     let instance: ProjectionNode;
-    instance = new BasicProjectionNode(element);
+    instance = new BasicProjectionNode(element, id);
     instance = new MeasureBorderRadius(instance, this.#borderRadiusMeasurer);
     instance = new CalibrateBorderRadius(instance);
     return instance;
+  }
+
+  #generateAnonymousId(element: HTMLElement): string {
+    const tagname = element.tagName.toLowerCase();
+    const classes = Array.from(element.classList).join('.');
+    return `${tagname}.${classes}{anonymous@${this.#nextAnonymousId++}}`;
   }
 }

@@ -31,14 +31,6 @@ export abstract class ProjectionNodeBehavior implements ProjectionNode {
     return this.kernel.projection();
   }
 
-  identifyAs(id: string): void {
-    this.kernel.identifyAs(id);
-  }
-
-  identified(): boolean {
-    return this.kernel.identified();
-  }
-
   identity(): string {
     return this.kernel.identity();
   }
