@@ -16,8 +16,8 @@ export class BasicProjectionNodeFactory implements ProjectionNodeFactory {
     id ??= this.#generateAnonymousId(element);
     let instance: ProjectionNode;
     instance = new BasicProjectionNode(element, id);
-    instance = new MeasureBorderRadius(instance, this.#borderRadiusMeasurer);
-    instance = new CalibrateBorderRadius(instance);
+    instance = MeasureBorderRadius.for(instance, this.#borderRadiusMeasurer);
+    instance = CalibrateBorderRadius.for(instance);
     return instance;
   }
 

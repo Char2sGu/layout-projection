@@ -2,10 +2,17 @@ import { Layout } from './layout.js';
 import { Measurement, Projection, ProjectionNode } from './projection-node.js';
 
 /**
- * Decorator for a projection node that modifies behaviors.
+ * Decorator for a projection node that modifies its original behaviors.
+ * Each concrete behavior class should make sure that there is only one
+ * instance of behavior per node, and thus its constructor should not be
+ * public.
+ *
+ * Tree-related methods are modified to return the behavior instances of
+ * the inner nodes, by dynamically decorating the inner nodes with the
+ * {@link decorate} method.
  */
 export abstract class ProjectionNodeBehavior implements ProjectionNode {
-  constructor(protected kernel: ProjectionNode) {}
+  protected constructor(protected readonly kernel: ProjectionNode) {}
 
   element(): HTMLElement {
     return this.kernel.element();
@@ -51,23 +58,34 @@ export abstract class ProjectionNodeBehavior implements ProjectionNode {
     this.kernel.removeChild(child);
   }
 
-  parent(): ProjectionNode | null {
-    return this.kernel.parent();
+  parent(): this | null {
+    const parent = this.kernel.parent();
+    if (parent === null) return null;
+    return this.decorate(parent);
   }
 
-  children(): ReadonlySet<ProjectionNode> {
-    return this.kernel.children();
+  children(): ReadonlySet<this> {
+    const children = new Set<this>();
+    for (const child of this.kernel.children())
+      children.add(this.decorate(child));
+    return children;
   }
 
   dispose(): void {
     this.kernel.dispose();
   }
 
-  traverse(consumer: (node: ProjectionNode) => void): void {
-    this.kernel.traverse(consumer);
+  traverse(consumer: (node: this) => void): void {
+    this.kernel.traverse((node) => consumer(this.decorate(node)));
   }
 
-  track(): Iterable<ProjectionNode> {
-    return this.kernel.track();
+  *track(): Iterable<this> {
+    for (const node of this.kernel.track()) yield this.decorate(node);
   }
+
+  /**
+   * Return the behavior instance of the given node.
+   * If exists, returns the previous behavior instance of this node.
+   */
+  protected abstract decorate(target: ProjectionNode): this;
 }

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+import { AdapterMetadataComponent } from './adapter-metadata/adapter-metadata.component';
 import { AdapterSingleElementComponent } from './adapter-single-element/adapter-single-element.component';
 import { CoreSharedElementsComponent } from './case-shared-elements/core-shared-elements.component';
 import { CoreProjectionComponent } from './core-projection/core-projection.component';
@@ -27,5 +28,9 @@ export const routes: Routes = [
   {
     path: 'adapter-single-element',
     component: AdapterSingleElementComponent,
+  },
+  {
+    path: 'adapter-metadata',
+    component: AdapterMetadataComponent,
   },
 ];

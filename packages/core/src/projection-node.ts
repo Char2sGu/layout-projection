@@ -7,7 +7,7 @@ import { Transform2D } from './transform.js';
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
  * @see https://gist.github.com/TheNightmareX/f5bf72e81d2667f6036e91cf81270ef7 Layout Projection - Matt Perry
  */
-export abstract class ProjectionNode extends Node<ProjectionNode> {
+export abstract class ProjectionNode extends Node {
   /**
    * Returns the element of this projection node.
    */
@@ -81,10 +81,7 @@ export interface Projection {
   readonly transformIntended: Transform2D;
 }
 
-export class BasicProjectionNode
-  extends BasicNode<BasicProjectionNode>
-  implements ProjectionNode
-{
+export class BasicProjectionNode extends BasicNode implements ProjectionNode {
   readonly #element: HTMLElement;
 
   #projection?: Projection;

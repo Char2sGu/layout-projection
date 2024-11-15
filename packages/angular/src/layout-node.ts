@@ -23,7 +23,15 @@ import { ProjectionNodeFactory } from './projection-node-factory';
  *
  * Parent-child relationships are automatically established by the DOM hierarchy.
  *
- * The {@link ProjectionNode} instance can be accessed via the `layout` directive export.
+ * The {@link ProjectionNode} interface is implemented by this directive, so that
+ * the {@link ProjectionNode} instance can be interacted with directly through
+ * the directive export or view query.
+ *
+ * Although this directive behave like a {@link ProjectionNode}, the actual node instance
+ * that is used within the tree is under the `kernel` property of the directive instance.
+ *
+ * The actual {@link ProjectionNode} instance is also provided in the element injector,
+ * so that it can be accessed by any peer directives, child elements, view queries, etc.
  *
  * @example
  *  ```html
@@ -31,6 +39,12 @@ import { ProjectionNodeFactory } from './projection-node-factory';
  *    <div layout id="box-1"></div>
  *    <div layout id="box-2"></div>
  *  </div>
+ *  ```
+ * @example
+ *  ```ts
+ *  rootNode = viewChild.required(ProjectionNode);
+ *  // alternatively
+ *  rootNode = viewChild.required(LayoutNode);
  *  ```
  */
 @Directive({
@@ -40,12 +54,15 @@ import { ProjectionNodeFactory } from './projection-node-factory';
   providers: [
     {
       provide: ProjectionNode,
-      useExisting: LayoutNode,
+      useFactory: (dir = inject(LayoutNode, { self: true })) => dir.kernel,
     },
   ],
 })
 export class LayoutNode implements ProjectionNode {
-  readonly #kernel: ProjectionNode;
+  /**
+   * The actual {@link ProjectionNode} instance within the tree.
+   */
+  readonly kernel: ProjectionNode;
 
   constructor() {
     const element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
@@ -53,57 +70,57 @@ export class LayoutNode implements ProjectionNode {
     const parent = inject(ProjectionNode, { skipSelf: true, optional: true });
     const identity = inject(new HostAttributeToken('id'), { optional: true });
     const destroyRef = inject(DestroyRef);
-    this.#kernel = factory.create(element, identity ?? undefined);
-    if (parent) this.#kernel.attach(parent);
-    destroyRef.onDestroy(() => this.#kernel.dispose());
+    this.kernel = factory.create(element, identity ?? undefined);
+    if (parent) this.kernel.attach(parent);
+    destroyRef.onDestroy(() => this.kernel.dispose());
   }
 
   element(): HTMLElement {
-    return this.#kernel.element();
+    return this.kernel.element();
   }
   reset(): void {
-    this.#kernel.reset();
+    this.kernel.reset();
   }
   measure(): Measurement {
-    return this.#kernel.measure();
+    return this.kernel.measure();
   }
   measurement(): Measurement | null {
-    return this.#kernel.measurement();
+    return this.kernel.measurement();
   }
   project(dest: Layout): Projection {
-    return this.#kernel.project(dest);
+    return this.kernel.project(dest);
   }
   projection(): Projection | null {
-    return this.#kernel.projection();
+    return this.kernel.projection();
   }
   identity(): string {
-    return this.#kernel.identity();
+    return this.kernel.identity();
   }
   attach(parent: ProjectionNode): void {
-    this.#kernel.attach(parent);
+    this.kernel.attach(parent);
   }
   detach(): void {
-    this.#kernel.detach();
+    this.kernel.detach();
   }
   appendChild(child: ProjectionNode): void {
-    this.#kernel.appendChild(child);
+    this.kernel.appendChild(child);
   }
   removeChild(child: ProjectionNode): void {
-    this.#kernel.removeChild(child);
+    this.kernel.removeChild(child);
   }
-  parent(): ProjectionNode | null {
-    return this.#kernel.parent();
+  parent(): this | null {
+    return this.kernel.parent() as this | null;
   }
-  children(): ReadonlySet<ProjectionNode> {
-    return this.#kernel.children();
+  children(): ReadonlySet<this> {
+    return this.kernel.children() as ReadonlySet<this>;
   }
   dispose(): void {
-    this.#kernel.dispose();
+    this.kernel.dispose();
   }
-  traverse(consumer: (node: ProjectionNode) => void): void {
-    this.#kernel.traverse(consumer);
+  traverse(consumer: (node: this) => void): void {
+    this.kernel.traverse((actual) => consumer(actual as this));
   }
-  track(): Iterable<ProjectionNode> {
-    return this.#kernel.track();
+  track(): Iterable<this> {
+    return this.kernel.track() as Iterable<this>;
   }
 }

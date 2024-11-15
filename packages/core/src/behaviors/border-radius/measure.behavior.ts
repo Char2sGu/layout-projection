@@ -9,7 +9,29 @@ import { BorderRadiusMeasurer } from './measurer.js';
  * @see {@link MeasurementWithBorderRadiuses}
  */
 export class MeasureBorderRadius extends ProjectionNodeBehavior {
-  constructor(kernel: ProjectionNode, private measurer: BorderRadiusMeasurer) {
+  static #instances = new WeakMap<ProjectionNode, MeasureBorderRadius>();
+
+  /**
+   * Returns a behavior instance of the given node.
+   * If exists, returns the previous behavior instance of this node.
+   * @param measurerPreferred the measurer to use when there does not
+   * exist a previous behavior instance of this node.
+   */
+  static for(
+    node: ProjectionNode,
+    measurerPreferred: BorderRadiusMeasurer,
+  ): MeasureBorderRadius {
+    const existing = this.#instances.get(node);
+    if (existing) return existing;
+    const instance = new this(node, measurerPreferred);
+    this.#instances.set(node, instance);
+    return instance;
+  }
+
+  protected constructor(
+    kernel: ProjectionNode,
+    private measurer: BorderRadiusMeasurer,
+  ) {
     super(kernel);
   }
 
@@ -17,5 +39,9 @@ export class MeasureBorderRadius extends ProjectionNodeBehavior {
     const result = super.measure() as MeasurementWithBorderRadiuses;
     result.borderRadiuses = this.measurer.measure(this.kernel.element());
     return result;
+  }
+
+  protected override decorate(target: ProjectionNode): this {
+    return MeasureBorderRadius.for(target, this.measurer) as this;
   }
 }

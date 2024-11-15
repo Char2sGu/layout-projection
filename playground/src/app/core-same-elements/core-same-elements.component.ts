@@ -109,8 +109,8 @@ export class CoreSameElementsComponent {
   createNode(element: HTMLElement, id: string): ProjectionNode {
     let node: ProjectionNode = new BasicProjectionNode(element, id);
 
-    node = new MeasureBorderRadius(node, this.borderRadiusMeasurer);
-    node = new CalibrateBorderRadius(node);
+    node = MeasureBorderRadius.for(node, this.borderRadiusMeasurer);
+    node = CalibrateBorderRadius.for(node);
 
     return node;
   }

@@ -11,7 +11,21 @@ import { isBorderRadiusesMeasured } from './measurement.js';
  * Noop otherwise.
  */
 export class CalibrateBorderRadius extends ProjectionNodeBehavior {
-  constructor(kernel: ProjectionNode) {
+  static #instances = new WeakMap<ProjectionNode, CalibrateBorderRadius>();
+
+  /**
+   * Returns a behavior instance of the given node.
+   * If exists, returns the previous behavior instance of this node.
+   */
+  static for(node: ProjectionNode): CalibrateBorderRadius {
+    const existing = this.#instances.get(node);
+    if (existing) return existing;
+    const instance = new this(node);
+    this.#instances.set(node, instance);
+    return instance;
+  }
+
+  protected constructor(kernel: ProjectionNode) {
     super(kernel);
   }
 
@@ -36,5 +50,9 @@ export class CalibrateBorderRadius extends ProjectionNodeBehavior {
     element.style.borderBottomLeftRadius = radiusStyle(radiuses.bottomLeft);
     element.style.borderBottomRightRadius = radiusStyle(radiuses.bottomRight);
     return projection;
+  }
+
+  protected override decorate(target: ProjectionNode): this {
+    return CalibrateBorderRadius.for(target) as this;
   }
 }
