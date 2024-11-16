@@ -1,3 +1,4 @@
+import { createInjectiveInstanceFactory } from '../../injective-instance-factory.js';
 import { Layout } from '../../layout.js';
 import { Projection, ProjectionNode } from '../../projection-node.js';
 import { ProjectionNodeBehavior } from '../../projection-node-behavior.js';
@@ -11,19 +12,13 @@ import { isBorderRadiusesMeasured } from './measurement.js';
  * Noop otherwise.
  */
 export class CalibrateBorderRadius extends ProjectionNodeBehavior {
-  static #instances = new WeakMap<ProjectionNode, CalibrateBorderRadius>();
-
   /**
    * Returns a behavior instance of the given node.
    * If exists, returns the previous behavior instance of this node.
    */
-  static for(node: ProjectionNode): CalibrateBorderRadius {
-    const existing = this.#instances.get(node);
-    if (existing) return existing;
-    const instance = new this(node);
-    this.#instances.set(node, instance);
-    return instance;
-  }
+  static for = createInjectiveInstanceFactory(
+    (node: ProjectionNode) => new CalibrateBorderRadius(node),
+  );
 
   protected constructor(kernel: ProjectionNode) {
     super(kernel);
