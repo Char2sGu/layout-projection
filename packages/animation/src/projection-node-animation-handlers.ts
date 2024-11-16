@@ -28,7 +28,7 @@ export class LayoutAnimationFramer {
   frame(config: LayoutAnimationFrameConfig): Layout {
     const { from, to, progress, animatePosition, animateSize } = config;
     if (animatePosition && animateSize) {
-      return new Layout({
+      return Layout.fromEdges({
         top: mix(from.top, to.top, progress),
         left: mix(from.left, to.left, progress),
         right: mix(from.right, to.right, progress),
@@ -37,18 +37,18 @@ export class LayoutAnimationFramer {
     } else if (animatePosition) {
       const top = mix(from.top, to.top, progress);
       const left = mix(from.left, to.left, progress);
-      return new Layout({
+      return Layout.fromEdges({
         top,
         left,
-        right: left + to.width(),
-        bottom: top + to.height(),
+        right: left + to.width,
+        bottom: top + to.height,
       });
     } else if (animateSize) {
-      return new Layout({
+      return Layout.fromEdges({
         top: to.top,
         left: to.left,
-        right: to.left + mix(from.width(), to.width(), progress),
-        bottom: to.top + mix(from.height(), to.height(), progress),
+        right: to.left + mix(from.width, to.width, progress),
+        bottom: to.top + mix(from.height, to.height, progress),
       });
     }
     return to;

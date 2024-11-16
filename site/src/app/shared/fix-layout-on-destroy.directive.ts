@@ -23,7 +23,7 @@ export class FixLayoutOnDestroyDirective implements OnDestroy {
     this.element.style.marginTop = `${topOffset}px`;
     this.element.style.top = `${layout.top - topOffset}px`;
     this.element.style.left = `${layout.left - leftOffset}px`;
-    this.element.style.width = `${layout.width()}px`;
-    this.element.style.height = `${layout.height()}px`;
+    this.element.style.width = `${layout.width}px`;
+    this.element.style.height = `${layout.height}px`;
   }
 }

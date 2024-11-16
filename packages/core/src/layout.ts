@@ -7,53 +7,96 @@ import { Transform2D } from './transform.js';
  */
 export class Layout implements Equatable {
   /**
-   * Construct from the current bounding box of a DOM element.
+   * Return the current layout of a DOM element.
    */
   static fromElement(element: HTMLElement): Layout {
-    return new Layout(element.getBoundingClientRect());
+    const rect = element.getBoundingClientRect();
+    return new Layout(
+      rect.top,
+      rect.left,
+      rect.right,
+      rect.bottom,
+      rect.width,
+      rect.height,
+    );
   }
 
   /**
-   * Construct from midpoint, width, and height.
+   * Return the layout constructed from midpoint and size.
    */
-  static fromMidpoint(
-    midpoint: Coordinate,
-    width: number,
-    height: number,
-  ): Layout {
-    return new Layout({
-      top: midpoint.y - height / 2,
-      left: midpoint.x - width / 2,
-      right: midpoint.x + width / 2,
-      bottom: midpoint.y + height / 2,
-    });
+  static fromMidpoint(config: {
+    midpoint: Coordinate;
+    width: number;
+    height: number;
+  }): Layout {
+    const { midpoint, width, height } = config;
+    const halfWidth = width / 2;
+    const halfHeight = height / 2;
+    return new Layout(
+      midpoint.y - halfHeight,
+      midpoint.x - halfWidth,
+      midpoint.x + halfWidth,
+      midpoint.y + halfHeight,
+      width,
+      height,
+      midpoint,
+    );
   }
 
-  readonly top: number;
-  readonly left: number;
-  readonly right: number;
-  readonly bottom: number;
-
-  constructor(data: Record<LayoutEdge, number>) {
-    this.top = data.top;
-    this.left = data.left;
-    this.right = data.right;
-    this.bottom = data.bottom;
+  /**
+   * Return the layout constructed from top-left coordinate and size.
+   */
+  static fromTopLeft(config: {
+    topLeft: Coordinate;
+    width: number;
+    height: number;
+  }): Layout {
+    const { topLeft, width, height } = config;
+    return new Layout(
+      topLeft.y,
+      topLeft.x,
+      topLeft.x + width,
+      topLeft.y + height,
+      width,
+      height,
+    );
   }
 
-  width(): number {
-    return this.right - this.left;
+  /**
+   * Return the layout constructed from four edges.
+   * @param config
+   * @returns
+   */
+  static fromEdges(config: {
+    top: number;
+    left: number;
+    right: number;
+    bottom: number;
+  }): Layout {
+    const { top, left, right, bottom } = config;
+    return new Layout(left, top, right, bottom, right - left, bottom - top);
   }
 
-  height(): number {
-    return this.bottom - this.top;
+  // eslint-disable-next-line max-params -- private
+  private constructor(
+    readonly top: number,
+    readonly left: number,
+    readonly right: number,
+    readonly bottom: number,
+    readonly width: number,
+    readonly height: number,
+    midpoint?: Coordinate,
+  ) {
+    this.#midpoint = midpoint;
   }
 
-  midpoint(): Coordinate {
-    return new Coordinate(
+  #midpoint?: Coordinate;
+  get midpoint(): Coordinate {
+    this.#midpoint ??= new Coordinate(
       (this.left + this.right) / 2,
       (this.top + this.bottom) / 2,
     );
+    return this.#midpoint;
   }
 
   equals(other: this): boolean {
@@ -71,8 +114,8 @@ export class Layout implements Equatable {
    * @param origin origin to use for this transform
    * @returns a transformed layout
    */
-  transform(transform: Transform2D, origin = this.midpoint()): Layout {
-    return new Layout({
+  transform(transform: Transform2D, origin = this.midpoint): Layout {
+    return Layout.fromEdges({
       top: transform.y.apply(origin.y, this.top),
       left: transform.x.apply(origin.x, this.left),
       right: transform.x.apply(origin.x, this.right),
@@ -89,15 +132,13 @@ export class Layout implements Equatable {
   transformFor(other: Layout): Transform2D {
     return Transform2D.config({
       x: {
-        translate: other.midpoint().x - this.midpoint().x,
-        scale: this.width() ? other.width() / this.width() : 1,
+        translate: other.midpoint.x - this.midpoint.x,
+        scale: this.width ? other.width / this.width : 1,
       },
       y: {
-        translate: other.midpoint().y - this.midpoint().y,
-        scale: this.height() ? other.height() / this.height() : 1,
+        translate: other.midpoint.y - this.midpoint.y,
+        scale: this.height ? other.height / this.height : 1,
       },
     });
   }
 }
-
-export type LayoutEdge = 'top' | 'left' | 'right' | 'bottom';

@@ -46,7 +46,7 @@ export class CoreProjectionComponent {
       content.measure();
 
       const containerProjection = container.project(
-        new Layout({
+        Layout.fromEdges({
           top: 50,
           left: 50,
           right: window.innerWidth,
@@ -54,7 +54,7 @@ export class CoreProjectionComponent {
         }),
       );
       const contentProjection = content.project(
-        new Layout({
+        Layout.fromEdges({
           top: window.innerHeight - 100,
           left: window.innerWidth / 2,
           right: window.innerWidth,

@@ -126,7 +126,7 @@ export class BasicProjectionNode extends BasicNode implements ProjectionNode {
     if (parentLayout && parentProjection)
       curr = curr.transform(
         parentProjection.transformIntended,
-        parentLayout.midpoint(),
+        parentLayout.midpoint,
       );
 
     let transform = curr.transformFor(dest);

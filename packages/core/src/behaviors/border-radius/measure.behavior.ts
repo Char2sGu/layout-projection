@@ -37,7 +37,7 @@ export class MeasureBorderRadius extends ProjectionNodeBehavior {
 
   override measure(): Measurement {
     const result = super.measure() as MeasurementWithBorderRadiuses;
-    result.borderRadiuses = this.measurer.measure(this.kernel.element());
+    result.borderRadiuses = this.measurer.measure(this.element());
     return result;
   }
 

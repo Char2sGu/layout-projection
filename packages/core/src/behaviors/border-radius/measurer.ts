@@ -12,7 +12,7 @@ export class BorderRadiusMeasurer {
     const style = getComputedStyle(element);
 
     const parse = (style: string) =>
-      this.parser.parse(style, layout.width(), layout.height());
+      this.parser.parse(style, layout.width, layout.height);
 
     return {
       topLeft: parse(style.borderTopLeftRadius),
