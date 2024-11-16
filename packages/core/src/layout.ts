@@ -1,6 +1,5 @@
 import { Coordinate } from './coordinate.js';
 import { Equatable } from './equatable.js';
-import { Transform2D } from './transform.js';
 
 /**
  * Combination of position and size.
@@ -106,39 +105,5 @@ export class Layout implements Equatable {
       this.right === other.right &&
       this.bottom === other.bottom
     );
-  }
-
-  /**
-   * Apply a transform to this layout.
-   * @param transform transform to be applied
-   * @param origin origin to use for this transform
-   * @returns a transformed layout
-   */
-  transform(transform: Transform2D, origin = this.midpoint): Layout {
-    return Layout.fromEdges({
-      top: transform.y.apply(origin.y, this.top),
-      left: transform.x.apply(origin.x, this.left),
-      right: transform.x.apply(origin.x, this.right),
-      bottom: transform.y.apply(origin.y, this.bottom),
-    });
-  }
-
-  /**
-   * Compute the 2D transform required to transform this layout to another layout.
-   * Scale is set to 1 if the width or height of this layout is 0.
-   * @param other the destination layout
-   * @returns 2D transform
-   */
-  transformFor(other: Layout): Transform2D {
-    return Transform2D.config({
-      x: {
-        translate: other.midpoint.x - this.midpoint.x,
-        scale: this.width ? other.width / this.width : 1,
-      },
-      y: {
-        translate: other.midpoint.y - this.midpoint.y,
-        scale: this.height ? other.height / this.height : 1,
-      },
-    });
   }
 }

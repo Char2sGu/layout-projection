@@ -1,5 +1,9 @@
 import { Equatable } from './equatable.js';
 import { Layout } from './layout.js';
+import {
+  computeTransformBetween,
+  transformLayout,
+} from './layout-transform.js';
 import { BasicNode, Node } from './node.js';
 import { Transform2D } from './transform.js';
 
@@ -120,16 +124,17 @@ export class BasicProjectionNode extends BasicNode implements ProjectionNode {
     if (!this.#measurement) throw new Error('Node not measured');
     const parent = this.parent();
     const parentLayout = parent?.measurement()?.layout;
-    const parentProjection = this.parent()?.projection();
+    const parentProjection = parent?.projection();
 
     let curr = this.#measurement.layout;
     if (parentLayout && parentProjection)
-      curr = curr.transform(
+      curr = transformLayout(
+        curr,
         parentProjection.transformIntended,
         parentLayout.midpoint,
       );
 
-    let transform = curr.transformFor(dest);
+    let transform = computeTransformBetween(curr, dest);
     if (parentProjection) {
       const translateX =
         transform.x.translate / parentProjection.transformIntended.x.scale;
@@ -150,7 +155,10 @@ export class BasicProjectionNode extends BasicNode implements ProjectionNode {
       layoutFrom: curr,
       layoutDest: dest,
       transformApplied: transform,
-      transformIntended: this.#measurement.layout.transformFor(dest),
+      transformIntended: computeTransformBetween(
+        this.#measurement.layout,
+        dest,
+      ),
     };
     return this.#projection;
   }
