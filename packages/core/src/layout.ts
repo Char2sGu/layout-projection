@@ -1,12 +1,11 @@
-import { mix } from 'popmotion';
-
 import { Coordinate } from './coordinate.js';
+import { Equatable } from './equatable.js';
 import { Transform2D } from './transform.js';
 
 /**
  * Combination of position and size.
  */
-export class Layout {
+export class Layout implements Equatable {
   /**
    * Construct from the current bounding box of a DOM element.
    */
@@ -52,8 +51,17 @@ export class Layout {
 
   midpoint(): Coordinate {
     return new Coordinate(
-      mix(this.left, this.right, 0.5),
-      mix(this.top, this.bottom, 0.5),
+      (this.left + this.right) / 2,
+      (this.top + this.bottom) / 2,
+    );
+  }
+
+  equals(other: this): boolean {
+    return (
+      this.top === other.top &&
+      this.left === other.left &&
+      this.right === other.right &&
+      this.bottom === other.bottom
     );
   }
 

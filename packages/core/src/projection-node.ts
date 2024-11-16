@@ -1,3 +1,4 @@
+import { Equatable } from './equatable.js';
 import { Layout } from './layout.js';
 import { BasicNode, Node } from './node.js';
 import { Transform2D } from './transform.js';
@@ -49,7 +50,7 @@ export abstract class ProjectionNode extends Node {
 /**
  * A snapshot of the layout and relevant styles of an element.
  */
-export interface Measurement {
+export interface Measurement extends Equatable {
   /**
    * The layout of the element at the time of measurement.
    */
@@ -104,7 +105,10 @@ export class BasicProjectionNode extends BasicNode implements ProjectionNode {
 
   measure(): Measurement {
     const layout = Layout.fromElement(this.#element);
-    this.#measurement = { layout };
+    this.#measurement = {
+      layout,
+      equals: (other) => layout.equals(other.layout),
+    };
     return this.#measurement;
   }
 
