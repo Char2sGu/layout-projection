@@ -8,37 +8,46 @@ import { BasicNode, Node } from './node.js';
 import { Transform2D } from './transform.js';
 
 /**
- * A node that is bound to a DOM element and can be projected to a new layout.
+ * A {@link Node} that is bound to a DOM element and can accurately project the element
+ * into an arbitrary layout.
  * @see https://www.youtube.com/watch?v=5-JIu0u42Jc Inside Framer Motion's Layout Animations - Matt Perry
  * @see https://gist.github.com/TheNightmareX/f5bf72e81d2667f6036e91cf81270ef7 Layout Projection - Matt Perry
  */
 export abstract class ProjectionNode extends Node {
   /**
-   * Returns the element of this projection node.
+   * Returns the corresponding element of this projection node.
    */
   abstract element(): HTMLElement;
 
   /**
-   * Reset the node and the element to its initial state, to get ready
-   * for a new round of projection.
+   * Reset the node and the element to prepare for the next projection:
+   * - remove any applied transform on the element
+   * - clear the measurement and projection information
    */
   abstract reset(): void;
 
   /**
    * Measure the current layout and relevant styles of the element.
-   * The result can be accessed via {@link measurement}.
+   * The result can also be accessed via {@link measurement}.
    * @returns the measurement result
    */
   abstract measure(): Measurement;
 
   /**
-   * Return the {@link measure} result of this projection node.
+   * Return the latest {@link measure} result of this projection node, or null
+   * if no measurement has been performed ever, or since the last
+   * {@link reset}.
    */
   abstract measurement(): Measurement | null;
 
   /**
-   * Projects the element to the given layout.
-   * Requires this projection node to be measured.
+   * Projects the element to the given layout by applying a CSS transform.
+   * Requires the {@link measurement} to exist and up-to-date.
+   *
+   * All ancestor projection nodes will be taken into account, to cancel the
+   * transform distortion resulted by their projection.
+   * Parent nodes should always be projected before their children.
+   *
    * @param dest the destination layout
    * @returns information about the performed projection
    */
@@ -46,7 +55,8 @@ export abstract class ProjectionNode extends Node {
 
   /**
    * Return the information about the current projection, or null
-   * if no projection has been performed yet.
+   * if no projection has been performed ever, or since the last
+   * {@link reset}.
    */
   abstract projection(): Projection | null;
 }
@@ -66,6 +76,10 @@ export interface Measurement extends Equatable {
  */
 export interface Projection {
   /**
+   * The measurement used for this projection.
+   */
+  readonly measurement: Measurement;
+  /**
    * The layout of the element before this projection, potentially
    * distorted by parent projection.
    */
@@ -75,15 +89,15 @@ export interface Projection {
    */
   readonly layoutDest: Layout;
   /**
-   * The actual transform applied on the element to project it from the
-   * current (potentially distorted) layout to the destination layout.
+   * The actual transform applied on the element to project it from its
+   * current, potentially distorted, layout to the destination layout.
    */
   readonly transformApplied: Transform2D;
   /**
-   * The intended transform to project the element from its original, undistorted
-   * layout to the destination layout.
+   * The theoretical transform that projects the element from its
+   * original, undistorted, layout to the destination layout.
    */
-  readonly transformIntended: Transform2D;
+  readonly transformPhysical: Transform2D;
 }
 
 export class BasicProjectionNode extends BasicNode implements ProjectionNode {
@@ -121,25 +135,25 @@ export class BasicProjectionNode extends BasicNode implements ProjectionNode {
   }
 
   project(dest: Layout): Projection {
-    if (!this.#measurement) throw new Error('Node not measured');
-    const parent = this.parent();
-    const parentLayout = parent?.measurement()?.layout;
-    const parentProjection = parent?.projection();
+    const measurement = this.#measurement;
+    if (!measurement) throw new Error('Node not measured');
 
-    let curr = this.#measurement.layout;
-    if (parentLayout && parentProjection)
+    const parentProjection = this.parent()?.projection();
+
+    let curr = measurement.layout;
+    if (parentProjection)
       curr = transformLayout(
         curr,
-        parentProjection.transformIntended,
-        parentLayout.midpoint,
+        parentProjection.transformPhysical,
+        parentProjection.measurement.layout.midpoint,
       );
 
     let transform = computeTransformBetween(curr, dest);
     if (parentProjection) {
       const translateX =
-        transform.x.translate / parentProjection.transformIntended.x.scale;
+        transform.x.translate / parentProjection.transformPhysical.x.scale;
       const translateY =
-        transform.y.translate / parentProjection.transformIntended.y.scale;
+        transform.y.translate / parentProjection.transformPhysical.y.scale;
       transform = Transform2D.config({
         x: { translate: translateX, scale: transform.x.scale },
         y: { translate: translateY, scale: transform.y.scale },
@@ -152,13 +166,11 @@ export class BasicProjectionNode extends BasicNode implements ProjectionNode {
     ].join(' ');
 
     this.#projection = {
+      measurement,
       layoutFrom: curr,
       layoutDest: dest,
       transformApplied: transform,
-      transformIntended: computeTransformBetween(
-        this.#measurement.layout,
-        dest,
-      ),
+      transformPhysical: computeTransformBetween(measurement.layout, dest),
     };
     return this.#projection;
   }
