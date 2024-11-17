@@ -30,7 +30,7 @@ import { ProjectionNodeFactory } from './projection-node-factory';
  * Although this directive behave like a {@link ProjectionNode}, the actual node instance
  * that is used within the tree is under the `kernel` property of the directive instance.
  *
- * The actual {@link ProjectionNode} instance is also provided in the element injector,
+ * The actual {@link ProjectionNode} instance is provided to the current node injector,
  * so that it can be accessed by any peer directives, child elements, view queries, etc.
  *
  * @example

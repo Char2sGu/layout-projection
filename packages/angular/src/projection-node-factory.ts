@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ProjectionNode } from '@layout-projection/core';
 
 /**
- * Service for creating {@link ProjectionNode} instances of specific elements.
+ * Service for creating {@link ProjectionNode} objects of specific elements.
  */
 @Injectable()
 export abstract class ProjectionNodeFactory {

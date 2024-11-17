@@ -7,9 +7,13 @@ import {
 } from '@layout-projection/animation';
 
 /**
- * Provide {@link ProjectionTreeAnimator} use a debugging {@link ProjectionTreeAnimator}
- * that logs the animation config to console and then delegates to the parent animator.
- * @returns
+ * Provide {@link ProjectionTreeAnimator} using a debugging implementation
+ * that logs the animation config to console before delegating to the actual
+ * implementation
+ *
+ * The actual implementation is fetched from the parent injector, and thus
+ * this debugging implementation must not be provided at the root injector
+ * level.
  */
 export function provideDebuggingProjectionTreeAnimator(): Provider[] {
   return [
@@ -27,6 +31,15 @@ export function provideDebuggingProjectionTreeAnimator(): Provider[] {
   ];
 }
 
+/**
+ * Provide {@link MetadataManager} use a debugging implementation
+ * that logs metadata operations to console before delegating to the actual
+ * implementation
+ *
+ * The actual implementation is fetched from the parent injector, and thus
+ * this debugging implementation must not be provided at the root injector
+ * level.
+ */
 export function provideDebuggingMetadataManager(): Provider[] {
   return [
     {
