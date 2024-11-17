@@ -11,11 +11,10 @@
     "lint": "concurrently npm:lint:*",
     "lint:eslint": "eslint packages site playground --cache --fix",
     "lint:prettier": "prettier --write \"{packages/*/src/**/*,*}.{html,css,less,scss,sass,js,json,md}\"",
-    "release:minor": "npm version minor -w packages/core -w packages/angular && npm run build && npm publish -w packages/core && cd packages/angular/dist && npm publish",
-    "release:patch": "npm version patch -w packages/core -w packages/angular && npm run build && npm publish -w packages/core && cd packages/angular/dist && npm publish",
     "site:start": "npm start -w ./site",
     "site:build": "npm run build -w ./site",
-    "site:deploy": "npm run deploy -w ./site"
+    "site:deploy": "npm run deploy -w ./site",
+    "release": "node scripts/release.mjs"
   },
   "keywords": [],
   "repository": {
@@ -79,6 +78,7 @@
     "nx": "20.0.1",
     "prettier": "^2.8.8",
     "rxjs": "^7.8.0",
+    "simple-git": "^3.27.0",
     "ts-jest": "^29.1.0",
     "tslib": "^2.5.0",
     "typescript": "^5.0.2",
