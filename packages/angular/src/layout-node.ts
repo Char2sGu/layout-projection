@@ -2,8 +2,9 @@ import {
   DestroyRef,
   Directive,
   ElementRef,
-  HostAttributeToken,
   inject,
+  input,
+  OnInit,
 } from '@angular/core';
 import {
   Layout,
@@ -29,23 +30,22 @@ import { ProjectionNodeFactory } from './projection-node-factory';
  * the format of the randomly generated id is up to the {@link ProjectionNodeFactory}
  * implementation in use.
  *
- * The {@link ProjectionNode} interface is implemented by this directive, so that
- * the {@link ProjectionNode} object can be interacted with directly through
- * the directive export (using the name `layout`) or view query.
+ * This directive implements the {@link ProjectionNode} interface by delegating
+ * all the method calls to the actual {@link ProjectionNode} object within the tree.
+ * Note that the actual {@link ProjectionNode} object is created lazily during the
+ * {@link OnInit} lifecycle hook, and thus invoking any method before the initialization
+ * will result in an error.
  *
- * Although this directive behave like a {@link ProjectionNode}, this directive
- * is merely a proxy to the actual {@link ProjectionNode} used within the tree.
- * The actual {@link ProjectionNode} object is available under the `kernel` property
- * of the directive instance.
+ * In most cases, the directive can be used as if it were the actual {@link ProjectionNode}
+ * object, unless the object reference to the actual node is required, such as
+ * when defining metadata for the node.
+ * In such cases, the {@link kernel} method can be used to retrieve the actual
+ * {@link ProjectionNode} object that is used within the tree.
  *
- * The actual {@link ProjectionNode} object is provided to the current node
- * injector, using the abstract class {@link ProjectionNode} as the token,
- * so that it can be accessed by any peer directives, by child elements,
- * via view queries, etc.
- *
- * The abstract class {@link Node} can also be used as the token to retrieve
- * the {@link ProjectionNode} object from the node injector.
- * This could be convenient if only the {@link Node} interface is needed.
+ * The instance of this directive is automatically provided to the current node
+ * injector using the class {@link LayoutNode} as the token, while it is also
+ * possible to retrieve the same directive instance by using the {@link ProjectionNode}
+ * and {@link Node} abstract classes as the token.
  *
  * @example
  * Assigning identities via the `id` attribute and the `layout` attribute:
@@ -97,81 +97,92 @@ import { ProjectionNodeFactory } from './projection-node-factory';
   selector: '[layout]',
   exportAs: 'layout',
   providers: [
-    {
-      provide: Node,
-      useFactory: (dir = inject(LayoutNode, { self: true })) => dir.kernel,
-    },
-    {
-      provide: ProjectionNode,
-      useFactory: (dir = inject(LayoutNode, { self: true })) => dir.kernel,
-    },
+    { provide: Node, useExisting: LayoutNode },
+    { provide: ProjectionNode, useExisting: LayoutNode },
   ],
+  host: {
+    // When the user uses the `[input]="value"` binding on an attribute
+    // the attribute will be interpreted as an input and will be removed
+    // from the DOM element. Thus here we use the `[attr.input]` binding
+    // to enforce Angular to keep the attributes on the element.
+    '[attr.id]': 'id()',
+    '[attr.layout]': 'layout()',
+  },
 })
-export class LayoutNode implements ProjectionNode {
-  /**
-   * The actual {@link ProjectionNode} instance within the tree.
-   */
-  readonly kernel: ProjectionNode;
+export class LayoutNode implements ProjectionNode, OnInit {
+  readonly #element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+  readonly #factory = inject(ProjectionNodeFactory);
+  readonly #parent = inject(ProjectionNode, { skipSelf: true, optional: true });
+  readonly #destroyRef = inject(DestroyRef);
 
-  constructor() {
-    const element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
-    const factory = inject(ProjectionNodeFactory);
-    const parent = inject(ProjectionNode, { skipSelf: true, optional: true });
-    const identity =
-      inject(new HostAttributeToken('layout')) ||
-      inject(new HostAttributeToken('id'), { optional: true });
-    const destroyRef = inject(DestroyRef);
-    this.kernel = factory.create(element, identity ?? undefined);
-    if (parent) this.kernel.attach(parent);
-    destroyRef.onDestroy(() => this.kernel.dispose());
+  #kernel?: ProjectionNode; // INVARIANT: non-null constant after `ngOnInit`
+
+  readonly id = input<string>();
+  readonly layout = input<string>();
+
+  ngOnInit(): void {
+    const identity = this.layout() || this.id();
+    this.#kernel = this.#factory.create(this.#element, identity);
+    if (this.#parent) this.#kernel.attach(this.#parent);
+    this.#destroyRef.onDestroy(() => this.kernel().dispose());
+  }
+
+  /**
+   * Return the actual {@link ProjectionNode} instance within the tree.
+   * @throws {Error} when called before initialization
+   */
+  kernel(): ProjectionNode {
+    if (!this.#kernel)
+      throw new Error('kernel is not available before initialization');
+    return this.#kernel;
   }
 
   element(): HTMLElement {
-    return this.kernel.element();
+    return this.kernel().element();
   }
   reset(): void {
-    this.kernel.reset();
+    this.kernel().reset();
   }
   measure(): Measurement {
-    return this.kernel.measure();
+    return this.kernel().measure();
   }
   measurement(): Measurement | null {
-    return this.kernel.measurement();
+    return this.kernel().measurement();
   }
   project(dest: Layout): Projection {
-    return this.kernel.project(dest);
+    return this.kernel().project(dest);
   }
   projection(): Projection | null {
-    return this.kernel.projection();
+    return this.kernel().projection();
   }
   identity(): string {
-    return this.kernel.identity();
+    return this.kernel().identity();
   }
   attach(parent: ProjectionNode): void {
-    this.kernel.attach(parent);
+    this.kernel().attach(parent);
   }
   detach(): void {
-    this.kernel.detach();
+    this.kernel().detach();
   }
   appendChild(child: ProjectionNode): void {
-    this.kernel.appendChild(child);
+    this.kernel().appendChild(child);
   }
   removeChild(child: ProjectionNode): void {
-    this.kernel.removeChild(child);
+    this.kernel().removeChild(child);
   }
   parent(): this | null {
-    return this.kernel.parent() as this | null;
+    return this.kernel().parent() as this | null;
   }
   children(): ReadonlySet<this> {
-    return this.kernel.children() as ReadonlySet<this>;
+    return this.kernel().children() as ReadonlySet<this>;
   }
   dispose(): void {
-    this.kernel.dispose();
+    this.kernel().dispose();
   }
   traverse(consumer: (node: this) => void): void {
-    this.kernel.traverse((actual) => consumer(actual as this));
+    this.kernel().traverse((actual) => consumer(actual as this));
   }
   track(): Iterable<this> {
-    return this.kernel.track() as Iterable<this>;
+    return this.kernel().track() as Iterable<this>;
   }
 }

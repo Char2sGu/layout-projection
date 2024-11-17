@@ -1,11 +1,12 @@
-import { Directive, inject } from '@angular/core';
+import { Directive, inject, OnInit } from '@angular/core';
 import {
   MetadataManager,
   MetadataToken,
   SKIP_POSITION,
   SKIP_SIZE,
 } from '@layout-projection/animation';
-import { ProjectionNode } from '@layout-projection/core';
+
+import { LayoutNode } from './layout-node';
 
 /**
  * The foundation directive for defining metadata for the current
@@ -29,11 +30,12 @@ import { ProjectionNode } from '@layout-projection/core';
  */
 @Directive()
 export abstract class DefineLayoutNodeMetadata {
-  #node = inject(ProjectionNode, { self: true });
+  #proxy = inject(LayoutNode, { self: true });
   #metadata = inject(MetadataManager);
 
   define<T>(token: MetadataToken<T>, value: NoInfer<T>): void {
-    this.#metadata.define(this.#node, token, value);
+    const node = this.#proxy.kernel();
+    this.#metadata.define(node, token, value);
   }
 }
 
@@ -57,9 +59,8 @@ export abstract class DefineLayoutNodeMetadata {
   standalone: true,
   selector: '[skipPosition]',
 })
-export class SkipPosition extends DefineLayoutNodeMetadata {
-  constructor() {
-    super();
+export class SkipPosition extends DefineLayoutNodeMetadata implements OnInit {
+  ngOnInit(): void {
     this.define(SKIP_POSITION, true);
   }
 }
@@ -77,9 +78,8 @@ export class SkipPosition extends DefineLayoutNodeMetadata {
   standalone: true,
   selector: '[skipSize]',
 })
-export class SkipSize extends DefineLayoutNodeMetadata {
-  constructor() {
-    super();
+export class SkipSize extends DefineLayoutNodeMetadata implements OnInit {
+  ngOnInit(): void {
     this.define(SKIP_SIZE, true);
   }
 }
