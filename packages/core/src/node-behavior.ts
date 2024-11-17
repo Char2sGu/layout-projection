@@ -45,10 +45,10 @@ export abstract class NodeBehavior implements Node {
   }
 
   children(): ReadonlySet<this> {
-    const children = new Set<this>();
-    for (const child of this.#kernel.children())
-      children.add(this.decorate(child));
-    return children;
+    return new LazyMappedReadonlySet(
+      this.#kernel.children(), //
+      (child) => this.decorate(child),
+    );
   }
 
   dispose(): void {
@@ -69,4 +69,62 @@ export abstract class NodeBehavior implements Node {
    * behavior instances for the same node.
    */
   protected abstract decorate(target: Node): this;
+}
+
+/**
+ * A {@link ReadonlySet} where the values are mapped to another value of
+ * the same type when accessed.
+ */
+class LazyMappedReadonlySet<From, To> implements ReadonlySet<To> {
+  readonly size: number;
+
+  private readonly map = new Map<From, To>();
+
+  constructor(
+    private readonly original: ReadonlySet<From>,
+    private readonly mapper: (value: From) => To,
+  ) {
+    this.size = original.size;
+  }
+
+  forEach(
+    callbackfn: (value: To, value2: To, set: ReadonlySet<To>) => void,
+    thisArg?: any,
+  ): void {
+    this.original.forEach((value) => {
+      const mapped = this.mapped(value);
+      callbackfn.call(thisArg, mapped, mapped, this);
+    });
+  }
+
+  has(value: To): boolean {
+    for (const original of this.original)
+      if (this.mapped(original) === value) return true;
+    return false;
+  }
+
+  *[Symbol.iterator](): IterableIterator<To> {
+    const values = this.original.values();
+    for (const value of values) yield this.mapped(value);
+  }
+
+  *entries(): IterableIterator<[To, To]> {
+    for (const value of this[Symbol.iterator]()) yield [value, value];
+  }
+
+  keys(): IterableIterator<To> {
+    return this[Symbol.iterator]();
+  }
+  values(): IterableIterator<To> {
+    return this[Symbol.iterator]();
+  }
+
+  private mapped(value: From): To {
+    let mapped = this.map.get(value);
+    if (mapped === undefined) {
+      mapped = this.mapper(value);
+      this.map.set(value, mapped);
+    }
+    return mapped;
+  }
 }
