@@ -4,27 +4,9 @@
 
 Framework-agnostic **Layout Projection** and GPU-accelerated layout animation with various framework adapters.
 
-- [Comparison with FLIP](#why-not-flip)
-- [Comparison with View Transition API](#why-not-view-transition-api)
-
 > [!CAUTION]
 > This project is currently under a massive re-design, and the tutorials and website is not yet updated.  
 > Please stay tuned and come back later!
-
-## Getting Started
-
-- [Vanilla JS](https://char2sgu.github.io/layout-projection/)
-- [Angular Adapter](./packages/angular/README.md)
-
-## Project Structure
-
-| Path                 | Purpose                                                                 |
-| -------------------- | ----------------------------------------------------------------------- |
-| `packages/core`      | framework-agnostic implementation of Layout Projection                  |
-| `packages/animation` | framework-agnostic layout animation powered by Layout Projection        |
-| `packages/angular`   | framework adapter for Angular                                           |
-| `site`               | Angular application of the documentation website                        |
-| `playground`         | Angular application serving as the test field of all the packages above |
 
 ## What is this?
 
@@ -37,6 +19,38 @@ To address this issue, [Matt Perry](https://github.com/mattgperry) invented Layo
 Matt Perry heavily applied the Layout Projection technique in [Framer Motion](https://www.framer.com/motion/), a well-known React animation library. Unfortunately, this left out web developers who don't use React.
 
 Therefore, in this project, we aim to offer a **framework-agnostic** implementation of Layout Projection with a variety of framework adapters, to enable all web developers to enhance their applications with layout animations!
+
+- [Comparison with FLIP](#why-not-flip)
+- [Comparison with View Transition API](#why-not-view-transition-api)
+
+## Getting Started
+
+- [Vanilla JS](https://char2sgu.github.io/layout-projection/)
+- [Angular Adapter](https://char2sgu.github.io/layout-projection/guides/angular/overview)
+
+## Project Structure
+
+| Path                 | Purpose                                                                 |
+| -------------------- | ----------------------------------------------------------------------- |
+| `packages/core`      | framework-agnostic implementation of Layout Projection                  |
+| `packages/animation` | framework-agnostic layout animation powered by Layout Projection        |
+| `packages/angular`   | framework adapter for Angular                                           |
+| `site`               | Angular application of the documentation website                        |
+| `playground`         | Angular application serving as the test field of all the packages above |
+
+## Development
+
+```sh
+npm i
+nx serve playground
+```
+
+| Command                               | Purpose                                                                | Example                      |
+| ------------------------------------- | ---------------------------------------------------------------------- | ---------------------------- |
+| `nx build <package-name>`             | Building the target package and its dependent packages                 | `nx build animation`         |
+| `nx test <package-name>`              | Run the Jest tests for the target package                              | `nx test core`               |
+| `nx serve <app-name>`                 | Starting the dev server for the target application                     | `nx serve site`              |
+| `npm run release <specifier> [preid]` | Bump the version and publish to NPM (prerelease if `preid` is present) | `npm run release minor beta` |
 
 ## Why not FLIP?
 
