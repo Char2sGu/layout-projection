@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 import { argv } from 'node:process';
-import { releaseVersion } from 'nx/release/index.js';
+import { releaseVersion, releasePublish } from 'nx/release/index.js';
 import { simpleGit } from 'simple-git';
 
 main();
@@ -33,4 +33,6 @@ async function main() {
     .add('package-lock.json')
     .commit(`build(release): v${version}`)
     .addAnnotatedTag(`v${version}`, `Release v${version}`);
+
+  await releasePublish({});
 }
