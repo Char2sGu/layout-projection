@@ -17,12 +17,17 @@ import { ProjectionNodeFactory } from './projection-node-factory';
 
 /**
  * Directive for constructing the Projection Tree.
+ *
  * Apply this directive to an element to make it a Projection Node within the tree.
+ * Parent-child relationships are automatically established and maintained based on
+ * the DOM hierarchy.
  *
  * When the `id` attribute is present, it will be used as the identity of the node.
- * Otherwise, the identity of the node will be generated and is not determinant.
- *
- * Parent-child relationships are automatically established by the DOM hierarchy.
+ * Alternatively, assign a string to the `layout` attribute to specify the identity.
+ * The `id` attribute has higher priority than the `layout` attribute.
+ * When the identity is not explicitly specified, it will be randomly generated,
+ * and format may vary depending on the {@link ProjectionNodeFactory}
+ * implementation in use.
  *
  * The {@link ProjectionNode} interface is implemented by this directive, so that
  * the {@link ProjectionNode} object can be interacted with directly through
@@ -43,12 +48,21 @@ import { ProjectionNodeFactory } from './projection-node-factory';
  * This could be convenient if only the {@link Node} interface is needed.
  *
  * @example
+ * Assigning identities via the `id` attribute and the `layout` attribute:
+ *  ```html
+ *  <div id="container" layout>
+ *    <div layout="box-1"></div>
+ *    <div layout="box-2"></div>
+ *  </div>
+ *  ```
+ *
+ * @example
  * Accessing (the proxy of) the ProjectionNode object through the
  * directive export:
  *  ```html
- *  <div layout id="container" #containerNode="layout">
- *    <div layout id="box-1"></div>
- *    <div layout id="box-2"></div>
+ *  <div id="container" layout #containerNode="layout">
+ *    <div layout="box-1"></div>
+ *    <div layout="box-2"></div>
  *  </div>
  *  ```
  *
@@ -103,7 +117,9 @@ export class LayoutNode implements ProjectionNode {
     const element = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
     const factory = inject(ProjectionNodeFactory);
     const parent = inject(ProjectionNode, { skipSelf: true, optional: true });
-    const identity = inject(new HostAttributeToken('id'), { optional: true });
+    const identity =
+      inject(new HostAttributeToken('id'), { optional: true }) ??
+      inject(new HostAttributeToken('layout'), { optional: true });
     const destroyRef = inject(DestroyRef);
     this.kernel = factory.create(element, identity ?? undefined);
     if (parent) this.kernel.attach(parent);
