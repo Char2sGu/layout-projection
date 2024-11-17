@@ -3,14 +3,15 @@ import { NodeBehavior } from './node-behavior.js';
 import { Measurement, Projection, ProjectionNode } from './projection-node.js';
 
 /**
- * Decorator for a projection node that modifies its original behaviors.
- * Each concrete behavior class should make sure that there is only one
- * instance of behavior per node, and thus its constructor should not be
- * public.
+ * Decorator for a {@link ProjectionNode} instance.
  *
- * Tree query methods are modified to return the behavior instances of
- * the inner nodes, by dynamically decorating the inner nodes with the
- * {@link decorate} method.
+ * Tree query methods will return the behavior instances of the
+ * actual nodes, by dynamically decorating the returned nodes
+ * via the {@link decorate} method.
+ *
+ * It is recommended for concrete behavior classes to offer an approach
+ * to ensure that the behavior instances are unique for each node, so that
+ * the same behavior instance is not created multiple times for the same node.
  */
 export abstract class ProjectionNodeBehavior
   extends NodeBehavior

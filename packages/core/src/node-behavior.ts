@@ -1,14 +1,15 @@
 import { Node } from './node.js';
 
 /**
- * Decorator for a node that modifies its original behaviors.
- * Each concrete behavior class should make sure that there is only one
- * instance of behavior per node, and thus its constructor should not be
- * public.
+ * Decorator for a {@link Node} instance.
  *
- * Tree query methods are modified to return the behavior instances of
- * the inner nodes, by dynamically decorating the inner nodes with the
- * {@link decorate} method.
+ * Tree query methods will return the behavior instances of the
+ * actual nodes, by dynamically decorating the returned nodes
+ * via the {@link decorate} method.
+ *
+ * It is recommended for concrete behavior classes to offer an approach
+ * to ensure that the behavior instances are unique for each node, so that
+ * the same behavior instance is not created multiple times for the same node.
  */
 export abstract class NodeBehavior implements Node {
   readonly #kernel: Node;
@@ -64,7 +65,8 @@ export abstract class NodeBehavior implements Node {
 
   /**
    * Return the behavior instance of the given node.
-   * If exists, returns the previous behavior instance of this node.
+   * It should try to reuse existing behavior instance to avoid duplicate
+   * behavior instances for the same node.
    */
   protected abstract decorate(target: Node): this;
 }
