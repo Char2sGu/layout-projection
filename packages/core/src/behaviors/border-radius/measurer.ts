@@ -5,20 +5,17 @@ import { CssBorderRadiusParser } from './parser.js';
 export class BorderRadiusMeasurer {
   constructor(protected parser: CssBorderRadiusParser) {}
 
-  measure(
-    element: HTMLElement,
-    layout = Layout.fromElement(element),
-  ): BorderRadiusConfig {
+  measure(element: HTMLElement, layout: Layout): BorderRadiusConfig {
     const style = getComputedStyle(element);
 
     const parse = (style: string) =>
       this.parser.parse(style, layout.width, layout.height);
 
-    return {
+    return new BorderRadiusConfig({
       topLeft: parse(style.borderTopLeftRadius),
       topRight: parse(style.borderTopRightRadius),
       bottomLeft: parse(style.borderBottomLeftRadius),
       bottomRight: parse(style.borderBottomRightRadius),
-    };
+    });
   }
 }

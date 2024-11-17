@@ -1,7 +1,10 @@
 import { createInjectiveInstanceFactory } from '../../injective-instance-factory.js';
-import { Measurement, ProjectionNode } from '../../projection-node.js';
+import { ProjectionNode } from '../../projection-node.js';
 import { ProjectionNodeBehavior } from '../../projection-node-behavior.js';
-import { MeasurementWithBorderRadiuses } from './measurement.js';
+import {
+  isBorderRadiusesMeasured,
+  MeasurementWithBorderRadiuses,
+} from './measurement.js';
 import { BorderRadiusMeasurer } from './measurer.js';
 
 /**
@@ -30,10 +33,17 @@ export class MeasureBorderRadius extends ProjectionNodeBehavior {
     super(kernel);
   }
 
-  override measure(): Measurement {
-    const result = super.measure() as MeasurementWithBorderRadiuses;
-    result.borderRadiuses = this.measurer.measure(this.element());
-    return result;
+  override measure(): MeasurementWithBorderRadiuses {
+    const base = super.measure();
+    return {
+      ...base,
+      borderRadiuses: this.measurer.measure(this.element(), base.layout),
+      equals(other) {
+        if (!base.equals(other)) return false;
+        if (!isBorderRadiusesMeasured(other)) return false;
+        return this.borderRadiuses.equals(other.borderRadiuses);
+      },
+    };
   }
 
   protected override decorate(target: ProjectionNode): this {
