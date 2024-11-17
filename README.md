@@ -4,6 +4,9 @@
 
 Framework-agnostic **Layout Projection** and GPU-accelerated layout animation with various framework adapters.
 
+- [Comparison with FLIP](#why-not-flip)
+- [Comparison with View Transition API](#why-not-view-transition-api)
+
 > [!CAUTION]
 > This project is currently under a massive re-design, and the tutorials and website is not yet updated.  
 > Please stay tuned and come back later!
@@ -15,13 +18,13 @@ Framework-agnostic **Layout Projection** and GPU-accelerated layout animation wi
 
 ## Project Structure
 
-| Path                | Purpose                                                                 |
-| ------------------- | ----------------------------------------------------------------------- |
-| `package/core`      | framework-agnostic implementation of Layout Projection                  |
-| `package/animation` | framework-agnostic layout animation powered by Layout Projection        |
-| `package/angular`   | framework adapter for Angular                                           |
-| `site`              | Angular application of the documentation website                        |
-| `playground`        | Angular application serving as the test field of all the packages above |
+| Path                 | Purpose                                                                 |
+| -------------------- | ----------------------------------------------------------------------- |
+| `packages/core`      | framework-agnostic implementation of Layout Projection                  |
+| `packages/animation` | framework-agnostic layout animation powered by Layout Projection        |
+| `packages/angular`   | framework adapter for Angular                                           |
+| `site`               | Angular application of the documentation website                        |
+| `playground`         | Angular application serving as the test field of all the packages above |
 
 ## What is this?
 
