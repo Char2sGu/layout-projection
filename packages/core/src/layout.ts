@@ -73,7 +73,7 @@ export class Layout implements Equatable {
     bottom: number;
   }): Layout {
     const { top, left, right, bottom } = config;
-    return new Layout(left, top, right, bottom, right - left, bottom - top);
+    return new Layout(top, left, right, bottom, right - left, bottom - top);
   }
 
   // eslint-disable-next-line max-params -- private
