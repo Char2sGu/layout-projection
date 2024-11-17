@@ -1,4 +1,4 @@
-import { Equatable } from './equatable.js';
+import { Equatable } from './equality.js';
 
 /**
  * A coordinate in 2D space.

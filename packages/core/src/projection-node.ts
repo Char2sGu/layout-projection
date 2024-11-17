@@ -1,4 +1,4 @@
-import { Equatable } from './equatable.js';
+import { Equatable } from './equality.js';
 import { Layout } from './layout.js';
 import {
   computeTransformBetween,

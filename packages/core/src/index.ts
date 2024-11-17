@@ -1,5 +1,5 @@
 export * from './coordinate.js';
-export * from './equatable.js';
+export * from './equality.js';
 export * from './injective-instance-factory.js';
 export * from './layout.js';
 export * from './layout-transform.js';

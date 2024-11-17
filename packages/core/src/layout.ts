@@ -1,5 +1,5 @@
 import { Coordinate } from './coordinate.js';
-import { Equatable } from './equatable.js';
+import { Equatable } from './equality.js';
 
 /**
  * Combination of position and size.

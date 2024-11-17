@@ -1,4 +1,4 @@
-import { Equatable } from '../../equatable.js';
+import { Equatable } from '../../equality.js';
 
 export class BorderRadiusConfig implements Equatable {
   topLeft: BorderRadiusCornerConfig;
