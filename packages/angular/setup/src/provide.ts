@@ -1,5 +1,8 @@
 import { inject, Provider } from '@angular/core';
-import { ProjectionNodeFactory } from '@layout-projection/angular';
+import {
+  EasingStringParser,
+  ProjectionNodeFactory,
+} from '@layout-projection/angular';
 import {
   AggregationProjectionTreeAnimator,
   HandlerBasedProjectionNodeAnimator,
@@ -19,7 +22,6 @@ import {
   ComputedStylesBorderRadiusParser,
 } from '@layout-projection/core/behaviors';
 
-import { EasingStringParser } from '../../src/easing-string-parser';
 import { BasicProjectionNodeFactory } from './basic-projection-node-factory';
 import { CssEasingStringParser } from './css-easing-string-parser';
 

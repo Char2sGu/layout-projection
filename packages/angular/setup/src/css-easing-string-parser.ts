@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
+import { EasingStringParser } from '@layout-projection/angular';
 import { EasingFunction } from '@layout-projection/animation';
 import { cubicBezier, easeIn, easeInOut, easeOut, linear } from 'popmotion';
-
-import { EasingStringParser } from '../../src/easing-string-parser';
 
 /**
  * Implementation of {@link EasingStringParser} that attempts to parse the given
