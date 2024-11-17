@@ -16,6 +16,13 @@ export class MetadataToken<T> {
 
 /**
  * Service that is responsible for defining and retrieving metadata on objects.
+ *
+ * @example
+ *  ```ts
+ *  const RATIO = new MetadataToken<number>("RATIO");
+ *  manager.define(object, RATIO, 0.5);
+ *  const ratio = manager.resolve(object, RATIO);
+ *  ```
  */
 export abstract class MetadataManager {
   /**
