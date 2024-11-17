@@ -12,8 +12,9 @@ import {
 
 /**
  * Animator of a single projection node.
- * Uses a list of {@link ProjectionNodeAnimationHandler} to handle the animation
- * for each frame.
+ * Delegates the animation to a list of {@link ProjectionNodeAnimationHandler},
+ * where each of them is responsible for handling an aspect of the animation
+ * in each frame.
  */
 export class HandlerBasedProjectionNodeAnimator
   implements ProjectionNodeAnimator

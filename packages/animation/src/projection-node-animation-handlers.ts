@@ -7,10 +7,55 @@ import {
   ProjectionNodeAnimationHandler,
 } from './projection-node-animation-handler.js';
 
+/**
+ * When applied to a projection node,
+ * decides whether to skip the position animation of the layout.
+ * @see LayoutProjectionNodeAnimationHandler
+ */
+export const SKIP_POSITION = new MetadataToken<boolean>('SKIP_POSITION');
+
+/**
+ * When applied to a projection node,
+ * decides whether to skip the size animation of the layout.
+ * @see LayoutProjectionNodeAnimationHandler
+ */
+export const SKIP_SIZE = new MetadataToken<boolean>('SKIP_SIZE');
+
+/**
+ * Animation handler of the layout of a projection node.
+ * Projects the node to different layouts as the animation progresses.
+ * {@link SKIP_POSITION} and {@link SKIP_SIZE} metadata controls the animation.
+ */
+export class LayoutProjectionNodeAnimationHandler
+  implements ProjectionNodeAnimationHandler
+{
+  constructor(
+    private readonly framer: LayoutAnimationFramer,
+    private readonly metadata: MetadataManager,
+  ) {}
+
+  handleFrame(context: ProjectionNodeAnimationFrameContext): void {
+    const { node, from, to, progress } = context;
+    const skipPosition = this.metadata.resolve(node, SKIP_POSITION);
+    const skipSize = this.metadata.resolve(node, SKIP_SIZE);
+    const animatePosition = !skipPosition;
+    const animateSize = !skipSize;
+    if (!from.measurement || !to.measurement) return;
+    const layout = this.framer.frame({
+      from: from.measurement.layout,
+      to: to.measurement.layout,
+      progress,
+      animatePosition,
+      animateSize,
+    });
+    node.project(layout);
+  }
+}
+
 export interface LayoutAnimationFrameConfig {
-  from: Layout;
-  to: Layout;
-  progress: number;
+  readonly from: Layout;
+  readonly to: Layout;
+  readonly progress: number;
   /**
    * Whether to animate the position of the layout.
    */
@@ -22,7 +67,8 @@ export interface LayoutAnimationFrameConfig {
 }
 
 /**
- * Generator of layout at a specific animation frame.
+ * Internal service of {@link LayoutProjectionNodeAnimationHandler} that
+ * generates a {@link Layout} object for a specific animation frame.
  */
 export class LayoutAnimationFramer {
   frame(config: LayoutAnimationFrameConfig): Layout {
@@ -52,49 +98,5 @@ export class LayoutAnimationFramer {
       });
     }
     return to;
-  }
-}
-
-/**
- * When applied to a projection node,
- * decides whether to skip the position animation of the layout.
- * @see LayoutProjectionNodeAnimationHandler
- */
-export const SKIP_POSITION = new MetadataToken<boolean>('SKIP_POSITION');
-
-/**
- * When applied to a projection node,
- * decides whether to skip the size animation of the layout.
- * @see LayoutProjectionNodeAnimationHandler
- */
-export const SKIP_SIZE = new MetadataToken<boolean>('SKIP_SIZE');
-
-/**
- * Animation handler of the layout of a projection node.
- * {@link SKIP_POSITION} and {@link SKIP_SIZE} metadata controls the animation.
- */
-export class LayoutProjectionNodeAnimationHandler
-  implements ProjectionNodeAnimationHandler
-{
-  constructor(
-    private readonly framer: LayoutAnimationFramer,
-    private readonly metadata: MetadataManager,
-  ) {}
-
-  handleFrame(context: ProjectionNodeAnimationFrameContext): void {
-    const { node, from, to, progress } = context;
-    const skipPosition = this.metadata.resolve(node, SKIP_POSITION);
-    const skipSize = this.metadata.resolve(node, SKIP_SIZE);
-    const animatePosition = !skipPosition;
-    const animateSize = !skipSize;
-    if (!from.measurement || !to.measurement) return;
-    const layout = this.framer.frame({
-      from: from.measurement.layout,
-      to: to.measurement.layout,
-      progress,
-      animatePosition,
-      animateSize,
-    });
-    node.project(layout);
   }
 }

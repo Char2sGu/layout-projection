@@ -3,7 +3,7 @@ import { ProjectionNode } from '@layout-projection/core';
 import { ProjectionNodeSnapshot } from './projection-node-snapshot.js';
 
 /**
- * Creates a snapshot of the given projection node.
+ * Creates a {@link ProjectionNodeSnapshot} of the given {@link ProjectionNode}.
  */
 export function createSnapshot(node: ProjectionNode): ProjectionNodeSnapshot {
   return {
@@ -15,11 +15,12 @@ export function createSnapshot(node: ProjectionNode): ProjectionNodeSnapshot {
 }
 
 /**
- * Creates a map of snapshots of the tree starting from the given node.
+ * Creates a map of {@link ProjectionNodeSnapshot} of the tree structure
+ * starting from the given node.
  * @param root the root of the tree
  * @param options
  * @returns a map of snapshots, indexed by node id
- * @throws Error if found duplicate node ids within the tree
+ * @throws if found duplicate node ids within the tree
  */
 export function createTreeSnapshot(
   root: ProjectionNode,

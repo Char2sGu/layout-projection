@@ -10,9 +10,8 @@ import { ProjectionNodeSnapshot } from './projection-node-snapshot.js';
 export abstract class ProjectionTreeAnimator {
   /**
    * Animate a tree of projection nodes starting from a given root.
-   * The animation of a node will be skipped if its snapshot is not found
-   * in any of the snapshot maps.
-   * @param config
+   * A node within the tree will be animated only if its snapshot is present in
+   * both `from` and `to` snapshot maps.
    */
   abstract animate(config: ProjectionTreeAnimationConfig): AnimationRef;
 }

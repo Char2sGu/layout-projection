@@ -19,13 +19,13 @@ export interface ProjectionNodeAnimationConfig extends AnimationConfig {
   /**
    * The target node to animate.
    */
-  node: ProjectionNode;
+  readonly node: ProjectionNode;
   /**
    * The snapshot of the target node to begin the animation.
    */
-  from: ProjectionNodeSnapshot;
+  readonly from: ProjectionNodeSnapshot;
   /**
    * The snapshot of the target node to end the animation.
    */
-  to: ProjectionNodeSnapshot;
+  readonly to: ProjectionNodeSnapshot;
 }

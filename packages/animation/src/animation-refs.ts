@@ -2,8 +2,8 @@ import { AnimationRef } from './animation-ref.js';
 import { AnimationResult } from './animation-result.js';
 
 /**
- * Animation reference that delegates all logic to a promise and a stopper
- * function.
+ * {@link AnimationRef} implementation that delegates all logic to
+ * a promise and a stopper function.
  */
 export class DelegationAnimationRef implements AnimationRef {
   /**
@@ -35,7 +35,8 @@ export class DelegationAnimationRef implements AnimationRef {
 }
 
 /**
- * Animation reference aggregated from multiple other references.
+ * {@link AnimationRef} implementation that is an aggregation
+ * of multiple other {@link AnimationRef} objects.
  * Resolves once all animations are completed or one is stopped.
  * Calling `stop` stops all pending animations.
  */

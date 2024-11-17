@@ -15,7 +15,7 @@ export class MetadataToken<T> {
 }
 
 /**
- * Manager of metadata for an object.
+ * Service that is responsible for defining and retrieving metadata on objects.
  */
 export abstract class MetadataManager {
   /**
@@ -30,9 +30,9 @@ export abstract class MetadataManager {
 
   /**
    * Resolves the value of a metadata token on the given object.
-   * @returns the value of the token or null if not defined
+   * @returns the value of the token or undefined if not defined
    */
-  abstract resolve<T>(target: object, token: MetadataToken<T>): T | null;
+  abstract resolve<T>(target: object, token: MetadataToken<T>): T | undefined;
 }
 
 /**
@@ -43,7 +43,7 @@ export class InPlaceMetadataManager implements MetadataManager {
   define<T>(target: object, token: MetadataToken<T>, value: T): void {
     Reflect.set(target, token.key, value);
   }
-  resolve<T>(target: object, token: MetadataToken<T>): T | null {
-    return Reflect.get(target, token.key) ?? null;
+  resolve<T>(target: object, token: MetadataToken<T>): T | undefined {
+    return Reflect.get(target, token.key);
   }
 }

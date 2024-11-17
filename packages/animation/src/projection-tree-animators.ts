@@ -11,7 +11,7 @@ import {
 /**
  * Animator of a projection tree.
  * Performs the tree animation by animating each node of the tree using
- * a given {@link ProjectionNodeAnimator} and aggregate their animation refs.
+ * the given {@link ProjectionNodeAnimator} and aggregate their animation refs.
  */
 export class AggregationProjectionTreeAnimator
   implements ProjectionTreeAnimator
