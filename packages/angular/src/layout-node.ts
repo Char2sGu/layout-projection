@@ -8,6 +8,7 @@ import {
 import {
   Layout,
   Measurement,
+  Node,
   Projection,
   ProjectionNode,
 } from '@layout-projection/core';
@@ -24,34 +25,68 @@ import { ProjectionNodeFactory } from './projection-node-factory';
  * Parent-child relationships are automatically established by the DOM hierarchy.
  *
  * The {@link ProjectionNode} interface is implemented by this directive, so that
- * the {@link ProjectionNode} instance can be interacted with directly through
+ * the {@link ProjectionNode} object can be interacted with directly through
  * the directive export (using the name `layout`) or view query.
  *
- * Although this directive behave like a {@link ProjectionNode}, the actual node instance
- * that is used within the tree is under the `kernel` property of the directive instance.
+ * Although this directive behave like a {@link ProjectionNode}, this directive
+ * is merely a proxy to the actual {@link ProjectionNode} used within the tree.
+ * The actual {@link ProjectionNode} object is available under the `kernel` property
+ * of the directive instance.
  *
- * The actual {@link ProjectionNode} instance is provided to the current node injector,
- * so that it can be accessed by any peer directives, child elements, view queries, etc.
+ * The actual {@link ProjectionNode} object is provided to the current node
+ * injector, using the abstract class {@link ProjectionNode} as the token,
+ * so that it can be accessed by any peer directives, by child elements,
+ * via view queries, etc.
+ *
+ * The abstract class {@link Node} can also be used as the token to retrieve
+ * the {@link ProjectionNode} object from the node injector.
+ * This could be convenient if only the {@link Node} interface is needed.
  *
  * @example
+ * Accessing (the proxy of) the ProjectionNode object through the
+ * directive export:
  *  ```html
  *  <div layout id="container" #containerNode="layout">
  *    <div layout id="box-1"></div>
  *    <div layout id="box-2"></div>
  *  </div>
  *  ```
+ *
  * @example
+ * Accessing the ProjectionNode object in the host component through
+ * view query:
  *  ```ts
- *  rootNode = viewChild.required(ProjectionNode);
- *  // alternatively
- *  rootNode = viewChild.required(LayoutNode);
+ *  nodes = viewChildren(ProjectionNode);
+ *  root = viewChild.required(ProjectionNode);
  *  ```
+ *
+ * @example
+ * Accessing the current ProjectionNode object in a peer directive:
+ *  ```ts
+ *  \@Directive({ ... })
+ *  export class PeerDirective {
+ *    private readonly node = inject(ProjectionNode, { self: true });
+ *  }
+ *  ```
+ *
+ * @example
+ * Accessing the parent ProjectionNode object in a child component/directive:
+ * ```ts
+ *  \@Directive({ ... })
+ *  export class ChildDirective {
+ *    private readonly parent = inject(ProjectionNode, { skipSelf: true });
+ *  }
+ * ```
  */
 @Directive({
   standalone: true,
   selector: '[layout]',
   exportAs: 'layout',
   providers: [
+    {
+      provide: Node,
+      useFactory: (dir = inject(LayoutNode, { self: true })) => dir.kernel,
+    },
     {
       provide: ProjectionNode,
       useFactory: (dir = inject(LayoutNode, { self: true })) => dir.kernel,
