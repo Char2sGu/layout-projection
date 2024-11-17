@@ -4,6 +4,10 @@
 
 Framework-agnostic **Layout Projection** and **Layout-Projection-powered** layout animation implementations with exquisite adapters for various frameworks.
 
+> [!CAUTION]
+> This project is currently under a massive re-design, and the tutorials and website is not yet updated.  
+> Please stay tuned and come back later!
+
 # Getting Started
 
 - [Getting started](https://char2sgu.github.io/layout-projection/)
