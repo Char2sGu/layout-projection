@@ -42,9 +42,9 @@ export abstract class DefineLayoutNodeMetadata {
  * token for the current projection node.
  * See the metadata token documentation for more information.
  *
- * This directive must be applied to an element whose node injector contains
- * a {@link ProjectionNode} declaration, such as where a {@link LayoutNode}
- * directive is also applied.
+ * Requires a {@link ProjectionNode} available in the current node injector.
+ * See the {@link LayoutNode} directive for constructing the Projection Tree
+ * and providing the {@link ProjectionNode} object.
  *
  * @example
  *  ```html
@@ -69,9 +69,9 @@ export class SkipPosition extends DefineLayoutNodeMetadata {
  * token for the current projection node.
  * See the metadata token documentation for more information.
  *
- * This directive must be applied to an element whose node injector contains
- * a {@link ProjectionNode} declaration, such as where a {@link LayoutNode}
- * directive is also applied.
+ * Requires a {@link ProjectionNode} available in the current node injector.
+ * See the {@link LayoutNode} directive for constructing the Projection Tree
+ * and providing the {@link ProjectionNode} object.
  */
 @Directive({
   standalone: true,

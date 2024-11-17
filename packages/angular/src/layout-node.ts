@@ -25,7 +25,7 @@ import { ProjectionNodeFactory } from './projection-node-factory';
  *
  * The {@link ProjectionNode} interface is implemented by this directive, so that
  * the {@link ProjectionNode} instance can be interacted with directly through
- * the directive export or view query.
+ * the directive export (using the name `layout`) or view query.
  *
  * Although this directive behave like a {@link ProjectionNode}, the actual node instance
  * that is used within the tree is under the `kernel` property of the directive instance.

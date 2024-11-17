@@ -15,9 +15,31 @@ import { Measurement, ProjectionNode } from '@layout-projection/core';
 
 import { EasingStringParser } from './easing-string-parser';
 
+/**
+ * Directive for animating the Projection Tree starting from the current
+ * Projection Node, whenever the layout of any nodes within this subtree
+ * is changed.
+ *
+ * Requires a {@link ProjectionNode} available in the current node injector.
+ * See the {@link LayoutNode} directive for constructing the Projection Tree
+ * and providing the {@link ProjectionNode} object.
+ *
+ * @experimental
+ *
+ * @example
+ *  ```html
+ *  <div id="container" layout animate duration="100" easing="linear">
+ *    <div
+ *      id="box"
+ *      [class.active]="isActive()"
+ *      layout
+ *    ></div>
+ *  </div>
+ *  ```
+ */
 @Directive({
   standalone: true,
-  selector: '[layout][animate]',
+  selector: '[animate]',
 })
 export class LayoutAnimator {
   #node = inject(ProjectionNode, { self: true });
@@ -26,8 +48,16 @@ export class LayoutAnimator {
 
   #previousDest?: ReadonlyMap<string, ProjectionNodeSnapshot>;
 
+  /**
+   * The duration of the animation in milliseconds.
+   */
   readonly duration = input.required({ transform: numberAttribute });
 
+  /**
+   * The easing of the animation.
+   * Accepts a {@link EasingFunction} or a string, which will be parsed by
+   * the provided {@link EasingStringParser}.
+   */
   readonly easing = input.required({
     transform: (v: string | EasingFunction) =>
       typeof v === 'string' ? this.#easingParser.parse(v) : v,
