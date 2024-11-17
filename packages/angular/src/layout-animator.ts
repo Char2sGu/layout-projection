@@ -11,20 +11,20 @@ import {
   ProjectionNodeSnapshot,
   ProjectionTreeAnimator,
 } from '@layout-projection/animation';
-import { Measurement, ProjectionNode } from '@layout-projection/core';
+import { ProjectionNode } from '@layout-projection/core';
 
 import { EasingStringParser } from './easing-string-parser';
 
 /**
  * Directive for animating the Projection Tree starting from the current
- * Projection Node, whenever the layout of any nodes within this subtree
- * is changed.
+ * Projection Node, whenever the measurement of any node in the tree changes,
+ * or the tree structure changes.
  *
  * Requires a {@link ProjectionNode} available in the current node injector.
  * See the {@link LayoutNode} directive for constructing the Projection Tree
  * and providing the {@link ProjectionNode} object.
  *
- * @experimental
+ * @experimental experimental implementation; subject to changes
  *
  * @example
  *  ```html
@@ -75,7 +75,7 @@ export class LayoutAnimator {
         const previous = this.#previousDest;
         this.#previousDest = current;
         if (!previous) return;
-        if (this.#snapshotsEqual(previous, current)) return;
+        if (this.#isSnapshotsEqual(previous, current)) return;
         await this.#animator.animate({
           root: this.#node,
           from: previous,
@@ -87,35 +87,15 @@ export class LayoutAnimator {
     });
   }
 
-  #snapshotsEqual(
+  #isSnapshotsEqual(
     a: ReadonlyMap<string, ProjectionNodeSnapshot>,
     b: ReadonlyMap<string, ProjectionNodeSnapshot>,
   ) {
     if (a.size !== b.size) return false;
-    for (const [key, value] of a)
-      if (!b.has(key) || !this.#snapshotEqual(value, b.get(key)!)) return false;
+    for (const [id, snapshot] of a) {
+      const other = b.get(id);
+      if (!other || !snapshot.equals(other)) return false;
+    }
     return true;
-  }
-
-  #snapshotEqual(a: ProjectionNodeSnapshot, b: ProjectionNodeSnapshot) {
-    return (
-      a.id === b.id &&
-      a.parent === b.parent &&
-      this.#measurementEqual(a.measurement, b.measurement) &&
-      a.children.size === b.children.size &&
-      [...a.children].every((c) => b.children.has(c))
-    );
-  }
-
-  #measurementEqual(a: Measurement | null, b: Measurement | null) {
-    return (
-      a === b ||
-      (a !== null &&
-        b !== null &&
-        a.layout.top === b.layout.top &&
-        a.layout.left === b.layout.left &&
-        a.layout.right === b.layout.right &&
-        a.layout.bottom === b.layout.bottom)
-    );
   }
 }
