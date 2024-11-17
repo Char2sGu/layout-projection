@@ -34,5 +34,5 @@ async function main() {
     .commit(`build(release): v${version}`)
     .addAnnotatedTag(`v${version}`, `Release v${version}`);
 
-  await releasePublish({});
+  await releasePublish({ access: 'public' });
 }
