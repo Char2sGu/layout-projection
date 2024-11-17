@@ -17,7 +17,9 @@ import {
 } from '@layout-projection/animation';
 import {
   BorderRadiusMeasurer,
-  CssBorderRadiusParser,
+  BorderRadiusStyleParser,
+  ComputedStyleBorderRadiusMeasurer,
+  ComputedStylesBorderRadiusParser,
 } from '@layout-projection/core/behaviors';
 
 import { BasicProjectionNodeFactory } from './basic-projection-node-factory';
@@ -37,16 +39,23 @@ export function provideLayoutProjectionBuiltinSetup(): Provider[] {
       provide: MetadataManager,
       useExisting: InPlaceMetadataManager,
     },
-
     {
-      provide: CssBorderRadiusParser,
-      useFactory: () => new CssBorderRadiusParser(),
+      provide: ComputedStylesBorderRadiusParser,
+      useFactory: () => new ComputedStylesBorderRadiusParser(),
+    },
+    {
+      provide: BorderRadiusStyleParser,
+      useExisting: ComputedStylesBorderRadiusParser,
+    },
+    {
+      provide: ComputedStyleBorderRadiusMeasurer,
+      useFactory: () =>
+        new ComputedStyleBorderRadiusMeasurer(inject(BorderRadiusStyleParser)),
     },
     {
       provide: BorderRadiusMeasurer,
-      useFactory: () => new BorderRadiusMeasurer(inject(CssBorderRadiusParser)),
+      useExisting: ComputedStyleBorderRadiusMeasurer,
     },
-
     {
       provide: LayoutAnimationFramer,
       useFactory: () => new LayoutAnimationFramer(),
@@ -81,7 +90,6 @@ export function provideLayoutProjectionBuiltinSetup(): Provider[] {
         return instance;
       },
     },
-
     {
       provide: StringEasingParser,
       useExisting: CssEasingParser,

@@ -2,8 +2,32 @@ import * as styleUnits from 'style-value-types';
 
 import { BorderRadiusCornerConfig } from './config.js';
 
-export class CssBorderRadiusParser {
-  parse(
+export abstract class BorderRadiusStyleParser {
+  /**
+   * Parse a CSS style string of border radius corner.
+   * @param style the CSS style string
+   * @param width the width of the element, in pixels
+   * @param height the height of the element, in pixels
+   */
+  abstract parseCorner(
+    style: string,
+    width: number,
+    height: number,
+  ): BorderRadiusCornerConfig;
+}
+
+/**
+ * A {@link BorderRadiusStyleParser} that can parse CSS border radius
+ * styles strings returned by `window.getComputedStyle`, in the following
+ * formats:
+ * - `px px`
+ * - `px`
+ * - `%`
+ */
+export class ComputedStylesBorderRadiusParser
+  implements BorderRadiusStyleParser
+{
+  parseCorner(
     style: string,
     width: number,
     height: number,

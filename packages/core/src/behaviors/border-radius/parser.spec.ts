@@ -1,24 +1,27 @@
-import { CssBorderRadiusParser } from './parser.js';
+import { ComputedStylesBorderRadiusParser } from './parser.js';
 
-describe('CssBorderRadiusParser', () => {
-  let parser: CssBorderRadiusParser;
+describe('ComputedStylesBorderRadiusParser', () => {
+  let parser: ComputedStylesBorderRadiusParser;
 
   beforeEach(() => {
-    parser = new CssBorderRadiusParser();
+    parser = new ComputedStylesBorderRadiusParser();
   });
 
   describe('parse', () => {
     test('?px ?px', () => {
-      expect(parser.parse('10px 20px', 100, 100)).toEqual({ x: 10, y: 20 });
+      expect(parser.parseCorner('10px 20px', 100, 100)).toEqual({
+        x: 10,
+        y: 20,
+      });
     });
     test('?px', () => {
-      expect(parser.parse('10px', 100, 100)).toEqual({ x: 10, y: 10 });
+      expect(parser.parseCorner('10px', 100, 100)).toEqual({ x: 10, y: 10 });
     });
     test('?%', () => {
-      expect(parser.parse('10%', 100, 100)).toEqual({ x: 10, y: 10 });
+      expect(parser.parseCorner('10%', 100, 100)).toEqual({ x: 10, y: 10 });
     });
     test('unsupported', () => {
-      const fn = () => parser.parse('10px / 10px', 100, 100);
+      const fn = () => parser.parseCorner('10px / 10px', 100, 100);
       expect(fn).toThrow('Unsupported');
     });
   });
