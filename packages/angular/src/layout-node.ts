@@ -22,11 +22,11 @@ import { ProjectionNodeFactory } from './projection-node-factory';
  * Parent-child relationships are automatically established and maintained based on
  * the DOM hierarchy.
  *
- * When the `id` attribute is present, it will be used as the identity of the node.
- * Alternatively, assign a string to the `layout` attribute to specify the identity.
- * The `id` attribute has higher priority than the `layout` attribute.
- * When the identity is not explicitly specified, it will be randomly generated,
- * and format may vary depending on the {@link ProjectionNodeFactory}
+ * Assign a string to the `layout` attribute to specify the identity of the node.
+ * When the `layout` attribute does not have a value, the `id` attribute will be
+ * considered as the identity of the node, if present.
+ * If no identity is explicitly specified, it will be randomly generated, and
+ * the format of the randomly generated id is up to the {@link ProjectionNodeFactory}
  * implementation in use.
  *
  * The {@link ProjectionNode} interface is implemented by this directive, so that
@@ -118,8 +118,8 @@ export class LayoutNode implements ProjectionNode {
     const factory = inject(ProjectionNodeFactory);
     const parent = inject(ProjectionNode, { skipSelf: true, optional: true });
     const identity =
-      inject(new HostAttributeToken('id'), { optional: true }) ??
-      inject(new HostAttributeToken('layout'), { optional: true });
+      inject(new HostAttributeToken('layout')) ||
+      inject(new HostAttributeToken('id'), { optional: true });
     const destroyRef = inject(DestroyRef);
     this.kernel = factory.create(element, identity ?? undefined);
     if (parent) this.kernel.attach(parent);
