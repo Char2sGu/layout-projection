@@ -1,8 +1,5 @@
 import { inject, Provider } from '@angular/core';
-import {
-  ProjectionNodeFactory,
-  StringEasingParser,
-} from '@layout-projection/angular';
+import { ProjectionNodeFactory } from '@layout-projection/angular';
 import {
   AggregationProjectionTreeAnimator,
   HandlerBasedProjectionNodeAnimator,
@@ -22,13 +19,33 @@ import {
   ComputedStylesBorderRadiusParser,
 } from '@layout-projection/core/behaviors';
 
+import { EasingStringParser } from '../../src/easing-string-parser';
 import { BasicProjectionNodeFactory } from './basic-projection-node-factory';
-import { CssEasingParser } from './css-easing-parser';
+import { CssEasingStringParser } from './css-easing-string-parser';
 
 /**
- * Provide the required services using built-in implementations.
+ * Provide the necessary services using built-in implementations
+ * to setup the layout projection directives.
+ *
+ * This setup is sufficient for simple use cases such as animating
+ * interactive components. For more complex use cases, it might be
+ * preferable to provide custom implementations of the services.
+ *
+ * Primary Services:
+ * - {@link MetadataManager} <-- {@link InPlaceMetadataManager}
+ * - {@link ProjectionNodeFactory} <-- {@link BasicProjectionNodeFactory}
+ * - {@link ProjectionNodeAnimator} <-- {@link HandlerBasedProjectionNodeAnimator}
+ *    - handlers: [{@link LayoutProjectionNodeAnimationHandler}] <br/>
+ *    - behaviors: [{@link PreventPreemptiveNodeAnimation}] <br/>
+ * - {@link ProjectionTreeAnimator} <-- {@link AggregationProjectionTreeAnimator}
+ *    - behaviors: [{@link PreventPreemptiveTreeAnimation}]
+ *
+ * Supporting Services:
+ * - {@link EasingStringParser} <-- {@link CssEasingStringParser}
+ * - {@link BorderRadiusMeasurer} <-- {@link ComputedStyleBorderRadiusMeasurer}
+ * - {@link BorderRadiusStyleParser} <-- {@link ComputedStylesBorderRadiusParser}
  */
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function -- it's common for providers declarations to be long
 export function provideLayoutProjectionBuiltinSetup(): Provider[] {
   return [
     {
@@ -91,8 +108,8 @@ export function provideLayoutProjectionBuiltinSetup(): Provider[] {
       },
     },
     {
-      provide: StringEasingParser,
-      useExisting: CssEasingParser,
+      provide: EasingStringParser,
+      useExisting: CssEasingStringParser,
     },
     {
       provide: ProjectionNodeFactory,

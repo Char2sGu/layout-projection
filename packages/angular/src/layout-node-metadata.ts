@@ -8,31 +8,41 @@ import {
 import { ProjectionNode } from '@layout-projection/core';
 
 @Directive()
-export abstract class LayoutNodeMetadata<T> {
+export abstract class DefineLayoutNodeMetadata {
   #node = inject(ProjectionNode, { self: true });
   #metadata = inject(MetadataManager);
 
-  constructor(token: MetadataToken<T>, value: NoInfer<T>) {
+  define<T>(token: MetadataToken<T>, value: NoInfer<T>): void {
     this.#metadata.define(this.#node, token, value);
   }
 }
 
+/**
+ * Directive that defines a `true` value for the {@link SKIP_POSITION} metadata
+ * token for the current projection node.
+ */
 @Directive({
   standalone: true,
-  selector: '[layout][skipPosition]',
+  selector: '[skipPosition]',
 })
-export class SkipPositionLayoutNodeMetadata extends LayoutNodeMetadata<boolean> {
+export class SkipPosition extends DefineLayoutNodeMetadata {
   constructor() {
-    super(SKIP_POSITION, true);
+    super();
+    this.define(SKIP_POSITION, true);
   }
 }
 
+/**
+ * Directive that defines a `true` value for the {@link SKIP_SIZE} metadata
+ * token for the current projection node.
+ */
 @Directive({
   standalone: true,
-  selector: '[layout][skipSize]',
+  selector: '[skipSize]',
 })
-export class SkipSizeLayoutNodeMetadata extends LayoutNodeMetadata<boolean> {
+export class SkipSize extends DefineLayoutNodeMetadata {
   constructor() {
-    super(SKIP_SIZE, true);
+    super();
+    this.define(SKIP_SIZE, true);
   }
 }

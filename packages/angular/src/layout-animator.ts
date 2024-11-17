@@ -13,7 +13,7 @@ import {
 } from '@layout-projection/animation';
 import { Measurement, ProjectionNode } from '@layout-projection/core';
 
-import { StringEasingParser } from './string-easing-parser';
+import { EasingStringParser } from './easing-string-parser';
 
 @Directive({
   standalone: true,
@@ -22,7 +22,7 @@ import { StringEasingParser } from './string-easing-parser';
 export class LayoutAnimator {
   #node = inject(ProjectionNode, { self: true });
   #animator = inject(ProjectionTreeAnimator);
-  #easingParser = inject(StringEasingParser);
+  #easingParser = inject(EasingStringParser);
 
   #previousDest?: ReadonlyMap<string, ProjectionNodeSnapshot>;
 
