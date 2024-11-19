@@ -15,20 +15,48 @@ export const APP_NAV_CONTENT: NavContent = {
       name: 'Guides',
       items: [
         {
-          name: 'Layout Projection',
-          path: 'core/guides/layout-projection',
+          name: 'Projection Tree',
+          path: 'core/guides/projection-tree',
         },
         {
-          name: 'Layout Animation',
-          path: 'core/guides/layout-animation',
+          name: 'Performing Projections',
+          path: 'core/guides/performing-projections',
         },
         {
-          name: 'Snapshot APIs',
-          path: 'core/guides/snapshots',
+          name: 'Applying Behaviors',
+          path: 'core/guides/applying-behaviors',
         },
         {
-          name: 'Standalone Usage',
-          path: 'core/guides/standalone-usage',
+          name: 'Authoring Behaviors',
+          path: 'core/guides/authoring-behaviors',
+        },
+      ],
+    },
+  ],
+  ['Animation']: [
+    {
+      name: 'Getting Started',
+      items: [
+        {
+          name: 'Overview',
+          path: 'animation/README',
+        },
+      ],
+    },
+    {
+      name: 'Guides',
+      items: [
+        {
+          name: 'Snapshots',
+          path: 'animation/guides/snapshots',
+        },
+        {
+          name: 'Animators',
+          path: 'animation/guides/animators',
+        },
+        {
+          name: 'Handlers & Metadata',
+          path: 'animation/guides/handlers-and-metadata',
         },
       ],
     },
@@ -41,22 +69,30 @@ export const APP_NAV_CONTENT: NavContent = {
           name: 'Overview',
           path: 'angular/README',
         },
+        {
+          name: 'Quick Start',
+          path: 'angular/guides/quick-start',
+        },
       ],
     },
     {
       name: 'Guides',
       items: [
         {
-          name: 'Projection Tree',
-          path: 'angular/guides/projection-tree',
+          name: 'Tracking Layout',
+          path: 'angular/guides/tracking-layout',
         },
         {
-          name: 'Animation Directives',
-          path: 'angular/guides/animation-directives',
+          name: 'Animating Layout',
+          path: 'angular/guides/animating-layout',
         },
         {
-          name: 'Animation Scope',
-          path: 'angular/guides/animation-scope',
+          name: 'Defining Metadata',
+          path: 'angular/guides/defining-metadata',
+        },
+        {
+          name: 'Customizing Setup',
+          path: 'angular/guides/customizing-setup',
         },
       ],
     },

@@ -30,6 +30,16 @@
           },
           {
             "glob": "README.md",
+            "input": "{workspaceRoot}/packages/animation",
+            "output": "assets/docs/animation"
+          },
+          {
+            "glob": "**/*",
+            "input": "{workspaceRoot}/packages/animation/guides",
+            "output": "assets/docs/animation/guides"
+          },
+          {
+            "glob": "README.md",
             "input": "{workspaceRoot}/packages/angular",
             "output": "assets/docs/angular"
           },
