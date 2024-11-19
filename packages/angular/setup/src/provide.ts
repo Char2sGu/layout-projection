@@ -33,19 +33,16 @@ import { CssEasingStringParser } from './css-easing-string-parser';
  * interactive components. For more complex use cases, it might be
  * preferable to provide custom implementations of the services.
  *
- * Primary Services:
  * - {@link MetadataManager} <-- {@link InPlaceMetadataManager}
  * - {@link ProjectionNodeFactory} <-- {@link BasicProjectionNodeFactory}
+ *    - {@link BorderRadiusMeasurer} <-- {@link ComputedStyleBorderRadiusMeasurer}
+ *    - {@link BorderRadiusStyleParser} <-- {@link ComputedStylesBorderRadiusParser}
  * - {@link ProjectionNodeAnimator} <-- {@link HandlerBasedProjectionNodeAnimator}
  *    - handlers: [{@link LayoutProjectionNodeAnimationHandler}] <br/>
  *    - behaviors: [{@link PreventPreemptiveNodeAnimation}] <br/>
  * - {@link ProjectionTreeAnimator} <-- {@link AggregationProjectionTreeAnimator}
  *    - behaviors: [{@link PreventPreemptiveTreeAnimation}]
- *
- * Supporting Services:
  * - {@link EasingStringParser} <-- {@link CssEasingStringParser}
- * - {@link BorderRadiusMeasurer} <-- {@link ComputedStyleBorderRadiusMeasurer}
- * - {@link BorderRadiusStyleParser} <-- {@link ComputedStylesBorderRadiusParser}
  */
 // eslint-disable-next-line max-lines-per-function -- it's common for providers declarations to be long
 export function provideLayoutProjectionBuiltinSetup(): Provider[] {
