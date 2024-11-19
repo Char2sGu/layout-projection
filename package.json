@@ -6,14 +6,9 @@
   "author": "Char2s <char2s@outlook.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc -b && npm run build -w packages/angular",
-    "build:watch": "concurrently -n tsc,angular \"tsc -b -w\" \"npm run build:watch -w packages/angular\"",
     "lint": "concurrently npm:lint:*",
     "lint:eslint": "eslint packages site playground --cache --fix",
     "lint:prettier": "prettier --write \"{packages/*/src/**/*,*}.{html,css,less,scss,sass,js,json,md}\"",
-    "site:start": "npm start -w ./site",
-    "site:build": "npm run build -w ./site",
-    "site:deploy": "npm run deploy -w ./site",
     "release": "node scripts/release.mjs"
   },
   "keywords": [],

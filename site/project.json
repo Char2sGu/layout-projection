@@ -95,7 +95,10 @@
       "defaultConfiguration": "development"
     },
     "deploy": {
-      "executor": "angular-cli-ghpages:deploy"
+      "executor": "angular-cli-ghpages:deploy",
+      "options": {
+        "baseHref": "/layout-projection/"
+      }
     }
   }
 }
