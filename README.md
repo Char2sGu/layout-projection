@@ -8,6 +8,12 @@ Framework-agnostic **Layout Projection** and GPU-accelerated layout animation wi
 > This project is currently under a massive re-design, and the tutorials and website is not yet updated.  
 > Please stay tuned and come back later!
 
+- Getting started with Vanilla JS (WIP)
+- [Getting started with Angular](https://char2sgu.github.io/layout-projection/guides/angular/guides/quick-start)
+- Framework-agnostic Kernel API:
+  - [Core: Node, Tree, Projection](https://char2sgu.github.io/layout-projection/guides/core/)
+  - [Animation: Snapshot, Animator, Metadata](https://char2sgu.github.io/layout-projection/guides/animation/)
+
 ## What is this?
 
 Layout animations have always been a challenge for web developers, especially when it comes to implementing advanced layout animations like shared-element transitions.
@@ -23,20 +29,15 @@ Therefore, in this project, we aim to offer a **framework-agnostic** implementat
 - [Comparison with FLIP](#why-not-flip)
 - [Comparison with View Transition API](#why-not-view-transition-api)
 
-## Getting Started
-
-- [Vanilla JS](https://char2sgu.github.io/layout-projection/)
-- [Angular Adapter](https://char2sgu.github.io/layout-projection/guides/angular/overview)
-
 ## Project Structure
 
-| Path                 | Purpose                                                                 |
-| -------------------- | ----------------------------------------------------------------------- |
-| `packages/core`      | framework-agnostic implementation of Layout Projection                  |
-| `packages/animation` | framework-agnostic layout animation powered by Layout Projection        |
-| `packages/angular`   | framework adapter for Angular                                           |
-| `site`               | Angular application of the documentation website                        |
-| `playground`         | Angular application serving as the test field of all the packages above |
+| Path                 | Purpose                                                   |
+| -------------------- | --------------------------------------------------------- |
+| `packages/core`      | framework-agnostic implementation of Layout Projection    |
+| `packages/animation` | framework-agnostic implementation of layout animators     |
+| `packages/angular`   | adapter for the Angular framework                         |
+| `site`               | app of the documentation website, powered by Angular      |
+| `playground`         | app serving as the testing playground, powered by Angular |
 
 ## Development
 
