@@ -1,6 +1,6 @@
 # Layout Projection
 
-**_Beautify the Web with awesome layout animations_**
+**_Beautify the Web with smooth layout animations_**
 
 Framework-agnostic **Layout Projection** and GPU-accelerated layout animation with various framework adapters.
 
