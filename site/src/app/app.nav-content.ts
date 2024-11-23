@@ -1,69 +1,13 @@
 import { NavContent } from './core/nav.models';
 
 export const APP_NAV_CONTENT: NavContent = {
-  ['Core']: [
+  ['Adapters']: [
     {
-      name: 'Getting Started',
-      items: [
-        {
-          name: 'Overview',
-          path: 'core/README',
-        },
-      ],
+      name: 'Native',
+      items: [],
     },
     {
-      name: 'Guides',
-      items: [
-        {
-          name: 'Projection Tree',
-          path: 'core/guides/projection-tree',
-        },
-        {
-          name: 'Performing Projections',
-          path: 'core/guides/performing-projections',
-        },
-        {
-          name: 'Applying Behaviors',
-          path: 'core/guides/applying-behaviors',
-        },
-        {
-          name: 'Authoring Behaviors',
-          path: 'core/guides/authoring-behaviors',
-        },
-      ],
-    },
-  ],
-  ['Animation']: [
-    {
-      name: 'Getting Started',
-      items: [
-        {
-          name: 'Overview',
-          path: 'animation/README',
-        },
-      ],
-    },
-    {
-      name: 'Guides',
-      items: [
-        {
-          name: 'Snapshots',
-          path: 'animation/guides/snapshots',
-        },
-        {
-          name: 'Animators',
-          path: 'animation/guides/animators',
-        },
-        {
-          name: 'Handlers & Metadata',
-          path: 'animation/guides/handlers-and-metadata',
-        },
-      ],
-    },
-  ],
-  ['Angular']: [
-    {
-      name: 'Getting Started',
+      name: 'Angular',
       items: [
         {
           name: 'Overview',
@@ -73,11 +17,6 @@ export const APP_NAV_CONTENT: NavContent = {
           name: 'Quick Start',
           path: 'angular/guides/quick-start',
         },
-      ],
-    },
-    {
-      name: 'Guides',
-      items: [
         {
           name: 'Tracking Layout',
           path: 'angular/guides/tracking-layout',
@@ -97,4 +36,53 @@ export const APP_NAV_CONTENT: NavContent = {
       ],
     },
   ],
+  ['Kernel']: [
+    {
+      name: 'Core',
+      items: [
+        {
+          name: 'Overview',
+          path: 'core/README',
+        },
+        {
+          name: 'Projection Tree',
+          path: 'core/guides/projection-tree',
+        },
+        {
+          name: 'Performing Projections',
+          path: 'core/guides/performing-projections',
+        },
+        {
+          name: 'Applying Behaviors',
+          path: 'core/guides/applying-behaviors',
+        },
+        {
+          name: 'Authoring Behaviors',
+          path: 'core/guides/authoring-behaviors',
+        },
+      ],
+    },
+    {
+      name: 'Animation',
+      items: [
+        {
+          name: 'Overview',
+          path: 'animation/README',
+        },
+        {
+          name: 'Snapshots',
+          path: 'animation/guides/snapshots',
+        },
+        {
+          name: 'Animators',
+          path: 'animation/guides/animators',
+        },
+        {
+          name: 'Handlers & Metadata',
+          path: 'animation/guides/handlers-and-metadata',
+        },
+      ],
+    },
+  ],
+  ['Theory']: [],
 };
