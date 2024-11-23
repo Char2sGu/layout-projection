@@ -19,14 +19,7 @@ const routesFactory = (): Routes => [
   {
     path: '',
     component: GuidesComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'core/README',
-      },
-      ...generateRoutesFromNavContent(inject(NAV_CONTENT)),
-    ],
+    children: generateRoutesFromNavContent(inject(NAV_CONTENT)),
   },
 ];
 
@@ -48,7 +41,7 @@ function generateRoutesFromNavContent(navContent: NavContent): Route[] {
       .loadEngine()
       .then(() => true);
 
-  return Object.values(navContent)
+  const routes = Object.values(navContent)
     .flat()
     .flatMap((group) => group.items)
     .map((v): GuideRecord => v)
@@ -62,4 +55,10 @@ function generateRoutesFromNavContent(navContent: NavContent): Route[] {
         canActivate: [highlighterInitializer],
       }),
     );
+  routes.unshift({
+    path: '',
+    pathMatch: 'full',
+    redirectTo: routes[0].path,
+  });
+  return routes;
 }
