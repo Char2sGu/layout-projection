@@ -14,11 +14,6 @@ import {
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'guides',
-  },
-  {
-    path: 'guides',
     loadChildren: () =>
       import('./guides/guides.module').then((m) => m.GuidesModule),
   },

@@ -12,7 +12,7 @@ export class NavContentActivationDetector {
     for (const tab in this.content)
       for (const group of this.content[tab]) {
         const item = group.items.find((item) =>
-          this.router.isActive(`guides/${item.path}`, {
+          this.router.isActive(`${item.path}`, {
             paths: 'exact',
             fragment: 'ignored',
             matrixParams: 'ignored',
