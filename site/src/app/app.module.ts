@@ -21,6 +21,7 @@ import { MarkdownModule, MARKED_OPTIONS, MarkedOptions } from 'ngx-markdown';
 import { AppComponent } from './app.component';
 import { APP_NAV_CONTENT } from './app.nav-content';
 import { AppRoutingModule } from './app-routing.module';
+import { GUIDE_ASSET_PREFIX } from './core/guide';
 import { HeaderComponent } from './core/header/header.component';
 import { LogoComponent } from './core/logo/logo.component';
 import { NAV_CONTENT } from './core/nav.models';
@@ -74,6 +75,7 @@ import { RerenderOnChangeDirective } from './shared/rerender-on-change.directive
   ],
   providers: [
     { provide: NAV_CONTENT, useValue: APP_NAV_CONTENT },
+    { provide: GUIDE_ASSET_PREFIX, useValue: 'assets/packages/' },
     provideHttpClient(withInterceptorsFromDi()),
     provideLayoutProjectionBuiltinSetup(),
   ],

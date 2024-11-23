@@ -19,34 +19,19 @@
             "output": "assets/taiga-ui/icons"
           },
           {
-            "glob": "README.md",
+            "glob": "{README.md,guides/**/*}",
             "input": "{workspaceRoot}/packages/core",
-            "output": "assets/docs/core"
+            "output": "assets/packages/core"
           },
           {
-            "glob": "**/*",
-            "input": "{workspaceRoot}/packages/core/guides",
-            "output": "assets/docs/core/guides"
-          },
-          {
-            "glob": "README.md",
+            "glob": "{README.md,guides/**/*}",
             "input": "{workspaceRoot}/packages/animation",
-            "output": "assets/docs/animation"
+            "output": "assets/packages/animation"
           },
           {
-            "glob": "**/*",
-            "input": "{workspaceRoot}/packages/animation/guides",
-            "output": "assets/docs/animation/guides"
-          },
-          {
-            "glob": "README.md",
+            "glob": "{README.md,guides/**/*}",
             "input": "{workspaceRoot}/packages/angular",
-            "output": "assets/docs/angular"
-          },
-          {
-            "glob": "**/*",
-            "input": "{workspaceRoot}/packages/angular/guides",
-            "output": "assets/docs/angular/guides"
+            "output": "assets/packages/angular"
           }
         ],
         "styles": ["{projectRoot}/src/styles.less"],
