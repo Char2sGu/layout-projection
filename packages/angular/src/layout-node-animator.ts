@@ -6,9 +6,11 @@ import {
   inject,
   input,
   numberAttribute,
+  output,
   Signal,
 } from '@angular/core';
 import {
+  AnimationResult,
   createSnapshot,
   EasingFunction,
   ProjectionAnimator,
@@ -64,6 +66,17 @@ export class LayoutNodeAnimator {
       typeof v === 'string' ? this.#easingParser.parse(v) : v,
   });
 
+  /**
+   * Emits when a layout animation starts at this node.
+   */
+  readonly animationStart = output();
+
+  /**
+   * Emits when a layout animation at this node completes or is stopped.
+   * The emitted value is the result of the animation.
+   */
+  readonly animationSettle = output<AnimationResult>();
+
   protected readonly duration: Signal<number> = computed(() => {
     const value = this.durationInput() ?? this.#parent?.duration();
     if (value === undefined) throw new Error('duration is not defined');
@@ -89,13 +102,15 @@ export class LayoutNodeAnimator {
         this.#snapshots.set(this.#node.identity(), current);
         if (!previous) return;
         if (previous.equals(current)) return;
-        await this.#animator.animate({
+        this.animationStart.emit();
+        const result = await this.#animator.animate({
           node: this.#node,
           from: previous,
           to: current,
           duration: this.duration(),
           easing: this.easing(),
         });
+        this.animationSettle.emit(result);
       },
     });
     this.#destroyRef.onDestroy(() => {
