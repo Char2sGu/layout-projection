@@ -15,8 +15,9 @@ export abstract class ProjectionAnimator {
    * projection nodes, enabling nested parallel animations.  Note that child elements
    * that are not projection nodes WILL be affected by the animation.
    *
-   * This method does not keep track of the animation state, so it is up to the caller
-   * to stop a previously started animation if needed.
+   * This method should keep track of all animations and appropriately
+   * process the previous pending animation before starting a new one
+   * on the same node.
    *
    * @returns a reference to the animation
    */

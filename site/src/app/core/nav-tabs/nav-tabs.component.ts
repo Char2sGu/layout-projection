@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { LayoutNode,LayoutNodeAnimator } from '@layout-projection/angular';
+import { LayoutNode, LayoutNodeAnimator } from '@layout-projection/angular';
 
 import { AnimationCurve } from '../../common/animation';
 

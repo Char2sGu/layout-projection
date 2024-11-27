@@ -90,10 +90,9 @@ export class LayoutNodeAnimator {
   });
 
   constructor() {
-    // TODO: stop previous animation before starting new
-    // TODO: start from the last frame of the previous animation
     afterRender({
       earlyRead: () => {
+        // TODO: avoid excessive resetting and measuring
         this.#node.traverse((n) => n.reset());
         this.#node.traverse((n) => n.measure());
         return createSnapshot(this.#node);

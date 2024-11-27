@@ -18,7 +18,11 @@ import {
  */
 export class CompositeProjectionAnimator implements ProjectionAnimator {
   readonly #handlers: ProjectionAnimationHandler[];
-  readonly #animations = new Map<
+
+  /**
+   * Map of animations that haven't resolved.
+   */
+  readonly #pending = new Map<
     string,
     AnimationRef<ProjectionAnimationConfig>
   >();
@@ -30,7 +34,13 @@ export class CompositeProjectionAnimator implements ProjectionAnimator {
   animate(
     config: ProjectionAnimationConfig,
   ): AnimationRef<ProjectionAnimationConfig> {
-    const { duration, easing } = config;
+    const { node, duration, easing } = config;
+
+    const existing = this.#pending.get(node.identity());
+    if (existing) {
+      existing.stop();
+      config = this.#restoreLastAnimationFrame(config, existing);
+    }
 
     let progress: number;
     let stopper: () => void;
@@ -53,12 +63,20 @@ export class CompositeProjectionAnimator implements ProjectionAnimator {
       stopper = result.stop;
     });
 
-    return new DelegationAnimationRef({
+    const ref = new DelegationAnimationRef({
       promise,
       config,
       stopper: () => stopper(),
       progressReporter: () => progress,
     });
+
+    this.#pending.set(node.identity(), ref);
+    ref.then(() => {
+      if (this.#pending.get(node.identity()) === ref)
+        this.#pending.delete(node.identity());
+    });
+
+    return ref;
   }
 
   /**
@@ -94,5 +112,25 @@ export class CompositeProjectionAnimator implements ProjectionAnimator {
       return true;
     }
     return false;
+  }
+
+  #restoreLastAnimationFrame(
+    currentConfig: ProjectionAnimationConfig,
+    lastAnimation: AnimationRef<ProjectionAnimationConfig>,
+  ): ProjectionAnimationConfig {
+    const config = { ...lastAnimation.config(), node: currentConfig.node };
+    this.#handleFrame(config, lastAnimation.progress());
+    const projection = currentConfig.node.projection();
+    if (!projection) throw new Error('projection not found');
+    return {
+      ...currentConfig,
+      from: {
+        ...currentConfig.from,
+        measurement: {
+          ...projection.measurement,
+          layout: projection.layoutDest,
+        },
+      },
+    };
   }
 }
