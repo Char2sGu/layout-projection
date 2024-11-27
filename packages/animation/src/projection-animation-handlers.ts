@@ -3,21 +3,21 @@ import { mix } from 'popmotion';
 
 import { MetadataManager, MetadataToken } from './metadata.js';
 import {
-  ProjectionNodeAnimationFrameContext,
-  ProjectionNodeAnimationHandler,
-} from './projection-node-animation-handler.js';
+  ProjectionAnimationFrameContext,
+  ProjectionAnimationHandler,
+} from './projection-animation-handler.js';
 
 /**
  * When applied to a projection node,
  * decides whether to skip the position animation of the layout.
- * @see LayoutProjectionNodeAnimationHandler
+ * @see LayoutProjectionAnimationHandler
  */
 export const SKIP_POSITION = new MetadataToken<boolean>('SKIP_POSITION');
 
 /**
  * When applied to a projection node,
  * decides whether to skip the size animation of the layout.
- * @see LayoutProjectionNodeAnimationHandler
+ * @see LayoutProjectionAnimationHandler
  */
 export const SKIP_SIZE = new MetadataToken<boolean>('SKIP_SIZE');
 
@@ -26,15 +26,15 @@ export const SKIP_SIZE = new MetadataToken<boolean>('SKIP_SIZE');
  * Projects the node to different layouts as the animation progresses.
  * {@link SKIP_POSITION} and {@link SKIP_SIZE} metadata controls the animation.
  */
-export class LayoutProjectionNodeAnimationHandler
-  implements ProjectionNodeAnimationHandler
+export class LayoutProjectionAnimationHandler
+  implements ProjectionAnimationHandler
 {
   constructor(
     private readonly framer: LayoutAnimationFramer,
     private readonly metadata: MetadataManager,
   ) {}
 
-  handleFrame(context: ProjectionNodeAnimationFrameContext): void {
+  handleFrame(context: ProjectionAnimationFrameContext): void {
     const { node, from, to, progress } = context;
     const skipPosition = this.metadata.resolve(node, SKIP_POSITION);
     const skipSize = this.metadata.resolve(node, SKIP_SIZE);
@@ -67,7 +67,7 @@ export interface LayoutAnimationFrameConfig {
 }
 
 /**
- * Internal service of {@link LayoutProjectionNodeAnimationHandler} that
+ * Internal service of {@link LayoutProjectionAnimationHandler} that
  * generates a {@link Layout} object for a specific animation frame.
  */
 export class LayoutAnimationFramer {
