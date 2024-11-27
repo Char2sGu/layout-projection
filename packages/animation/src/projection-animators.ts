@@ -18,13 +18,18 @@ import {
  */
 export class CompositeProjectionAnimator implements ProjectionAnimator {
   readonly #handlers: ProjectionAnimationHandler[];
-  readonly #animations = new Map<string, AnimationRef>();
+  readonly #animations = new Map<
+    string,
+    AnimationRef<ProjectionAnimationConfig>
+  >();
 
   constructor(handlers: ProjectionAnimationHandler[]) {
     this.#handlers = handlers;
   }
 
-  animate(config: ProjectionAnimationConfig): AnimationRef {
+  animate(
+    config: ProjectionAnimationConfig,
+  ): AnimationRef<ProjectionAnimationConfig> {
     const { duration, easing } = config;
 
     let progress: number;
@@ -48,11 +53,12 @@ export class CompositeProjectionAnimator implements ProjectionAnimator {
       stopper = result.stop;
     });
 
-    return new DelegationAnimationRef(
+    return new DelegationAnimationRef({
       promise,
-      () => stopper(),
-      () => progress,
-    );
+      config,
+      stopper: () => stopper(),
+      progressReporter: () => progress,
+    });
   }
 
   /**

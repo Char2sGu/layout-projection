@@ -4,7 +4,9 @@ import { AnimationResult } from './animation-result.js';
  * Promise-like reference to an animation that
  * resolves when the animation completes or is stopped.
  */
-export abstract class AnimationRef implements PromiseLike<AnimationResult> {
+export abstract class AnimationRef<Config>
+  implements PromiseLike<AnimationResult>
+{
   abstract then<TResult1 = AnimationResult, TResult2 = never>(
     onfulfilled?:
       | ((value: AnimationResult) => TResult1 | PromiseLike<TResult1>)
@@ -15,6 +17,8 @@ export abstract class AnimationRef implements PromiseLike<AnimationResult> {
       | null
       | undefined,
   ): PromiseLike<TResult1 | TResult2>;
+
+  abstract config(): Config;
 
   /**
    * Return whether if the animation is resolved.

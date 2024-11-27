@@ -20,7 +20,9 @@ export abstract class ProjectionAnimator {
    *
    * @returns a reference to the animation
    */
-  abstract animate(config: ProjectionAnimationConfig): AnimationRef;
+  abstract animate(
+    config: ProjectionAnimationConfig,
+  ): AnimationRef<ProjectionAnimationConfig>;
 }
 
 export interface ProjectionAnimationConfig extends AnimationConfig {

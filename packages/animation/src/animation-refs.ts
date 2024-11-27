@@ -5,20 +5,26 @@ import { AnimationResult } from './animation-result.js';
  * {@link AnimationRef} implementation that delegates all logic to
  * objects accepted from the constructor.
  */
-export class DelegationAnimationRef implements AnimationRef {
+export class DelegationAnimationRef<Config> implements AnimationRef<Config> {
+  readonly #promise: PromiseLike<AnimationResult>;
+  readonly #config: Config;
+  readonly #stopper: () => void;
+  readonly #progressReporter: () => number;
+
   #resolved = false;
 
-  /**
-   * @param promise a promise that resolves when the animation completes or is stopped
-   * @param stopper a function to stop the animation
-   * @param progressReporter a function that return the current progress of the animation
-   */
-  constructor(
-    private promise: Promise<AnimationResult>,
-    private stopper: () => void,
-    private progressReporter: () => number,
-  ) {
-    promise.then(() => {
+  constructor(config: {
+    readonly promise: PromiseLike<AnimationResult>;
+    readonly config: Config;
+    readonly stopper: () => void;
+    readonly progressReporter: () => number;
+  }) {
+    this.#promise = config.promise;
+    this.#config = config.config;
+    this.#stopper = config.stopper;
+    this.#progressReporter = config.progressReporter;
+
+    config.promise.then(() => {
       this.#resolved = true;
     });
   }
@@ -33,7 +39,11 @@ export class DelegationAnimationRef implements AnimationRef {
       | null
       | undefined,
   ): PromiseLike<TResult1 | TResult2> {
-    return this.promise.then(onfulfilled, onrejected);
+    return this.#promise.then(onfulfilled, onrejected);
+  }
+
+  config(): Config {
+    return this.#config;
   }
 
   resolved(): boolean {
@@ -41,10 +51,10 @@ export class DelegationAnimationRef implements AnimationRef {
   }
 
   progress(): number {
-    return this.progressReporter();
+    return this.#progressReporter();
   }
 
   stop(): void {
-    this.stopper();
+    this.#stopper();
   }
 }
