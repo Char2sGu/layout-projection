@@ -1,6 +1,6 @@
 {
   "name": "@layout-projection/animation",
-  "version": "0.15.0-alpha.3",
+  "version": "0.15.0",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/TheNightmareX/layout-projection#readme",
   "dependencies": {
-    "@layout-projection/core": "0.15.0-alpha.3",
+    "@layout-projection/core": "0.15.0",
     "popmotion": "^11.0.5",
     "tslib": "^2.5.0"
   },

@@ -1,6 +1,6 @@
 {
   "name": "@layout-projection/native",
-  "version": "0.15.0-alpha.3",
+  "version": "0.15.0",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
