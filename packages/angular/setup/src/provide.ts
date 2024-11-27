@@ -4,16 +4,12 @@ import {
   ProjectionNodeFactory,
 } from '@layout-projection/angular';
 import {
-  AggregationProjectionTreeAnimator,
-  HandlerBasedProjectionNodeAnimator,
+  CompositeProjectionAnimator,
   InPlaceMetadataManager,
   LayoutAnimationFramer,
-  LayoutProjectionNodeAnimationHandler,
+  LayoutProjectionAnimationHandler,
   MetadataManager,
-  PreventPreemptiveNodeAnimation,
-  PreventPreemptiveTreeAnimation,
-  ProjectionNodeAnimator,
-  ProjectionTreeAnimator,
+  ProjectionAnimator,
 } from '@layout-projection/animation';
 import {
   BorderRadiusMeasurer,
@@ -37,11 +33,8 @@ import { CssEasingStringParser } from './css-easing-string-parser';
  * - {@link ProjectionNodeFactory} <-- {@link BasicProjectionNodeFactory}
  *    - {@link BorderRadiusMeasurer} <-- {@link ComputedStyleBorderRadiusMeasurer}
  *    - {@link BorderRadiusStyleParser} <-- {@link ComputedStylesBorderRadiusParser}
- * - {@link ProjectionNodeAnimator} <-- {@link HandlerBasedProjectionNodeAnimator}
- *    - handlers: [{@link LayoutProjectionNodeAnimationHandler}] <br/>
- *    - behaviors: [{@link PreventPreemptiveNodeAnimation}] <br/>
- * - {@link ProjectionTreeAnimator} <-- {@link AggregationProjectionTreeAnimator}
- *    - behaviors: [{@link PreventPreemptiveTreeAnimation}]
+ * - {@link ProjectionAnimator} <-- {@link CompositeProjectionAnimator}
+ *    - handlers: [{@link LayoutProjectionAnimationHandler}] <br/>
  * - {@link EasingStringParser} <-- {@link CssEasingStringParser}
  */
 // eslint-disable-next-line max-lines-per-function -- it's common for providers declarations to be long
@@ -77,34 +70,19 @@ export function provideLayoutProjectionBuiltinSetup(): Provider[] {
       useFactory: () => new LayoutAnimationFramer(),
     },
     {
-      provide: LayoutProjectionNodeAnimationHandler,
+      provide: LayoutProjectionAnimationHandler,
       useFactory: () =>
-        new LayoutProjectionNodeAnimationHandler(
+        new LayoutProjectionAnimationHandler(
           inject(LayoutAnimationFramer),
           inject(MetadataManager),
         ),
     },
     {
-      provide: ProjectionNodeAnimator,
-      useFactory: () => {
-        let instance: ProjectionNodeAnimator;
-        instance = new HandlerBasedProjectionNodeAnimator([
-          inject(LayoutProjectionNodeAnimationHandler),
-        ]);
-        instance = new PreventPreemptiveNodeAnimation(instance);
-        return instance;
-      },
-    },
-    {
-      provide: ProjectionTreeAnimator,
-      useFactory: () => {
-        let instance: ProjectionTreeAnimator;
-        instance = new AggregationProjectionTreeAnimator(
-          inject(ProjectionNodeAnimator),
-        );
-        instance = new PreventPreemptiveTreeAnimation(instance);
-        return instance;
-      },
+      provide: ProjectionAnimator,
+      useFactory: () =>
+        new CompositeProjectionAnimator([
+          inject(LayoutProjectionAnimationHandler),
+        ]),
     },
     {
       provide: EasingStringParser,
