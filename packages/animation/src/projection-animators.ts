@@ -36,6 +36,12 @@ export class CompositeProjectionAnimator implements ProjectionAnimator {
     this.#handlers = handlers;
   }
 
+  // TODO: performance optimization
+  // Currently, during a nested animation, one child node might
+  // be projected-in-place for multiple times, which is not necessary.
+  // One possible way to optimize this is to traverse the tree only
+  // once per each animation frame, but this would require some
+  // magic with popmotion.
   animate(
     config: ProjectionAnimationConfig,
   ): AnimationRef<ProjectionAnimationConfig> {
