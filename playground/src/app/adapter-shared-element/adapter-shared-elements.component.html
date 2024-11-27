@@ -1,0 +1,13 @@
+@for (item of items; track item) {
+<div layout class="card" (click)="active = item">
+  @if (active === item) {
+  <div
+    layout="overlay"
+    animated
+    duration="500"
+    easing="linear"
+    class="overlay"
+  ></div>
+  }
+</div>
+}

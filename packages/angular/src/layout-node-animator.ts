@@ -99,7 +99,14 @@ export class LayoutNodeAnimator {
       },
     });
     this.#destroyRef.onDestroy(() => {
-      this.#snapshots.delete(this.#node.identity());
+      const snapshot = this.#snapshots.get(this.#node.identity());
+      if (!snapshot) return;
+      // delete the snapshot after the next tick
+      // in case there is a shared element animation
+      setTimeout(() => {
+        if (this.#snapshots.get(this.#node.identity()) !== snapshot) return;
+        this.#snapshots.delete(this.#node.identity());
+      });
     });
   }
 }

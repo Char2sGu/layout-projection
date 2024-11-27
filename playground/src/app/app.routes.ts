@@ -50,4 +50,11 @@ export const routes: Routes = [
         (m) => m.AdapterMetadataComponent,
       ),
   },
+  {
+    path: 'adapter-shared-element',
+    loadComponent: () =>
+      import('./adapter-shared-element/adapter-shared-elements.component').then(
+        (m) => m.AdapterSharedElementsComponent,
+      ),
+  },
 ];
