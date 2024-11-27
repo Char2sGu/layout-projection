@@ -43,27 +43,3 @@ export class DelegationAnimationRef implements AnimationRef {
     this.stopper();
   }
 }
-
-/**
- * {@link AnimationRef} implementation that is an aggregation
- * of multiple other {@link AnimationRef} objects.
- * Resolves once all animations are completed or one is stopped.
- * Calling `stop` stops all pending animations.
- */
-export class AggregationAnimationRef
-  extends DelegationAnimationRef
-  implements AnimationRef
-{
-  /**
-   * @param refs the target animation refs to aggregate
-   */
-  constructor(refs: AnimationRef[]) {
-    const promise = Promise.all(refs).then((results) =>
-      results.every((result) => result === AnimationResult.Completed)
-        ? AnimationResult.Completed
-        : AnimationResult.Stopped,
-    );
-    const stopper = () => refs.forEach((ref) => ref.stop());
-    super(promise, stopper);
-  }
-}
