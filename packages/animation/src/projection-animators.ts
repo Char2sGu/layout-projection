@@ -15,6 +15,11 @@ import {
  * delegates the animation to a list of {@link ProjectionAnimationHandler}s,
  * where each of them is responsible for handling an aspect of the animation
  * in each frame.
+ *
+ * When a new animation starts on a node that has a pending animation,
+ * the pending animation will be stopped, and the new animation will
+ * be modified to start from the last frame of the previous animation.
+ *
  */
 export class CompositeProjectionAnimator implements ProjectionAnimator {
   readonly #handlers: ProjectionAnimationHandler[];
@@ -34,13 +39,13 @@ export class CompositeProjectionAnimator implements ProjectionAnimator {
   animate(
     config: ProjectionAnimationConfig,
   ): AnimationRef<ProjectionAnimationConfig> {
-    const { node, duration, easing } = config;
-
-    const existing = this.#pending.get(node.identity());
+    const existing = this.#pending.get(config.node.identity());
     if (existing) {
       existing.stop();
-      config = this.#restoreLastAnimationFrame(config, existing);
+      config = this.#createConfigContinueLastAnimation(config, existing);
     }
+
+    const { node, duration, easing } = config;
 
     let progress: number;
     let stopper: () => void;
@@ -114,21 +119,31 @@ export class CompositeProjectionAnimator implements ProjectionAnimator {
     return false;
   }
 
-  #restoreLastAnimationFrame(
+  /**
+   * Derive a new {@link ProjectionAnimationConfig} that continues a previous
+   * animation by starting from the last frame of the previous animation.
+   */
+  #createConfigContinueLastAnimation(
     currentConfig: ProjectionAnimationConfig,
     lastAnimation: AnimationRef<ProjectionAnimationConfig>,
   ): ProjectionAnimationConfig {
-    const config = { ...lastAnimation.config(), node: currentConfig.node };
-    this.#handleFrame(config, lastAnimation.progress());
+    // Project the node to the last frame of the previous animation
+    // so that we can have the information of the last frame via
+    // the `projection` method.
+    this.#handleFrame(
+      { ...lastAnimation.config(), node: currentConfig.node },
+      lastAnimation.progress(),
+    );
     const projection = currentConfig.node.projection();
     if (!projection) throw new Error('projection not found');
+    const layoutLastFrame = projection.layoutDest;
     return {
       ...currentConfig,
       from: {
         ...currentConfig.from,
         measurement: {
-          ...projection.measurement,
-          layout: projection.layoutDest,
+          ...projection.measurement, // equivalent to currentConfig.node.measurement()
+          layout: layoutLastFrame,
         },
       },
     };
