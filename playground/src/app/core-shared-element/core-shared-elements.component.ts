@@ -39,6 +39,7 @@ export class CoreSharedElementsComponent {
   ngAfterViewInit(): void {
     const container = this.createNode(this.container.nativeElement, 'root');
 
+    // eslint-disable-next-line max-lines-per-function
     this.cards().forEach((elementRef, index) => {
       const card = this.createNode(elementRef.nativeElement, 'card-' + index);
       card.attach(container);
@@ -46,6 +47,7 @@ export class CoreSharedElementsComponent {
       card.element().addEventListener('click', async () => {
         card.element().style.zIndex = '1';
 
+        container.traverse((n) => n.reset());
         const prev = new Map<string, ProjectionNodeSnapshot>();
         container.traverse((n) => {
           n.measure();
@@ -69,7 +71,7 @@ export class CoreSharedElementsComponent {
           curr.set(n.identity(), createSnapshot(n));
         });
 
-        const animations: AnimationRef[] = [];
+        const animations: AnimationRef<unknown>[] = [];
         container.traverse((n) => {
           const from = prev.get(n.identity());
           const to = curr.get(n.identity());
