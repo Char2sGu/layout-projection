@@ -24,7 +24,7 @@ import { SnapshotStorage } from './snapshot-storage';
  */
 @Directive({
   standalone: true,
-  selector: '[animated]',
+  selector: '[layout]',
 })
 export class LayoutNodeAnimator {
   readonly #node = inject(ProjectionNode, { self: true });

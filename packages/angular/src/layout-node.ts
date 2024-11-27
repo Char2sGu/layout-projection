@@ -146,7 +146,7 @@ export class LayoutNode
    * Return the actual {@link ProjectionNode} instance within the tree.
    * @throws {Error} when called before initialization
    */
-  kernel(): ProjectionNode {
+  override kernel(): ProjectionNode {
     if (!this.#kernel)
       throw new Error('kernel is not available before initialization');
     return this.#kernel;
