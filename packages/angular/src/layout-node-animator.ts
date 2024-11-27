@@ -97,11 +97,14 @@ export class LayoutNodeAnimator {
     });
     afterRender({
       earlyRead: () => {
-        // TODO: avoid excessive resetting and measuring
+        const isRoot = this.#node.parent() === null;
+        if (!isRoot) return;
         this.#node.traverse((n) => n.reset());
         this.#node.traverse((n) => n.measure());
-        return createSnapshot(this.#node);
       },
+    });
+    afterRender({
+      earlyRead: () => createSnapshot(this.#node),
       write: async (current) => {
         const previous = this.#snapshots.get(this.#node.identity());
         this.#snapshots.set(this.#node.identity(), current);
