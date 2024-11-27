@@ -1,0 +1,18 @@
+<div
+  id="test"
+  layout
+  animated
+  duration="1000"
+  easing="linear"
+  [style.height.px]="flag ? 300 : 100"
+  [style.top.px]="flag ? 200 : 0"
+>
+  <div
+    id="inner"
+    layout
+    animated
+    duration="300"
+    [style.height.px]="flag ? 300 : 100"
+    [style.top.px]="flag ? 200 : 0"
+  ></div>
+</div>

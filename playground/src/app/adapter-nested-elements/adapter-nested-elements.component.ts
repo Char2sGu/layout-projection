@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LayoutNode,LayoutNodeAnimator } from '@layout-projection/angular';
+import { LayoutNode, LayoutNodeAnimator } from '@layout-projection/angular';
 
 @Component({
-  selector: 'lpj-adapter-single-element',
+  selector: 'lpj-adapter-nested-elements',
   standalone: true,
   imports: [LayoutNode, LayoutNodeAnimator],
-  templateUrl: './adapter-single-element.component.html',
-  styleUrl: './adapter-single-element.component.scss',
+  templateUrl: './adapter-nested-elements.component.html',
+  styleUrl: './adapter-nested-elements.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { '(click)': 'onClick()' },
 })
-export class AdapterSingleElementComponent {
+export class AdapterNestedElementsComponent {
   flag = false;
 
   onClick(): void {

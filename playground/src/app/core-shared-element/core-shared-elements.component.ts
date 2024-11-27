@@ -6,14 +6,10 @@ import {
   viewChildren,
 } from '@angular/core';
 import {
-  AggregationProjectionTreeAnimator,
-  createTreeSnapshot,
-  HandlerBasedProjectionNodeAnimator,
-  LayoutProjectionNodeAnimationHandler,
-  PreventPreemptiveNodeAnimation,
-  PreventPreemptiveTreeAnimation,
-  ProjectionNodeAnimator,
-  ProjectionTreeAnimator,
+  AnimationRef,
+  createSnapshot,
+  ProjectionAnimator,
+  ProjectionNodeSnapshot,
 } from '@layout-projection/animation';
 import { BasicProjectionNode, ProjectionNode } from '@layout-projection/core';
 import {
@@ -27,40 +23,19 @@ import { linear } from 'popmotion';
   selector: 'lpj-core-shared-elements',
   standalone: true,
   imports: [],
-  providers: [
-    {
-      provide: ProjectionNodeAnimator,
-      useFactory: () => {
-        let instance: ProjectionNodeAnimator =
-          new HandlerBasedProjectionNodeAnimator([
-            inject(LayoutProjectionNodeAnimationHandler),
-          ]);
-        instance = new PreventPreemptiveNodeAnimation(instance);
-        return instance;
-      },
-    },
-    {
-      provide: ProjectionTreeAnimator,
-      useFactory: () => {
-        let instance: ProjectionTreeAnimator =
-          new AggregationProjectionTreeAnimator(inject(ProjectionNodeAnimator));
-        instance = new PreventPreemptiveTreeAnimation(instance);
-        return instance;
-      },
-    },
-  ],
   templateUrl: './core-shared-elements.component.html',
   styleUrl: './core-shared-elements.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreSharedElementsComponent {
-  private animator = inject(ProjectionTreeAnimator);
+  private animator = inject(ProjectionAnimator);
   private borderRadiusMeasurer = inject(BorderRadiusMeasurer);
 
   container = inject<ElementRef<HTMLElement>>(ElementRef);
   cards = viewChildren<ElementRef<HTMLElement>>('card');
   overlay?: ProjectionNode;
 
+  // eslint-disable-next-line max-lines-per-function
   ngAfterViewInit(): void {
     const container = this.createNode(this.container.nativeElement, 'root');
 
@@ -71,8 +46,11 @@ export class CoreSharedElementsComponent {
       card.element().addEventListener('click', async () => {
         card.element().style.zIndex = '1';
 
-        container.traverse((n) => n.measure());
-        const from = createTreeSnapshot(container);
+        const prev = new Map<string, ProjectionNodeSnapshot>();
+        container.traverse((n) => {
+          n.measure();
+          prev.set(n.identity(), createSnapshot(n));
+        });
 
         this.overlay?.element().remove();
         this.overlay?.dispose();
@@ -85,15 +63,28 @@ export class CoreSharedElementsComponent {
         card.element().appendChild(this.overlay.element());
 
         container.traverse((n) => n.reset());
-        container.traverse((n) => n.measure());
-        const to = createTreeSnapshot(container);
-        await this.animator.animate({
-          root: container,
-          from,
-          to,
-          duration: 1000,
-          easing: linear,
+        const curr = new Map<string, ProjectionNodeSnapshot>();
+        container.traverse((n) => {
+          n.measure();
+          curr.set(n.identity(), createSnapshot(n));
         });
+
+        const animations: AnimationRef[] = [];
+        container.traverse((n) => {
+          const from = prev.get(n.identity());
+          const to = curr.get(n.identity());
+          if (!from || !to) return;
+          animations.push(
+            this.animator.animate({
+              node: n,
+              duration: 1000,
+              easing: linear,
+              from,
+              to,
+            }),
+          );
+        });
+        await Promise.all(animations);
 
         card.element().style.zIndex = '';
       });

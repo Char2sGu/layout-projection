@@ -1,10 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { AdapterMetadataComponent } from './adapter-metadata/adapter-metadata.component';
-import { AdapterSingleElementComponent } from './adapter-single-element/adapter-single-element.component';
-import { CoreSharedElementsComponent } from './case-shared-elements/core-shared-elements.component';
-import { CoreProjectionComponent } from './core-projection/core-projection.component';
-import { CoreSameElementsComponent } from './core-same-elements/core-same-elements.component';
 import { OverviewComponent } from './overview/overview.component';
 
 export const routes: Routes = [
@@ -15,22 +10,44 @@ export const routes: Routes = [
   },
   {
     path: 'core-projection',
-    component: CoreProjectionComponent,
+    loadComponent: () =>
+      import('./core-projection/core-projection.component').then(
+        (m) => m.CoreProjectionComponent,
+      ),
   },
   {
     path: 'core-same-elements',
-    component: CoreSameElementsComponent,
+    loadComponent: () =>
+      import('./core-same-elements/core-same-elements.component').then(
+        (m) => m.CoreSameElementsComponent,
+      ),
   },
   {
     path: 'core-shared-element',
-    component: CoreSharedElementsComponent,
+    loadComponent: () =>
+      import('./core-shared-element/core-shared-elements.component').then(
+        (m) => m.CoreSharedElementsComponent,
+      ),
   },
   {
     path: 'adapter-single-element',
-    component: AdapterSingleElementComponent,
+    loadComponent: () =>
+      import('./adapter-single-element/adapter-single-element.component').then(
+        (m) => m.AdapterSingleElementComponent,
+      ),
+  },
+  {
+    path: 'adapter-nested-elements',
+    loadComponent: () =>
+      import(
+        './adapter-nested-elements/adapter-nested-elements.component'
+      ).then((m) => m.AdapterNestedElementsComponent),
   },
   {
     path: 'adapter-metadata',
-    component: AdapterMetadataComponent,
+    loadComponent: () =>
+      import('./adapter-metadata/adapter-metadata.component').then(
+        (m) => m.AdapterMetadataComponent,
+      ),
   },
 ];

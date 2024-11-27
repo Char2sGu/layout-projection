@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
-  LayoutAnimator,
   LayoutNode,
+  LayoutNodeAnimator,
   SkipPosition,
   SkipSize,
 } from '@layout-projection/angular';
@@ -9,7 +9,7 @@ import {
 @Component({
   selector: 'lpj-adapter-metadata',
   standalone: true,
-  imports: [LayoutNode, LayoutAnimator, SkipPosition, SkipSize],
+  imports: [LayoutNode, LayoutNodeAnimator, SkipPosition, SkipSize],
   templateUrl: './adapter-metadata.component.html',
   styleUrl: './adapter-metadata.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

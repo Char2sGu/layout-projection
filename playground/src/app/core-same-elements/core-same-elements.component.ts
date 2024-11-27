@@ -6,14 +6,8 @@ import {
   viewChild,
 } from '@angular/core';
 import {
-  AggregationProjectionTreeAnimator,
-  createTreeSnapshot,
-  HandlerBasedProjectionNodeAnimator,
-  LayoutProjectionNodeAnimationHandler,
-  PreventPreemptiveNodeAnimation,
-  PreventPreemptiveTreeAnimation,
-  ProjectionNodeAnimator,
-  ProjectionTreeAnimator,
+  createSnapshot,
+  ProjectionAnimator,
 } from '@layout-projection/animation';
 import { BasicProjectionNode, ProjectionNode } from '@layout-projection/core';
 import {
@@ -29,34 +23,12 @@ import { paintLayout } from '../debugger';
   selector: 'lpj-core-same-elements',
   standalone: true,
   imports: [],
-  providers: [
-    {
-      provide: ProjectionNodeAnimator,
-      useFactory: () => {
-        let instance: ProjectionNodeAnimator =
-          new HandlerBasedProjectionNodeAnimator([
-            inject(LayoutProjectionNodeAnimationHandler),
-          ]);
-        instance = new PreventPreemptiveNodeAnimation(instance);
-        return instance;
-      },
-    },
-    {
-      provide: ProjectionTreeAnimator,
-      useFactory: () => {
-        let instance: ProjectionTreeAnimator =
-          new AggregationProjectionTreeAnimator(inject(ProjectionNodeAnimator));
-        instance = new PreventPreemptiveTreeAnimation(instance);
-        return instance;
-      },
-    },
-  ],
   templateUrl: './core-same-elements.component.html',
   styleUrl: './core-same-elements.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoreSameElementsComponent {
-  private animator = inject(ProjectionTreeAnimator);
+  private animator = inject(ProjectionAnimator);
   private borderRadiusMeasurer = inject(BorderRadiusMeasurer);
 
   container = viewChild.required<ElementRef<HTMLElement>>('container');
@@ -78,31 +50,25 @@ export class CoreSameElementsComponent {
 
     this.container().nativeElement.addEventListener('click', async () => {
       container.traverse((n) => n.measure());
-      const from = createTreeSnapshot(container);
+      const containerFrom = createSnapshot(container);
 
       flag = !flag;
       container.element().setAttribute('flag', String(flag));
       container.traverse((n) => n.reset());
       container.traverse((n) => n.measure());
-      const to = createTreeSnapshot(container);
+      const containerTo = createSnapshot(container);
 
-      this.painted.forEach((e) => {
-        e.remove();
-      });
-      container.traverse((n) => {
-        const layout = from.get(n.identity())!.measurement!.layout;
-        const painted = paintLayout(layout);
-        this.painted.add(painted);
-      });
+      this.painted.forEach((e) => e.remove());
+      this.painted.add(paintLayout(containerFrom.measurement!.layout));
+      this.painted.add(paintLayout(containerTo.measurement!.layout));
 
       await this.animator.animate({
-        root: container,
-        from,
-        to,
+        node: container,
+        from: containerFrom,
+        to: containerTo,
         duration: 1000,
         easing: linear,
       });
-      // console.log('complete');
     });
   }
 
