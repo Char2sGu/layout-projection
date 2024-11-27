@@ -18,6 +18,12 @@ export abstract class AnimationRef implements PromiseLike<AnimationResult> {
   ): PromiseLike<TResult1 | TResult2>;
 
   /**
+   * Returns whether if the animation is resolved.
+   * An animation is resolved when it completes or is stopped.
+   */
+  abstract resolved(): boolean;
+
+  /**
    * Stops the animation.
    * Noop if the animation is already completed or stopped.
    */

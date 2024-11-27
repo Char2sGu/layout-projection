@@ -6,6 +6,8 @@ import { AnimationResult } from './animation-result.js';
  * a promise and a stopper function.
  */
 export class DelegationAnimationRef implements AnimationRef {
+  #resolved = false;
+
   /**
    *
    * @param promise a promise that resolves when the animation completes or is stopped
@@ -14,7 +16,11 @@ export class DelegationAnimationRef implements AnimationRef {
   constructor(
     private promise: Promise<AnimationResult>,
     private stopper: () => void,
-  ) {}
+  ) {
+    promise.then(() => {
+      this.#resolved = true;
+    });
+  }
 
   then<TResult1 = AnimationResult, TResult2 = never>(
     onfulfilled?:
@@ -27,6 +33,10 @@ export class DelegationAnimationRef implements AnimationRef {
       | undefined,
   ): PromiseLike<TResult1 | TResult2> {
     return this.promise.then(onfulfilled, onrejected);
+  }
+
+  resolved(): boolean {
+    return this.#resolved;
   }
 
   stop(): void {
