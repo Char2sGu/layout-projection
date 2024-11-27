@@ -89,7 +89,12 @@ export class LayoutNodeAnimator {
     return value;
   });
 
+  #destroyed = false;
+
   constructor() {
+    this.#destroyRef.onDestroy(() => {
+      this.#destroyed = true;
+    });
     afterRender({
       earlyRead: () => {
         // TODO: avoid excessive resetting and measuring
@@ -110,6 +115,7 @@ export class LayoutNodeAnimator {
           duration: this.duration(),
           easing: this.easing(),
         });
+        if (this.#destroyed) return;
         this.animationSettle.emit(result);
       },
     });
