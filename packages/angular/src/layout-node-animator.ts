@@ -90,6 +90,7 @@ export class LayoutNodeAnimator {
   });
 
   constructor() {
+    // TODO: stop previous animation before starting new
     // TODO: start from the last frame of the previous animation
     afterRender({
       earlyRead: () => {

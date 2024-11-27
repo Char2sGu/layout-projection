@@ -1,6 +1,9 @@
 /* eslint-disable no-console */
 import { inject, Provider } from '@angular/core';
-import { MetadataManager } from '@layout-projection/animation';
+import {
+  MetadataManager,
+  ProjectionAnimator,
+} from '@layout-projection/animation';
 
 /**
  * Provide {@link MetadataManager} use a debugging implementation
@@ -11,7 +14,7 @@ import { MetadataManager } from '@layout-projection/animation';
  * this debugging implementation must not be provided at the root injector
  * level.
  */
-export function provideDebuggingMetadataManager(): Provider[] {
+export function provideLayoutProjectionDebugger(): Provider[] {
   return [
     {
       provide: MetadataManager,
@@ -28,6 +31,26 @@ export function provideDebuggingMetadataManager(): Provider[] {
           return result;
         },
       }),
+    },
+    {
+      provide: ProjectionAnimator,
+      useFactory: (
+        base = inject(ProjectionAnimator, { skipSelf: true }),
+      ): ProjectionAnimator => {
+        let idNext = 1;
+        return {
+          animate(config) {
+            const id = idNext++;
+            console.debug(`[${id}] animate ${config.node.identity()}`, config);
+            const ref = base.animate(config);
+            ref.then((r) => {
+              const msg = `[${id}] animation ${config.node.identity()} ${r}`;
+              console.debug(msg);
+            });
+            return ref;
+          },
+        };
+      },
     },
   ];
 }

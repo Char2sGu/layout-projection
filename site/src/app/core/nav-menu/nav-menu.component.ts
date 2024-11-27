@@ -10,7 +10,11 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
-import { LayoutAnimator, LayoutNode } from '@layout-projection/angular';
+import {
+  LayoutNode,
+  LayoutNodeAnimator,
+  provideLayoutProjectionDebugger,
+} from '@layout-projection/angular';
 import {
   BehaviorSubject,
   filter,
@@ -29,9 +33,10 @@ import { NavContentActivationDetector } from '../nav-content-activation-detector
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [provideLayoutProjectionDebugger()],
   hostDirectives: [
     { directive: LayoutNode },
-    { directive: LayoutAnimator, inputs: ['duration', 'easing'] },
+    { directive: LayoutNodeAnimator, inputs: ['duration', 'easing'] },
   ],
   animations: [
     trigger('overlay', [

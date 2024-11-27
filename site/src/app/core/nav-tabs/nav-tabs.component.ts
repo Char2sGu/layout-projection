@@ -5,7 +5,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { LayoutAnimator, LayoutNode } from '@layout-projection/angular';
+import { LayoutNode,LayoutNodeAnimator } from '@layout-projection/angular';
 
 import { AnimationCurve } from '../../common/animation';
 
@@ -19,7 +19,7 @@ import { AnimationCurve } from '../../common/animation';
       directive: LayoutNode,
     },
     {
-      directive: LayoutAnimator,
+      directive: LayoutNodeAnimator,
       inputs: ['duration', 'easing'],
     },
   ],

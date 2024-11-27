@@ -2,6 +2,7 @@ import {
   Directive,
   inject,
   Input,
+  OnInit,
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
@@ -10,7 +11,7 @@ import { distinctUntilChanged, Subject } from 'rxjs';
 @Directive({
   selector: '[lpjRerenderOnChange]',
 })
-export class RerenderOnChangeDirective {
+export class RerenderOnChangeDirective implements OnInit {
   private viewContainer = inject(ViewContainerRef);
   private templateRef = inject(TemplateRef);
 
@@ -20,6 +21,9 @@ export class RerenderOnChangeDirective {
 
   constructor() {
     this.render();
+  }
+
+  ngOnInit(): void {
     this.value$.pipe(distinctUntilChanged()).subscribe(() => {
       this.render();
     });

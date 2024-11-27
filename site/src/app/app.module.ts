@@ -6,7 +6,7 @@ import {
 import { NgModule, SecurityContext } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LayoutAnimator, LayoutNode } from '@layout-projection/angular';
+import { LayoutNode,LayoutNodeAnimator } from '@layout-projection/angular';
 import { provideLayoutProjectionBuiltinSetup } from '@layout-projection/angular/setup';
 import { TuiSidebarModule } from '@taiga-ui/addon-mobile';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
@@ -71,7 +71,7 @@ import { RerenderOnChangeDirective } from './shared/rerender-on-change.directive
     TuiScrollbarModule,
     FixLayoutOnDestroyDirective,
     LayoutNode,
-    LayoutAnimator,
+    LayoutNodeAnimator,
   ],
   providers: [
     { provide: NAV_CONTENT, useValue: APP_NAV_CONTENT },
