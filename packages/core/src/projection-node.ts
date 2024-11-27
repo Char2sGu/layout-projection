@@ -20,23 +20,34 @@ export abstract class ProjectionNode extends Node {
   abstract element(): HTMLElement;
 
   /**
-   * Reset the node and the element to prepare for the next projection:
-   * - remove any applied transform on the element
-   * - clear the measurement and projection information
+   * Reset the node and the element by:
+   * - remove any styles applied on the element because of the current projection
+   * - clear the {@link measurement} and {@link projection} information
    */
   abstract reset(): void;
 
   /**
-   * Measure the current layout and relevant styles of the element.
-   * The result can also be accessed via {@link measurement}.
+   * Measure the original layout and relevant styles of the element.
+   * The measurement result can also be accessed via {@link measurement}.
+   *
+   * The measurement is expected to match the original, browser-computed,
+   * layout and styles of the element, before any projection is performed.
+   *
+   * If the node has a pending projection, it is necessary to {@link reset} it
+   * before measuring it.
+   *
+   * @throws if the node has a pending {@link projection}.
+   *
    * @returns the measurement result
    */
   abstract measure(): Measurement;
 
   /**
    * Return the latest {@link measure} result of this projection node, or null
-   * if no measurement has been performed ever, or since the last
-   * {@link reset}.
+   * if no measurement has been performed ever, or since the last {@link reset}.
+   *
+   * The measurement is expected to match the original, browser-computed,
+   * layout and styles of the element, before any projection is performed.
    */
   abstract measurement(): Measurement | null;
 
@@ -46,6 +57,7 @@ export abstract class ProjectionNode extends Node {
    *
    * All ancestor projection nodes will be taken into account, to cancel the
    * transform distortion resulted by their projection.
+   *
    * Parent nodes should always be projected before their children.
    *
    * @param dest the destination layout
@@ -62,7 +74,8 @@ export abstract class ProjectionNode extends Node {
 }
 
 /**
- * A snapshot of the layout and relevant styles of an element.
+ * A snapshot of the original, browser-computed, layout and relevant styles
+ * of the element or a {@link ProjectionNode}.
  */
 export interface Measurement extends Equatable {
   /**
@@ -116,16 +129,19 @@ export class BasicProjectionNode extends BasicNode implements ProjectionNode {
   }
 
   reset(): void {
+    if (this.#projection) this.#element.style.transform = '';
     this.#projection = undefined;
     this.#measurement = undefined;
-    this.#element.style.transform = '';
   }
 
   measure(): Measurement {
+    if (this.#projection) throw new Error('cannot measure a projected node');
     const layout = Layout.fromElement(this.#element);
     this.#measurement = {
       layout,
-      equals: (other) => layout.equals(other.layout),
+      equals(other) {
+        return this.layout.equals(other.layout);
+      },
     };
     return this.#measurement;
   }
