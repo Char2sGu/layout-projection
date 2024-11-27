@@ -19,9 +19,8 @@ import { LayoutNode } from './layout-node';
  *    standalone: true,
  *    selector: '[someMetadata]',
  *  })
- *  export class SomeMetadata extends DefineLayoutNodeMetadata {
- *    constructor() {
- *      super();
+ *  export class SomeMetadata extends DefineLayoutNodeMetadata implements OnInit {
+ *    ngOnInit(): void {
  *      this.define(SOME_METADATA, someValue);
  *    }
  *  }
@@ -30,8 +29,8 @@ import { LayoutNode } from './layout-node';
  */
 @Directive()
 export abstract class DefineLayoutNodeMetadata {
-  #proxy = inject(LayoutNode, { self: true });
-  #metadata = inject(MetadataManager);
+  readonly #proxy = inject(LayoutNode, { self: true });
+  readonly #metadata = inject(MetadataManager);
 
   define<T>(token: MetadataToken<T>, value: NoInfer<T>): void {
     const node = this.#proxy.kernel();
