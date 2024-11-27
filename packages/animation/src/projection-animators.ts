@@ -18,6 +18,7 @@ import {
  */
 export class CompositeProjectionAnimator implements ProjectionAnimator {
   readonly #handlers: ProjectionAnimationHandler[];
+  readonly #animations = new Map<string, AnimationRef>();
 
   constructor(handlers: ProjectionAnimationHandler[]) {
     this.#handlers = handlers;
@@ -26,23 +27,32 @@ export class CompositeProjectionAnimator implements ProjectionAnimator {
   animate(config: ProjectionAnimationConfig): AnimationRef {
     const { duration, easing } = config;
 
+    let progress: number;
     let stopper: () => void;
 
     const promise = new Promise<AnimationResult>((resolve) => {
-      this.#handleFrame(config, 0);
+      const handleFrame = (p: number) => {
+        progress = p;
+        this.#handleFrame(config, p);
+      };
+      handleFrame(0);
       const result = animate({
         from: 0,
         to: 1,
         duration,
         ease: easing,
-        onUpdate: (progress) => this.#handleFrame(config, progress),
+        onUpdate: handleFrame,
         onComplete: () => resolve(AnimationResult.Completed),
         onStop: () => resolve(AnimationResult.Stopped),
       });
       stopper = result.stop;
     });
 
-    return new DelegationAnimationRef(promise, () => stopper());
+    return new DelegationAnimationRef(
+      promise,
+      () => stopper(),
+      () => progress,
+    );
   }
 
   /**

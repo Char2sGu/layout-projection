@@ -1,9 +1,8 @@
 import { AnimationResult } from './animation-result.js';
 
 /**
- * Represents a reference to an performing animation.
- * A promise-like object that resolves when the animation completes or is stopped.
- * Exposes an additional `stop` method to stop the animation.
+ * Promise-like reference to an animation that
+ * resolves when the animation completes or is stopped.
  */
 export abstract class AnimationRef implements PromiseLike<AnimationResult> {
   abstract then<TResult1 = AnimationResult, TResult2 = never>(
@@ -18,14 +17,20 @@ export abstract class AnimationRef implements PromiseLike<AnimationResult> {
   ): PromiseLike<TResult1 | TResult2>;
 
   /**
-   * Returns whether if the animation is resolved.
+   * Return whether if the animation is resolved.
    * An animation is resolved when it completes or is stopped.
    */
   abstract resolved(): boolean;
 
   /**
-   * Stops the animation.
-   * Noop if the animation is already completed or stopped.
+   * Return the progress of the animation.
+   * The progress is a number between 0 and 1.
+   */
+  abstract progress(): number;
+
+  /**
+   * Stop the animation.
+   * Noop if the animation is resolved.
    */
   abstract stop(): void;
 }

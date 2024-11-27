@@ -3,19 +3,20 @@ import { AnimationResult } from './animation-result.js';
 
 /**
  * {@link AnimationRef} implementation that delegates all logic to
- * a promise and a stopper function.
+ * objects accepted from the constructor.
  */
 export class DelegationAnimationRef implements AnimationRef {
   #resolved = false;
 
   /**
-   *
    * @param promise a promise that resolves when the animation completes or is stopped
    * @param stopper a function to stop the animation
+   * @param progressReporter a function that return the current progress of the animation
    */
   constructor(
     private promise: Promise<AnimationResult>,
     private stopper: () => void,
+    private progressReporter: () => number,
   ) {
     promise.then(() => {
       this.#resolved = true;
@@ -37,6 +38,10 @@ export class DelegationAnimationRef implements AnimationRef {
 
   resolved(): boolean {
     return this.#resolved;
+  }
+
+  progress(): number {
+    return this.progressReporter();
   }
 
   stop(): void {
