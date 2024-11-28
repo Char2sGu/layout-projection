@@ -10,14 +10,14 @@ import {
 /**
  * When applied to a projection node,
  * decides whether to skip the position animation of the layout.
- * @see LayoutProjectionAnimationHandler
+ * @see {@link LayoutProjectionAnimationHandler}
  */
 export const SKIP_POSITION = new MetadataToken<boolean>('SKIP_POSITION');
 
 /**
  * When applied to a projection node,
  * decides whether to skip the size animation of the layout.
- * @see LayoutProjectionAnimationHandler
+ * @see {@link LayoutProjectionAnimationHandler}
  */
 export const SKIP_SIZE = new MetadataToken<boolean>('SKIP_SIZE');
 

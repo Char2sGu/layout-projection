@@ -23,6 +23,20 @@ import { SnapshotStorage } from './snapshot-storage';
 /**
  * Directive that automatically animate layout changes of the {@link ProjectionNode}
  * provided at the current node injector.
+ *
+ * Requires a {@link ProjectionNode} available in the current node injector.
+ * See the {@link LayoutNode} directive for constructing the Projection Tree
+ * and providing the {@link ProjectionNode} object.
+ *
+ * A {@link ProjectionAnimator} is used to animate the layout changes, which might
+ * consider additional metadata defined on specific nodes in the animation.
+ *
+ * @example
+ *  ```html
+ *  <div layout duration="300" easing="linear">
+ *    <div layout duration="500">Inner</div>
+ *  </div>
+ *  ```
  */
 @Directive({
   standalone: true,
