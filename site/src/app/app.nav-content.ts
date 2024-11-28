@@ -1,6 +1,7 @@
 import { NavContent } from './core/nav.models';
 
 export const APP_NAV_CONTENT: NavContent = {
+  ['General']: [],
   ['Adapters']: [
     {
       name: 'Native',
@@ -12,10 +13,6 @@ export const APP_NAV_CONTENT: NavContent = {
         {
           name: 'Overview',
           path: 'angular/README',
-        },
-        {
-          name: 'Quick Start',
-          path: 'angular/guides/quick-start',
         },
         {
           name: 'Tracking Layout',
@@ -84,5 +81,4 @@ export const APP_NAV_CONTENT: NavContent = {
       ],
     },
   ],
-  ['Theory']: [],
 };
