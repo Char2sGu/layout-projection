@@ -1,0 +1,56 @@
+{
+  "name": "distortion-angular",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "examples/distortion-angular/src",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular/build:application",
+      "options": {
+        "outputPath": "dist/distortion-angular",
+        "index": "examples/distortion-angular/src/index.html",
+        "browser": "examples/distortion-angular/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "examples/distortion-angular/tsconfig.json",
+        "inlineStyleLanguage": "scss",
+        "styles": ["examples/distortion-angular/src/styles.scss"]
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kB",
+              "maximumError": "1MB"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kB",
+              "maximumError": "4kB"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "distortion-angular:build:production"
+        },
+        "development": {
+          "buildTarget": "distortion-angular:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    }
+  }
+}
