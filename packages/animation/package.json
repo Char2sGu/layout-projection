@@ -7,6 +7,9 @@
   "exports": {
     ".": {
       "default": "./dist/index.js"
+    },
+    "./handlers": {
+      "default": "./dist/handlers/index.js"
     }
   },
   "author": "Char2s <char2s@outlook.com>",

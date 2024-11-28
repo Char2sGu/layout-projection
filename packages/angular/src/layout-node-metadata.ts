@@ -1,10 +1,9 @@
 import { Directive, inject, OnInit } from '@angular/core';
+import { MetadataManager, MetadataToken } from '@layout-projection/animation';
 import {
-  MetadataManager,
-  MetadataToken,
   SKIP_POSITION,
   SKIP_SIZE,
-} from '@layout-projection/animation';
+} from '@layout-projection/animation/handlers';
 import { ProjectionNode } from '@layout-projection/core';
 
 /**

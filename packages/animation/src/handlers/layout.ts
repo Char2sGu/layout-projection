@@ -1,11 +1,11 @@
 import { Layout } from '@layout-projection/core';
 import { mix } from 'popmotion';
 
-import { MetadataManager, MetadataToken } from './metadata.js';
+import { MetadataManager, MetadataToken } from '../metadata.js';
 import {
   ProjectionAnimationFrameContext,
   ProjectionAnimationHandler,
-} from './projection-animation-handler.js';
+} from '../projection-animation-handler.js';
 
 /**
  * When applied to a projection node,

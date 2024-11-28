@@ -6,11 +6,13 @@ import {
 import {
   CompositeProjectionAnimator,
   InPlaceMetadataManager,
-  LayoutAnimationFramer,
-  LayoutProjectionAnimationHandler,
   MetadataManager,
   ProjectionAnimator,
 } from '@layout-projection/animation';
+import {
+  LayoutAnimationFramer,
+  LayoutProjectionAnimationHandler,
+} from '@layout-projection/animation/handlers';
 import {
   BorderRadiusMeasurer,
   BorderRadiusStyleParser,

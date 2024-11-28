@@ -5,7 +5,6 @@ export * from './animation-result.js';
 export * from './easing-function.js';
 export * from './metadata.js';
 export * from './projection-animation-handler.js';
-export * from './projection-animation-handlers.js';
 export * from './projection-animator.js';
 export * from './projection-animators.js';
 export * from './projection-node-snapshot.js';
