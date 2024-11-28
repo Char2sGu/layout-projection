@@ -1,3 +1,13 @@
+## 0.16.2 (2024-11-28)
+
+### 🩹 Fixes
+
+- **core:** correct border radius distortion ([2a4381a](https://github.com/TheNightmareX/layout-projection/commit/2a4381a))
+
+### ❤️ Thank You
+
+- Char2s @Char2sGu
+
 ## 0.16.1 (2024-11-28)
 
 ### 🚀 Features
