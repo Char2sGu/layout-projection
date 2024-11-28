@@ -37,6 +37,7 @@ export default eslintTs.config(
   {
     files: ['**/*.ts'],
     rules: {
+      'no-void': 'off',
       'eqeqeq': 'error',
       'no-self-compare': 'error',
       'no-template-curly-in-string': 'error',
@@ -66,7 +67,6 @@ export default eslintTs.config(
       'no-useless-escape': 'error',
       'no-useless-rename': 'error',
       'no-useless-return': 'error',
-      'no-void': 'error',
       'object-shorthand': 'error',
       'one-var': ['error', 'never'],
       'operator-assignment': 'error',
