@@ -19,7 +19,9 @@
       "@layout-projection/angular": ["./packages/angular/dist"],
       "@layout-projection/angular/*": ["./packages/angular/dist/*"],
       "@layout-projection/animation": ["./packages/animation"],
-      "@layout-projection/core": ["./packages/core"]
+      "@layout-projection/animation/*": ["./packages/animation/dist/*"],
+      "@layout-projection/core": ["./packages/core"],
+      "@layout-projection/core/*": ["./packages/core/dist/*"]
     }
   },
   "angularCompilerOptions": {
