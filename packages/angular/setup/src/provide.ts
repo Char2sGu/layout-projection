@@ -1,9 +1,11 @@
 import { inject, Provider } from '@angular/core';
 import {
   EasingStringParser,
+  LAYOUT_ANIMATION_CONFIG,
   ProjectionNodeFactory,
 } from '@layout-projection/angular';
 import {
+  AnimationConfig,
   CompositeProjectionAnimator,
   InPlaceMetadataManager,
   MetadataManager,
@@ -38,6 +40,7 @@ import { CssEasingStringParser } from './css-easing-string-parser';
  * - {@link ProjectionAnimator} <-- {@link CompositeProjectionAnimator}
  *    - handlers: [{@link LayoutProjectionAnimationHandler}] <br/>
  * - {@link EasingStringParser} <-- {@link CssEasingStringParser}
+ * - {@link LAYOUT_ANIMATION_CONFIG} <-- `{ duration: 300, easing: cubic-bezier(0.4, 0, 0.2, 1) }`
  */
 // eslint-disable-next-line max-lines-per-function -- it's common for providers declarations to be long
 export function provideLayoutProjectionBuiltinSetup(): Provider[] {
@@ -93,6 +96,15 @@ export function provideLayoutProjectionBuiltinSetup(): Provider[] {
     {
       provide: ProjectionNodeFactory,
       useExisting: BasicProjectionNodeFactory,
+    },
+    {
+      provide: LAYOUT_ANIMATION_CONFIG,
+      useFactory: (
+        parser = inject(CssEasingStringParser),
+      ): AnimationConfig => ({
+        duration: 300,
+        easing: parser.parse('cubic-bezier(0.4, 0, 0.2, 1)'),
+      }),
     },
   ];
 }
