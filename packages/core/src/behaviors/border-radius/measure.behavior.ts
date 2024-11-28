@@ -1,16 +1,15 @@
 import { createInjectiveInstanceFactory } from '../../injective-instance-factory.js';
-import { ProjectionNode } from '../../projection-node.js';
+import { Measurement, ProjectionNode } from '../../projection-node.js';
 import { ProjectionNodeBehavior } from '../../projection-node-behavior.js';
-import {
-  isBorderRadiusesMeasured,
-  MeasurementWithBorderRadiuses,
-} from './measurement.js';
+import { MeasurementWithBorderRadiuses } from './measurement.js';
 import { BorderRadiusMeasurer } from './measurer.js';
 
 /**
- * A behavior that additionally measures the border radiuses of the element when
- * the node is measured.
- * @see {@link MeasurementWithBorderRadiuses}
+ * {@link ProjectionNodeBehavior} that additionally measures the border radiuses
+ * of the element when the node is measured.
+ *
+ * The {@link Measurement} object will be mutated to satisfy
+ * {@link MeasurementWithBorderRadiuses}.
  */
 export class MeasureBorderRadius extends ProjectionNodeBehavior {
   /**
@@ -33,17 +32,13 @@ export class MeasureBorderRadius extends ProjectionNodeBehavior {
     super(kernel);
   }
 
-  override measure(): MeasurementWithBorderRadiuses {
-    const base = super.measure();
-    return {
-      ...base,
-      borderRadiuses: this.measurer.measure(this.element(), base.layout),
-      equals(other) {
-        if (!base.equals(other)) return false;
-        if (!isBorderRadiusesMeasured(other)) return false;
-        return this.borderRadiuses.equals(other.borderRadiuses);
-      },
-    };
+  override measure(): Measurement {
+    const measurement = super.measure() as MeasurementWithBorderRadiuses;
+    measurement.borderRadiuses = this.measurer.measure(
+      this.element(),
+      measurement.layout,
+    );
+    return measurement;
   }
 
   protected override decorate(target: ProjectionNode): this {

@@ -8,8 +8,9 @@ import { isBorderRadiusesMeasured } from './measurement.js';
 /**
  * A behavior that additionally calibrates the distortion of the border radius
  * styles of the element when projecting.
+ *
  * Requires the measurement to satisfy {@link MeasurementWithBorderRadiuses}.
- * Noop otherwise.
+ * Throws an error otherwise.
  */
 export class CalibrateBorderRadius extends ProjectionNodeBehavior {
   /**
@@ -31,9 +32,9 @@ export class CalibrateBorderRadius extends ProjectionNodeBehavior {
 
   override project(dest: Layout): Projection {
     const projection = super.project(dest);
-    const measurement = this.measurement();
-    if (!measurement) throw new Error('Measurement not found');
-    if (!isBorderRadiusesMeasured(measurement)) return projection;
+    const { measurement } = projection;
+    if (!isBorderRadiusesMeasured(measurement))
+      throw new Error('border radiuses are not measured');
     const radiuses = measurement.borderRadiuses;
     const scaleX = projection.transformApplied.x.scale;
     const scaleY = projection.transformApplied.y.scale;
