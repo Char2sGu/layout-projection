@@ -1,3 +1,14 @@
+## 0.17.0 (2024-11-28)
+
+### 🚀 Features
+
+- **angular:** make animator fetch config from DI when no inputs available ([b137388](https://github.com/TheNightmareX/layout-projection/commit/b137388))
+- **angular:** provide a default DI animation config in setup ([568e48a](https://github.com/TheNightmareX/layout-projection/commit/568e48a))
+
+### ❤️ Thank You
+
+- Char2s @Char2sGu
+
 ## 0.16.2 (2024-11-28)
 
 ### 🩹 Fixes
