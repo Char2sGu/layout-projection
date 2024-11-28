@@ -4,12 +4,14 @@ import {
   DestroyRef,
   Directive,
   inject,
+  InjectionToken,
   input,
   numberAttribute,
   output,
   Signal,
 } from '@angular/core';
 import {
+  AnimationConfig,
   AnimationResult,
   createSnapshot,
   EasingFunction,
@@ -19,6 +21,14 @@ import { ProjectionNode } from '@layout-projection/core';
 
 import { EasingStringParser } from './easing-string-parser';
 import { SnapshotStorage } from './snapshot-storage';
+
+/**
+ * Token of a {@link AnimationConfig} that will be used by
+ * {@link LayoutNodeAnimator} when no input is supplied.
+ */
+export const LAYOUT_ANIMATION_CONFIG = new InjectionToken<AnimationConfig>(
+  'LAYOUT_ANIMATION_CONFIG',
+);
 
 /**
  * Directive that automatically animate layout changes of the {@link ProjectionNode}
@@ -46,6 +56,7 @@ export class LayoutNodeAnimator {
   readonly #node = inject(ProjectionNode, { self: true });
   readonly #destroyRef = inject(DestroyRef);
   readonly #animator = inject(ProjectionAnimator);
+  readonly #defaults = inject(LAYOUT_ANIMATION_CONFIG);
   readonly #easingParser = inject(EasingStringParser);
   readonly #snapshots = inject(SnapshotStorage);
   readonly #parent = inject(LayoutNodeAnimator, {
@@ -56,8 +67,9 @@ export class LayoutNodeAnimator {
   /**
    * The duration of the animation in milliseconds.
    *
-   * When not supplied, use the nearest parent directive's duration.1
-   * If no parent directive has a duration, an error will be thrown.
+   * When not supplied, use the nearest parent directive's duration,
+   * or the duration from the {@link LAYOUT_ANIMATION_CONFIG} token
+   * if there is no parent directive.
    */
   readonly durationInput = input(undefined, {
     alias: 'duration',
@@ -71,8 +83,9 @@ export class LayoutNodeAnimator {
    * When a string is supplied, it will be parsed by the {@link EasingStringParser}
    * instance from the current injector.
    *
-   * When not supplied, use the nearest parent directive's duration.
-   * If no parent directive has a duration, an error will be thrown.
+   * When not supplied, use the nearest parent directive's easing,
+   * or the easing from the {@link LAYOUT_ANIMATION_CONFIG} token
+   * if there is no parent directive.
    */
   readonly easingInput = input(undefined, {
     alias: 'easing',
@@ -91,17 +104,19 @@ export class LayoutNodeAnimator {
    */
   readonly animationSettle = output<AnimationResult>();
 
-  protected readonly duration: Signal<number> = computed(() => {
-    const value = this.durationInput() ?? this.#parent?.duration();
-    if (value === undefined) throw new Error('duration is not defined');
-    return value;
-  });
+  protected readonly duration: Signal<number> = computed(
+    () =>
+      this.durationInput() ??
+      this.#parent?.duration() ??
+      this.#defaults.duration,
+  );
 
-  protected readonly easing: Signal<EasingFunction> = computed(() => {
-    const value = this.easingInput() ?? this.#parent?.easing();
-    if (value === undefined) throw new Error('easing is not defined');
-    return value;
-  });
+  protected readonly easing: Signal<EasingFunction> = computed(
+    () =>
+      this.easingInput() ?? //
+      this.#parent?.easing() ??
+      this.#defaults.easing,
+  );
 
   #destroyed = false;
 
