@@ -1,3 +1,17 @@
+## 0.16.1 (2024-11-28)
+
+### 🚀 Features
+
+- **animation:** move handlers to separate export "/handlers" ([3291fea](https://github.com/TheNightmareX/layout-projection/commit/3291fea))
+
+### 🩹 Fixes
+
+- **core:** make sure border radiuses measurement take effect ([71d33cc](https://github.com/TheNightmareX/layout-projection/commit/71d33cc))
+
+### ❤️ Thank You
+
+- Char2s @Char2sGu
+
 ## 0.16.0 (2024-11-28)
 
 ### 🚀 Features
