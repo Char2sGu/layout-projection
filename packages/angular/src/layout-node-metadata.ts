@@ -5,8 +5,7 @@ import {
   SKIP_POSITION,
   SKIP_SIZE,
 } from '@layout-projection/animation';
-
-import { LayoutNode } from './layout-node';
+import { ProjectionNode } from '@layout-projection/core';
 
 /**
  * The foundation directive for defining metadata for the current
@@ -29,12 +28,16 @@ import { LayoutNode } from './layout-node';
  */
 @Directive()
 export abstract class DefineLayoutNodeMetadata {
-  readonly #proxy = inject(LayoutNode, { self: true });
+  readonly #node = inject(ProjectionNode, { self: true });
   readonly #metadata = inject(MetadataManager);
 
   define<T>(token: MetadataToken<T>, value: NoInfer<T>): void {
-    const node = this.#proxy.kernel();
-    this.#metadata.define(node, token, value);
+    let actual!: ProjectionNode;
+    this.#node.traverse((node) => {
+      actual = node;
+      return false;
+    });
+    this.#metadata.define(actual, token, value);
   }
 }
 
