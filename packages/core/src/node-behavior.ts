@@ -3,13 +3,23 @@ import { Node } from './node.js';
 /**
  * Decorator for a {@link Node} instance.
  *
- * Tree query methods will return the behavior instances of the
+ * Tree-query methods will return the behavior instances of the
  * actual nodes, by dynamically decorating the returned nodes
- * via the {@link decorate} method.
+ * via the {@link decorate} method, to ensure consistency.
  *
  * It is recommended for concrete behavior classes to offer an approach
  * to ensure that the behavior instances are unique for each node, so that
  * the same behavior instance is not created multiple times for the same node.
+ *
+ * @example
+ * All objects returned from tree-query methods will be decorated, i.e.
+ * they will also be instances of the behavior class.
+ *  ```ts
+ *  const rootBehavior = MyBehavior.for(root);
+ *  rootBehavior.children().forEach(child => {
+ *    assert(child instanceof MyBehavior);
+ *  })
+ *  ```
  */
 export abstract class NodeBehavior implements Node {
   readonly #kernel: Node;
@@ -72,8 +82,10 @@ export abstract class NodeBehavior implements Node {
 }
 
 /**
- * A {@link ReadonlySet} where the values are mapped to another value of
- * the same type when accessed.
+ * A {@link ReadonlySet} where the values are lazily mapped to another value.
+ *
+ * The mapping does not happen until the value is accessed, and the mapped
+ * value is cached for future accesses.
  */
 class LazyMappedReadonlySet<From, To> implements ReadonlySet<To> {
   readonly size: number;

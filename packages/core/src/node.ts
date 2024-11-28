@@ -51,10 +51,25 @@ export abstract class Node {
   abstract dispose(): void;
 
   /**
-   * Traverse down the node tree starting from this node.
-   * @param consumer invoked on each node
+   * Traverse down the node tree starting from this node, inclusive, depth-first.
+   *
+   * @param consumer invoked on each node, including this node,
+   * where a `false` return value will stop the traversal of children.
+   * Note that returning false will not stop the traversal of siblings.
+   *
+   * @example
+   * Since the consumer is always invoked on the current node first,
+   * the following code allows you to get the actual node instance
+   * from a proxy.
+   *  ```ts
+   *  let actual!: Node;
+   *  proxy.traverse(node => {
+   *    actual = node;
+   *    return false;
+   *  })
+   *  ```
    */
-  abstract traverse(consumer: (node: this) => void): void;
+  abstract traverse(consumer: (node: this) => void | boolean): void;
 
   /**
    * Track the path from the this node to the root.
@@ -110,8 +125,9 @@ export class BasicNode implements Node {
     for (const child of this.#children) child.dispose();
   }
 
-  traverse(consumer: (node: this) => void): void {
-    consumer(this as unknown as this);
+  traverse(consumer: (node: this) => void | boolean): void {
+    const stop = consumer(this as unknown as this) === false;
+    if (stop) return;
     for (const child of this.#children) child.traverse(consumer);
   }
 
