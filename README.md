@@ -9,7 +9,7 @@ Framework-agnostic **Layout Projection** and GPU-accelerated layout animation wi
 > Please stay tuned and come back later!
 
 - Getting started with Vanilla JS (WIP)
-- [Getting started with Angular](https://char2sgu.github.io/layout-projection/guides/angular/guides/quick-start)
+- [Getting started with Angular](https://char2sgu.github.io/layout-projection/angular/README)
 - Framework-agnostic Kernel API:
   - [Core: Node, Tree, Projection](https://char2sgu.github.io/layout-projection/guides/core/)
   - [Animation: Snapshot, Animator, Metadata](https://char2sgu.github.io/layout-projection/guides/animation/)
