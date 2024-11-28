@@ -51,7 +51,7 @@ export class CoreSameElementsComponent {
 
     this.container().nativeElement.addEventListener('click', async () => {
       container.traverse((n) => n.reset());
-      container.traverse((n) => n.measure());
+      container.traverse((n) => void n.measure());
       const containerFrom = createSnapshot(container);
       const outerBoxFrom = createSnapshot(outerBox);
       const innerBoxFrom = createSnapshot(innerBox);
@@ -59,7 +59,7 @@ export class CoreSameElementsComponent {
       flag = !flag;
       container.element().setAttribute('flag', String(flag));
       container.traverse((n) => n.reset());
-      container.traverse((n) => n.measure());
+      container.traverse((n) => void n.measure());
       const containerTo = createSnapshot(container);
       const outerBoxTo = createSnapshot(outerBox);
       const innerBoxTo = createSnapshot(innerBox);

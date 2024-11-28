@@ -114,7 +114,7 @@ export class LayoutNodeAnimator {
         const isRoot = this.#node.parent() === null;
         if (!isRoot) return;
         this.#node.traverse((n) => n.reset());
-        this.#node.traverse((n) => n.measure());
+        this.#node.traverse((n) => void n.measure());
       },
     });
     afterRender({
