@@ -1,38 +1,6 @@
 import { NavContent } from './core/nav.models';
 
 export const APP_NAV_CONTENT: NavContent = {
-  ['General']: [],
-  ['Adapters']: [
-    {
-      name: 'Native',
-      items: [],
-    },
-    {
-      name: 'Angular',
-      items: [
-        {
-          name: 'Overview',
-          path: 'angular/README',
-        },
-        {
-          name: 'Tracking Layout',
-          path: 'angular/guides/tracking-layout',
-        },
-        {
-          name: 'Animating Layout',
-          path: 'angular/guides/animating-layout',
-        },
-        {
-          name: 'Defining Metadata',
-          path: 'angular/guides/defining-metadata',
-        },
-        {
-          name: 'Customizing Setup',
-          path: 'angular/guides/customizing-setup',
-        },
-      ],
-    },
-  ],
   ['Kernel']: [
     {
       name: 'Core',
@@ -77,6 +45,37 @@ export const APP_NAV_CONTENT: NavContent = {
         {
           name: 'Metadata',
           path: 'animation/guides/metadata',
+        },
+      ],
+    },
+  ],
+  ['Adapters']: [
+    {
+      name: 'Native',
+      items: [],
+    },
+    {
+      name: 'Angular',
+      items: [
+        {
+          name: 'Overview',
+          path: 'angular/README',
+        },
+        {
+          name: 'Tracking Layout',
+          path: 'angular/guides/tracking-layout',
+        },
+        {
+          name: 'Animating Layout',
+          path: 'angular/guides/animating-layout',
+        },
+        {
+          name: 'Defining Metadata',
+          path: 'angular/guides/defining-metadata',
+        },
+        {
+          name: 'Customizing Setup',
+          path: 'angular/guides/customizing-setup',
         },
       ],
     },
