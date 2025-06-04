@@ -128,6 +128,8 @@ export class LayoutNodeAnimator {
       earlyRead: () => {
         const isRoot = this.#node.parent() === null;
         if (!isRoot) return;
+        // separate DOM read and write phases to avoid layout thrashing
+        // https://developers.google.com/web/fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing
         this.#node.traverse((n) => n.reset());
         this.#node.traverse((n) => void n.measure());
       },

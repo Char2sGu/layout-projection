@@ -31,13 +31,13 @@ export class LayoutProjectionAnimationHandler
 {
   constructor(
     private readonly framer: LayoutAnimationFramer,
-    private readonly metadata: MetadataManager,
+    private readonly metadata?: MetadataManager,
   ) {}
 
   handleFrame(context: ProjectionAnimationFrameContext): void {
     const { node, from, to, progress } = context;
-    const skipPosition = this.metadata.resolve(node, SKIP_POSITION);
-    const skipSize = this.metadata.resolve(node, SKIP_SIZE);
+    const skipPosition = this.metadata?.resolve(node, SKIP_POSITION);
+    const skipSize = this.metadata?.resolve(node, SKIP_SIZE);
     const animatePosition = !skipPosition;
     const animateSize = !skipSize;
     if (!from.measurement || !to.measurement) return;
