@@ -71,12 +71,12 @@ export const APP_NAV_CONTENT: NavContent = {
           path: 'animation/guides/snapshots',
         },
         {
-          name: 'Animators',
-          path: 'animation/guides/animators',
+          name: 'Animation',
+          path: 'animation/guides/animation',
         },
         {
-          name: 'Handlers & Metadata',
-          path: 'animation/guides/handlers-and-metadata',
+          name: 'Metadata',
+          path: 'animation/guides/metadata',
         },
       ],
     },

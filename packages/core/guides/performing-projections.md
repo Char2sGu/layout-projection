@@ -28,3 +28,13 @@ root.project(dest);
 This applies a CSS `transform` to the element that makes the element appear that it is positioned at the specified coordinates and has the specified dimensions, with all parental `transform`s cancelled out.
 
 In other words, if a child node is projected after its parent being projected, the child node can still be accurately projected to the expected position and dimensions, immune to the distortion caused by the parent's `transform`.
+
+A projection node that has an ongoing projection must be reset before measuring again.
+To clean up a projection, call `reset`. This will:
+
+- remove any styles applied on the element because of the projection
+- reset the state of node, such as removing measurement information
+
+```ts
+node.reset();
+```

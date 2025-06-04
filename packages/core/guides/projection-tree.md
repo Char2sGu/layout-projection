@@ -13,7 +13,9 @@ const const node: ProjectionNode = new BasicProjectionNode(element, "unique-id")
 expect(node.identity() === 'unique-id');
 ```
 
-Like in the DOM, a projection node must be attached as a child of a parent projection node, in order to be connected to the projection tree, unless it serves as the root:
+All projection nodes must be assigned an ID to identify them uniquely in the projection tree. The same ID might be used by different projection node instances at different times, but only one projection node can have a given ID at any time in the projection tree. The same ID might also refer to different DOM elements if they represent the same visual element at different times, such as the moving underline of a tab in a tab bar.
+
+Like in the DOM, a projection node must be attached as a child of a parent projection node in order to be connected to the projection tree, unless it serves as the root:
 
 ```ts
 declare const root: ProjectionNode;
