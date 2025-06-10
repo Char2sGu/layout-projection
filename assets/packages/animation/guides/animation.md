@@ -17,6 +17,8 @@ const ref = animator.animate({
 The above `animate` call animates the given `node` from its previous state specified by `snapshotPrev` to its current state specified by `snapshotCurr`.
 The duration of the animation is `1000` milliseconds, and the easing function is a linear function that maps the progress from `0` to `1` linearly.
 
+> The type of the `easing` option is compatible to easing functions from the `popmotion` library.
+
 The animator will try to animate only the given projection node and preserve the layout of its children by performing in-place projections on child nodes. A child node will be projected in-place if 1) it has been measured, or 2) it has been projected.
 
 This enables nested and concurrent animations on any node in the projection tree without interfering with each other, i.e. you can animate multiple nodes at the same time, and each node will be animated independently of others. Therefore, it is recommended to make sure all nodes in the projection tree are measured before animating:
@@ -71,3 +73,10 @@ When this handler is supplied to the animator, the layout of the node will be an
 const handlers: ProjectionAnimationHandler[] = [layoutHandler];
 const animator: ProjectionAnimator = new CompositeProjectionAnimator(handlers);
 ```
+
+Supported [metadata](./metadata.md):
+
+| Token           | Purpose                                                                              |
+| --------------- | ------------------------------------------------------------------------------------ |
+| `SKIP_SIZE`     | If `true`, the size of the node will not be animated. This is useful for text nodes. |
+| `SKIP_POSITION` | If `true`, the position of the node will not be animated.                            |
