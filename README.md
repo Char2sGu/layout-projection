@@ -4,10 +4,6 @@
 
 Framework-agnostic **Layout Projection** and GPU-accelerated layout animation with various framework adapters.
 
-> [!CAUTION]
-> This project is currently under a massive re-design, and the tutorials and website is not yet updated.  
-> Please stay tuned and come back later!
-
 - Getting started with Vanilla JS (WIP)
 - [Getting started with Angular](https://char2sgu.github.io/layout-projection/angular/README)
 - Framework-agnostic Kernel API:
@@ -78,3 +74,8 @@ Using View Transition API does not mean you don't need Layout Projection. They c
 ## Special Thanks
 
 Big thank to [@taowen](https://github.com/taowen) for providing [the GitHub Gist copy](https://gist.github.com/taowen/e102cf5731e527cb9ac02574783c4119) of the missing original blog by Matt Perry about the tech details of Layout Projection.
+
+---
+
+> [!NOTE]
+> This project originates from an animation experiment from the [Reply](https://github.com/Char2sGu/reply) project since Nov 18th, 2022. See the [commit history of Reply](https://github.com/Char2sGu/reply/commits/develop/?after=03da8d5a912ff8d886c4757b8d40a27d4d2c422e+312) for more information.
