@@ -1,7 +1,6 @@
 {
   "name": "@layout-projection/animation",
   "version": "0.17.0",
-  "description": "",
   "type": "module",
   "main": "dist/index.js",
   "exports": {
