@@ -1,3 +1,13 @@
+## 1.0.0-alpha.0 (2025-06-10)
+
+### 🚀 Features
+
+- **animation:** make metadata manager optional for `LayoutProjectionAnimationHandler` ([097c271](https://github.com/TheNightmareX/layout-projection/commit/097c271))
+
+### ❤️ Thank You
+
+- Char2s
+
 ## 0.17.0 (2024-11-28)
 
 ### 🚀 Features

@@ -1,6 +1,6 @@
 {
   "name": "@layout-projection/native",
-  "version": "0.17.0",
+  "version": "1.0.0-alpha.0",
   "type": "module",
   "main": "dist/index.js",
   "author": "Char2s <char2s@outlook.com>",
